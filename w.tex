@@ -6,7 +6,7 @@
 \usepackage{blindtext} 
 \usepackage[linktocpage]{hyperref}
 \usepackage{bookmark}
-\usepackage{titlesec}
+\usepackage[compact]{titlesec}
 
 % bib
 %\usepackage[round]{natbib}
@@ -82,53 +82,82 @@
 \DeclareMathOperator*{\argmin}{argmin}
 \DeclareMathOperator*{\argmax}{argmax}
 
+\titlespacing{\paragraph}{0pt}{*0}{*0}
+%\setlength{\parskip}{-5mm plus1mm minus1mm}
+
 \usepackage{fancyhdr}
 \pagestyle{fancy}
+
 
 \begin{document}
 \lhead{Justin Chiu}
 \chead{2018 NSF GRFP}
 \rhead{Research Proposal}
 
-\section{Background}
+\begin{center}
+\textbf{Latent Variable Models for Data to Text}
+\end{center}
+
+\paragraph{Keywords}
+latent variable models, conditional text generation, data to text
+
+\paragraph{Background}
 Natural language processing (NLP) can largely be decomposed into two separate but
 tightly related tasks: natural language understanding and natural language generation (NLG).
-In this proposal we focus primarily on text generation, and in particular
+In this proposal we focus primarily on generation, and in particular
 the generation of text that describes some data.
 We refer to this specific task as Data-to-Text (D2T).
+The assumption that the text describes data is central to the task as it allows for practitioners to 
+define heuristics for evaluatating a summary's fidelity to the underlying data.
 
-\section{What exactly is D2T?}
-An example of D2T is in \citet{wiseman2017d2t},
-where a summary of a basketball game is modelled conditioned on
-the box score associated with that game.
-The box score consists of a list of records associating an entity with a value.
-Each record has a type which denotes the relationship between the entity and value contained in the record.
-
-\section{Why is D2T important?}
+%\paragraph{Why is D2T important?}
 % Easily evaluable, good benchmark
 % Limited external knowledge
 % Largely concerned with reporting the information in the table
 The D2T task's importance is two-fold.
-First, D2T serves as a benchmark for conditional generation.
+First, D2T serves as a useful benchmark for conditional generation.
 D2T exists as a compromise between short-form generative tasks such as sentence-level translation
-and unstructured long-form tasks such as generating Wikipedia articles from sources and search results.
+and unstructured long-form tasks such as generating Wikipedia articles from internet resources.
 This is because D2T is a long-form generation task but uses structured data as input instead of free-form text.
-The existence of structured data represents a simplifying assumption which makes D2T easier than other
-long-form tasks but also more evaluable.
+Secondly, the existence of structured data represents a simplifying assumption which makes D2T easier than other
+long-form tasks but also, more importantly, amenable to automatic evaluation.
+Given a list of records and the assumption that in a data-text pair the text's purpose is to describe the data,
+it is straightforward to obtain approximate alignments between the text and records for evaluation.
+However, the alignments can also be used for much more than evaluation; they can be used for obtaining weak supervision
+\citep{puduppully2018contentselection}. %in a latent variable model.
+This insight motivates our proposal and will be elaborated on shortly.
 
-% Proposal? Add more structure / modularity, principled inference...?
-Early work on text generation focused on the use of templates and grammars, 
+Early work on D2T focused on the use of templates and grammars framed as latent variable models, 
 which generally resulted in generations with little stylistic variation.
 % Do I need to qualify this claim and say why?
 After neural language models demonstrated state of the art performance,
 they were then transferred to the conditional language modeling setting,
-i.e. NLG,
+i.e. D2T and more broadly NLG,
 where they supplanted template-based methods almost completely.
 However, by relying largely on the language modeling capabilities of neural networks,
 practitioners have eschewed modularity of the model for ease of inference.
 % Do I need to qualify this as well?
+\citep{angeli2010d2t}, \citep{liang2009semalign}, \citep{sauper2009wiki}
 
-\section{What are the desiderata of a text generation system?}
+\paragraph{Research Question}
+%We can train end-to-end modular systems, so how much modularity and supervision can we provide and does it help the model?
+As research on D2T has embraced neural systems and end-to-end training resulting in very unstructured models,
+what is the benefit of imbuing more structure in the form of a latent variable model?
+
+% Proposal? Add more structure / modularity, principled inference...?
+% Thesis: structure will help with controllability and LVM formulation with generalization as it presents a different inductive bias?
+\paragraph{Research}
+
+\paragraph{Data}
+% Example of D2T, should i present this early or later
+The dataset we consider primarily is the Rotowire dataset \citep{wiseman2017d2t},
+where a summary of a basketball game is modelled conditioned on the box score associated with that game.
+This is the most recent D2T dataset that has been developed.
+The box score consists of a list of records associating an entity with a value.
+Each record has a type which denotes the relationship between the entity and value contained in the record.
+An example record could look like: (type = POINTS, entity = Jeremy Lin, value = 19).
+
+\paragraph{What are the desiderata of a text generation system?}
 \begin{enumerate}
 \item Readability: Fluency, grammaticality, interestingness?
 \item Controllability, ability to impose constraints
@@ -139,25 +168,22 @@ practitioners have eschewed modularity of the model for ease of inference.
 
 A vein in the recent work on integrating neural network systems and latent variable models
 has aimed to separate content from style.
-
 Separate style and content, where content will come from for controllable generation.
 Can we also model intention in a similar way?
 Hierarchical planning, multiple levels
-cite 
-\section{Related Work}
+cite fair thing with dialogue planning? 
+
+\paragraph{Related Work}
 In the task of generating basketball summaries from game statistics,
 \citet{puduppully2018contentselection} learn a model of content progression
 by learning how to order records from the table of statistics.
 \citep{puduppully2018contentselection,wiseman2018template}
 Separate content from style
-\section{Research Question}
-Given that we can model `what to say' as well as `how to say',
-can we learn a model of intention?
-\section{Keywords}
-\section{Approach and Methods}
-\begin{figure}[ht]
+\paragraph{Approach and Methods}
+
+\begin{wrapfigure}{r}{0.5\textwidth}
 \centering
-\begin{subfigure}[]{0.3\textwidth}
+\begin{subfigure}[]{0.5\textwidth}
 \centering
 \begin{tikzpicture}
 \node(x)[obs]{$\bx$};
@@ -169,6 +195,7 @@ can we learn a model of intention?
 \caption{}
 \end{subfigure}
 
+\begin{comment}
 \hspace{0.03\textwidth}
 \begin{subfigure}[]{0.3\textwidth}
 \centering
@@ -189,6 +216,7 @@ can we learn a model of intention?
 \caption{}
 \end{subfigure}
 \hspace{0.03\textwidth}
+\end{comment}
 
 \begin{comment}
 % Noisy channel model
@@ -242,7 +270,7 @@ can we learn a model of intention?
 \caption{Simplistic directed graphical models for the latent variable model.
 The observed context is $\tilde\bx$, current attention $a_t$, previous attention $a_{t-1}$,
 state $s_t$, and target word $y_t$.}
-\end{figure}
+\end{wrapfigure}
 
 \begin{figure}[ht]
 \label{fig:dgm2}
@@ -250,8 +278,8 @@ state $s_t$, and target word $y_t$.}
 As all nodes condition on $\bx$, we omit it from the diagram.}
 \end{figure}
 
-\section{Intellectual Merit}
-\section{Broader Impact}
+\paragraph{Intellectual Merit}
+\paragraph{Broader Impact}
 
 
 \bibliographystyle{plainnat}
