@@ -9,7 +9,8 @@
 \usepackage{titlesec}
 
 % bib
-\usepackage[round]{natbib}
+%\usepackage[round]{natbib}
+\usepackage[square,sort,numbers]{natbib}
 
 % Math Imports
 \usepackage{amsmath, amssymb, bm, fancyhdr, sectsty, dsfont, mathtools}
@@ -82,138 +83,78 @@
 \DeclareMathOperator*{\argmax}{argmax}
 
 \usepackage{fancyhdr}
+\pagestyle{fancy}
 
 \begin{document}
 \lhead{Justin Chiu}
 \chead{2018 NSF GRFP}
 \rhead{Research Proposal}
 
-\section{Introduction}
-\subsection{ideas}
-Why should we care about text generation?
+\section{Background}
+Natural language processing (NLP) can largely be decomposed into two separate but
+tightly related tasks: natural language understanding and natural language generation (NLG).
+In this proposal we focus primarily on text generation, and in particular
+the generation of text that describes some data.
+We refer to this specific task as Data-to-Text (D2T).
 
-Story:
-In the early 2000's we had modular probabilistic models,
-but the focus was on information extraction and alignment.
-Now that we have powerful language models and classification methods,
-the focus has instead shifted to text generation.
-However the shift towards language modeling has de-emphasized the role of
-modularity in modeling and resulted in large black-box models with little structure. 
-\citep{wiseman2017d2t}
+\section{What exactly is D2T?}
+An example of D2T is in \citet{wiseman2017d2t},
+where a summary of a basketball game is modelled conditioned on
+the box score associated with that game.
+The box score consists of a list of records associating an entity with a value.
+Each record has a type which denotes the relationship between the entity and value contained in the record.
 
-Past work ie \citep{liang2009semalign} modular approach
-Current: blackbox throw everything into the language model
-\citep{wiseman2017d2t}
-Talk about the evaluation metrics, CO, CS, Realization?
-And how that inspires a generative model
+\section{Why is D2T important?}
+% Easily evaluable, good benchmark
+% Limited external knowledge
+% Largely concerned with reporting the information in the table
+The D2T task's importance is two-fold.
+First, D2T serves as a benchmark for conditional generation.
+D2T exists as a compromise between short-form generative tasks such as sentence-level translation
+and unstructured long-form tasks such as generating Wikipedia articles from sources and search results.
+This is because D2T is a long-form generation task but uses structured data as input instead of free-form text.
+The existence of structured data represents a simplifying assumption which makes D2T easier than other
+long-form tasks but also more evaluable.
 
+% Proposal? Add more structure / modularity, principled inference...?
+Early work on text generation focused on the use of templates and grammars, 
+which generally resulted in generations with little stylistic variation.
+% Do I need to qualify this claim and say why?
+After neural language models demonstrated state of the art performance,
+they were then transferred to the conditional language modeling setting,
+i.e. NLG,
+where they supplanted template-based methods almost completely.
+However, by relying largely on the language modeling capabilities of neural networks,
+practitioners have eschewed modularity of the model for ease of inference.
+% Do I need to qualify this as well?
+
+\section{What are the desiderata of a text generation system?}
 \begin{enumerate}
-\item Controllable, discourse-level features?
-Or more like just program induction-y structure
-\citet{rabinovich17codegen}
-\item Hierarchical generation with weak supervision enforced through posterior regularization
-\citep{ganchev2007empc,graca2010pralign,ganchev2010posteriorregularization}
-\item Learning higher order features of data table
-\item Also, examine the effect of explaining away on fidelity of
-generations to underlying records (via noisy channel)
-\citep{klein2002conditional,yu2016noisychannel,brown1993mt}
+\item Readability: Fluency, grammaticality, interestingness?
+\item Controllability, ability to impose constraints
+\item Fidelity to conditioning
+\item What does interpretability mean here?
+\item Informational adequacy: Can we learn what records are salient?
 \end{enumerate}
 
-\subsection{real}
+A vein in the recent work on integrating neural network systems and latent variable models
+has aimed to separate content from style.
 
-We aim to increase the modularity of our probabilistic model in order to leverage weak supervision
-\citep{ganchev2010posteriorregularization}.
-
-An open question in language generation is how to incorporate weaker forms of supervision.
-Modular graphical models offer a principled way of incorporating weak or indirect supervision
-through posterior regularization \citep{ganchev2007empc,graca2010pralign,ganchev2010posteriorregularization}.
-
-Neural network-based language models have achieved top performance \citep{yang2017moslm},
-allowing text generation models to become proficient at
-generating short snippets of fluent text in applications such as translation \citep{bahdanau2014mt}.
-Recent work in language generation has largely relied on the strong language modeling capabilities
-of neural models \citep{wiseman2017d2t},
-while slowly returning to the modularity afforded by probabilistic models \citep{wiseman2018template,deng2018vattn}.
-However, in leveraging powerful language models,
-the field's focus has shifted from information extraction to generation as the (conditional)
-language modeling capabilities of neural networks have allowed models to learn fluency.
-
-Goals:\citet{wiseman2017d2t}, \citep{liang2009semalign}
-\begin{itemize}
-\item If we remove burden from the language model, will it lie less?
-Only have the LM focus on fluency
-\item Having a more structured model paves the way for more interpretable and
-modular additions to the system, such as numerical comparisons or list modules
-\end{itemize}
-
-% Maybe goal is to demonstrate the modularity of probabilistic models?
-% Need to also compare to soft model
-% Result might just be that it present a different inductive bias
-
-We would like to incorporate the modularity of a probabilistic framework into the powerful 
-autoregressive modeling capabilities of a neural language model.
-Although the approach brought only marginal benefits in \citet{deng2018vattn},
-it can potentially be applied in many other domains. 
-Alignment in translation allows models to properly condition on the source.
-
-% Concerned with jointly learning a generative model and information extraction system.
-% Is there an efficiency gain in using the approximate posterior as
-% a separate system rather than finding viterbi best alignments?
-
-\section{Problem}
-We would like to learn a conditional model
-over sentences $\by = \{y_0, y_1, \ldots\}$ and latent structure $\bz$ given a table $\bx$.
-We are primarily interested in the respective conditional distributions:
-both the posterior distribution over structure given a sentence and table $p(\bz\mid\by,\bx)$,
-as well as the conditional distribution over summaries
-$p(\by\mid\bx)=\Es{\bz\sim p(\bz\mid\bx)}{p(\by\mid\bz,\bx)}$.
-Note that the posterior distribution over structure $p(\bz\mid\by,\bx)$
-is an information extraction model.
-
+Separate style and content, where content will come from for controllable generation.
+Can we also model intention in a similar way?
+Hierarchical planning, multiple levels
+cite 
 \section{Related Work}
-% Information Extraction methods
-\citet{liang2009semalign} also use a conditional model of utterances and use a similar model of alignment.
-However, their model is more concerned with using the posterior for information extraction and 
-alignment with a database rather than both text generation as it does not include a language model. 
-Instead the words are modeled independently from each other given the underlying record structure.
-
-% Generation Methods
-The model in \citet{wiseman2017d2t} uses a conditional language model with a copy mechanism
-to model summaries given a list of records.
-Although the resulting generations are quite fluent, they are not
-as faithful to the underlying table as baseline template models which copy from
-records deterministically.
-
-% Unsupervised Typing
-The model of \citet{rabinovich17codegen}, used for code generation and semantic parsing,
-has a very similar flavour.
-It assumes a similar underlying generative process, although the conditioning is different:
-to produce a program given a natural language statement,
-first decide which class of constructor to use then recursively fill in the fields.
-However, in our model we are not given pre-specified constructor classes and
-we do not have recursive expressions.
-
-% Hierarchical Model
-Although the hierarchical model in \citet{yarats2017dialogue} is a HSMM,
-the domain and training method are quite different?
-Also not doubly hierarchical. %LMAO
-
-\section{Data to Document}
-The copy models in \citet{wiseman2017d2t} are trained independently from the
-information extraction model. 
-The copy model is trained by generating the summary conditioned on the full table.
-The information extraction model used for evaluation is trained using labels
-created by comparing tokens in the summary with the entities and values from the database.
-See \citet{wiseman2017d2t} for all the tricks used in training the model.
-
-Our goal is to use more structure in our model in order to unburden the language model
-and prevent hallucination of facts.
-
-We assume that every sentence has an implicit labelling or cluster.
-
-\subsection{The Model}
-Let $y_t$ be the current token, $\by_{0:t-1}$ all previous tokens,
-
+In the task of generating basketball summaries from game statistics,
+\citet{puduppully2018contentselection} learn a model of content progression
+by learning how to order records from the table of statistics.
+\citep{puduppully2018contentselection,wiseman2018template}
+Separate content from style
+\section{Research Question}
+Given that we can model `what to say' as well as `how to say',
+can we learn a model of intention?
+\section{Keywords}
+\section{Approach and Methods}
 \begin{figure}[ht]
 \centering
 \begin{subfigure}[]{0.3\textwidth}
@@ -309,86 +250,13 @@ state $s_t$, and target word $y_t$.}
 As all nodes condition on $\bx$, we omit it from the diagram.}
 \end{figure}
 
-\section{Generative Model}
-We present a conditional model that is an extension of \citet{liang2009semalign}'s
-simple model that incorporates a neural language model.
-
-Given that many sentences can be clustered into classes, for example
-many sentences list a single player's statistics during the game or 
-compare the final scores of the two teams and proclaim a winner,
-we propose to model a super-segmentation of groups of records with a HSMM,
-where each text is then generated from records via another HSMM.
-We first make the simplifying assumption that a super-segmentation is a sentence.
-
-\begin{description}
-\item[Class choice]
-We start with a model over segment classes $p(c_t\mid c_{t-1},y_{t-1},\bx)$,
-where we transition to a new class if $y_{t-1}$ is the end of sentence token:
-$$p(c_t\mid c_{t-1},y_{t-1},\bx) = \begin{cases}
-c_t & y_{t-1}=\textrm{eos}\\
-p(c_t\mid c_{t-1},\bx) & \textrm{otherwise}
-\end{cases}$$
-We could potentially use a fully connected model if we are willing to sacrifice
-exact inference $p(c_t\mid \bc_{<t}, \bx)$, which would be realized by a neural
-language model over segment classes.
-Actually, if we use again use a soft model over $\bc_{<t}$ we can do this tractably,
-i.e. use the filtered marginals as input to an RNN:
-$p(z_t=i\mid z_{t-1}=j; \E{\bz_{<t-1}}) = \textrm{softmax}(i * \textrm{RNN}(j, \E{\bz_{<t-1}}))$.
-We model the initial distribution over classes $\pi(c_0\mid\bx)$
-via a neural network over the list of records.
-\item[Record choice]
-We begin with a markov model over records as in \citet{liang2009semalign} $p(r_t\mid r_{t-1},c_t,\bx)$.
-$p(r_{t,i}\mid\br_{t,<i},c_t,\bx)$
-\item[Token choice]
-$p(y_{t,i,j})\mid\by_{t,i,<j},\by_{t,<i},r_{t,i})$
-\end{description}
-the first is assume that words $y_t$ are aligned to either a subset of records in $r_{0:N}$ or a null record
-recall that a record is a tuple of type {ie POINTS}, entity {Jason Kidd}, value {19}
-
-so given that subset we could then parameterize a categorical distribution over its elements.
-let $p(pi | c, r_{0:N})$ be a distribution over binary masks ${0,1}^N$. 
-we could decompose $p(r_t | c_t, r_{0:N}) = p(r_t | pi(r_{0:N})) * p(pi | c, r_{0:N})$,
-where we would then use posterior regularization: train $p(pi | c, r_{0:N})$ to match
-$\textrm{findRecord}(y_t)$ and learn
-$p(r_t | pi(r_{0:N}))$ through max marginal likelihood using $\textrm{findRecord}(y_t)$ to give us $\pi$.
-
-\section{Information Extraction Model}
-Recall the information extraction model from \citet{wiseman2017d2t}.
-$q$
-
-\subsection{Table Completions: Learning Conjunctions}
-Introduce latent variables $\bh_i\sim\Bern(\theta_i),i\in\set{0,\ldots,K}$
-where $K$ is a hyperparameter. 
-
-\subsection{Noisy Channel?}
-Introduce latent variable $\bh$ and 
-
-\section{Training and Inference}
-To start, we let $q(\bz\mid\by,\bx)$ take the form of a
-delta function take the form of a segmentation.
-$$q(z_t\mid\by,\bx)=$$
-we can align every word $y_t$ by looking at every record $r_{0:N}$ and checking if $y_t$ matches $r_i.entity$ or $r_i.value$
-so let
-$$\textrm{findRecord}(y_t) = \set{ r_i \mid r_i.entity = y_t OR r_i.value = y_t }$$
-\subsection{Approximate Posterior or Posterior Regularization?}
-
-\section{Related Work}
-
-\section{Results}
-
-\section{NSF STUFF}
-\section{Background}
-Separate content from style
-\section{Research Question}
-
-\section{Keywords}
-\section{Approach and Methods}
 \section{Intellectual Merit}
 \section{Broader Impact}
 
 
 \bibliographystyle{plainnat}
 \bibliography{w}
+
 
 \end{document}
 
