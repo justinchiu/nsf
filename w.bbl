@@ -1,28 +1,15 @@
-\begin{thebibliography}{6}
+\begin{thebibliography}{5}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[Angeli et~al.(2010)Angeli, Liang, and Klein]{angeli2010d2t}
-Gabor Angeli, Percy Liang, and Dan Klein.
-\newblock A simple domain-independent probabilistic approach to generation.
-\newblock In \emph{Proceedings of the 2010 Conference on Empirical Methods in
-  Natural Language Processing}, EMNLP '10, pages 502--512, Stroudsburg, PA,
-  USA, 2010. Association for Computational Linguistics.
-\newblock URL \url{http://dl.acm.org/citation.cfm?id=1870658.1870707}.
-
-\bibitem[Liang et~al.(2009)Liang, Jordan, and Klein]{liang2009semalign}
-Percy Liang, Michael~I. Jordan, and Dan Klein.
-\newblock Learning semantic correspondences with less supervision.
-\newblock In \emph{Proceedings of the Joint Conference of the 47th Annual
-  Meeting of the ACL and the 4th International Joint Conference on Natural
-  Language Processing of the AFNLP: Volume 1 - Volume 1}, ACL '09, pages
-  91--99, Stroudsburg, PA, USA, 2009. Association for Computational
-  Linguistics.
-\newblock ISBN 978-1-932432-45-9.
-\newblock URL \url{http://dl.acm.org/citation.cfm?id=1687878.1687893}.
+\bibitem[Deng et~al.(2018)Deng, Kim, Chiu, Guo, and Rush]{deng2018vattn}
+Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, and Alexander~M. Rush.
+\newblock Latent alignment and variational attention.
+\newblock \emph{CoRR}, abs/1807.03756, 2018.
+\newblock URL \url{http://arxiv.org/abs/1807.03756}.
 
 \bibitem[Puduppully et~al.(2018)Puduppully, Dong, and
   Lapata]{puduppully2018contentselection}
