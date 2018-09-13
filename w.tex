@@ -24,6 +24,7 @@
 \usepackage{wrapfig}
 \usepackage{comment}
 \usepackage{subcaption}
+\usepackage{cleveref}
 
 % Symbols
 \newcommand\ind{\protect\mathpalette{\protect\independenT}{\perp}}
@@ -115,7 +116,7 @@ underlying data.
 
 \paragraph{Why is D2T important?}
 \begin{itemize}
-\item Long-form generation but with structured input, a compromise between
+\item Long-form generation but with structured input: a compromise between
 short-form with unstructured inputs and long-form with unstructured inputs
 \item Easily evaluable benchmark due to limited use of external knowledge
 \end{itemize}
@@ -153,89 +154,10 @@ practitioners have eschewed modularity of the model for ease of inference.
 %We can train end-to-end modular systems,
 %so how much modularity and supervision can we provide and does it help the model?
 As research on D2T has embraced neural systems and end-to-end training resulting
-in very unstructured models, what is the benefit of imbuing more structure in the
+in very unstructured models, what is the benefit of imbuing more structure, namely in the
 form of a hierarchical segmental model?
-As we add more complexity to our graphical model, what is the benefit of a latent variable model
-versus a soft approximation?
-
-% Proposal? Add more structure / modularity, principled inference...?
-% Thesis: structure will help with controllability and LVM formulation
-% with generalization as it presents a different inductive bias?
-We would like to unify works from several directions:
-\begin{enumerate}
-\item (Hierarchical?) Template learning \citep{sauper2009wiki}
-\item Neural HSMM and template induction \citep{wiseman2018template}
-\item Efficient training methods for discrete LVM \citep{deng2018vattn}
-\item Content model \citep{puduppully2018contentselection}
-\end{enumerate}
-
-\begin{wrapfigure}{r}{0.4\textwidth}
-\centering
-\begin{subfigure}[]{0.4\textwidth}
-\centering
-\begin{tikzpicture}
-\node(x)[obs]{$\bx$};
-\node(r)[latent, right =of x]{$\br$};
-\node(y)[latent, right =of r]{$\by$};
-\edge {x} {r};
-\edge {r} {y};
-\end{tikzpicture}
-\caption{}
-\end{subfigure}
-\begin{subfigure}[]{0.4\textwidth}
-\centering
-\begin{tikzpicture}
-\node(x)[obs]{$\bx$};
-\node(c)[latent, right =of x]{$\bc$};
-\node(r)[latent, right =of c]{$\br$};
-\node(y)[latent, right =of r]{$\by$};
-\edge {x} {c};
-\edge [bend right=30] {x} {r};
-\edge {c} {r};
-\edge [bend right=30] {c} {y};
-\edge {r} {y};
-\end{tikzpicture}
-\caption{}
-\end{subfigure}
-
-\begin{subfigure}[]{0.4\textwidth}
-\centering
-\begin{tikzpicture}
-\node(c0)[latent]{$c_0$};
-\node(r0)[latent, below =of c0]{$r_0$};
-\node(r0d)[latent, below right =4mm and 3mm of r0]{$r_0^D$};
-\node(y0)[latent, below =of r0]{$y_0$};
-\node(c1)[latent, right =of c0]{$c_1$};
-\node(r1)[latent, below =of c1]{$r_1$};
-\node(r1d)[latent, below right =4mm and 3mm of r1]{$r_1^D$};
-\node(y1)[latent, below =of r1]{$y_1$};
-
-\edge {c0} {r0};
-\edge [bend right=35] {c0} {y0};
-\edge {r0} {y0};
-\edge {r0} {r0d};
-
-\edge {c1} {r1};
-\edge [bend right=35] {c1} {y1};
-\edge {r1} {y1};
-\edge {r1} {r1d};
-
-\edge {c0} {c1};
-\edge {r0} {r1};
-\edge {y0} {y1};
-\edge {r0d} {r1};
-
-\edge {r0d} {r1d};
-\edge [bend left=15] {y0} {c1};
-
-\end{tikzpicture}
-\caption{}
-\end{subfigure}
-\label{fig:dgm}
-\caption{Simplistic directed graphical models for the latent variable model.
-The observed context is $\tilde\bx$, current attention $a_t$, previous attention $a_{t-1}$,
-state $s_t$, and target word $y_t$.}
-\end{wrapfigure}
+%As we add more complexity to our graphical model, what is the benefit of a latent variable model
+%versus a soft approximation?
 
 
 \paragraph{Data}
@@ -251,31 +173,190 @@ for example: (type = POINTS, entity = Jeremy Lin, value = 19).
 
 \paragraph{What are the desiderata of a text generation system?}
 \begin{enumerate}
-\item Readability: Fluency, grammaticality, interestingness?
-\item Controllability, ability to impose constraints
-\item Fidelity to conditioning
+\item Readability: Fluency and grammaticality.
+\item Controllability: Ability to impose constraints and intervene
+\item Fidelity to conditioning: 
 \item Informational adequacy: This corresponds to content fluency
 \end{enumerate}
 
+\begin{comment}
 A vein in the recent work on integrating neural network systems and latent variable models
 has aimed to separate content from style.
 Separate style and content, where content will come from for controllable generation.
-Can we also model intention in a similar way?
-Hierarchical planning, multiple levels
-cite fair thing with dialogue planning? 
+\end{comment}
+%Can we also model intention in a similar way?
+%Hierarchical planning, multiple levels
+%cite fair thing with dialogue planning? 
 
+\begin{comment}
 \paragraph{Related Work}
 In the task of generating basketball summaries from game statistics,
 \citet{puduppully2018contentselection} learn a model of content progression
 by learning how to order records from the table of statistics.
 \citep{puduppully2018contentselection,wiseman2018template}
 Separate content from style
+\end{comment}
+
 \paragraph{Approach and Methods}
-\lipsum[1]
+% Proposal? Add more structure / modularity, principled inference...?
+% Thesis: structure will help with controllability and LVM formulation
+% with generalization as it presents a different inductive bias?
+We would like to unify works from several directions:
+\begin{enumerate}
+\item Separating style and content through templates \citep{sauper2009wiki,wiseman2018template}
+\item Content planning \citep{puduppully2018contentselection}
+\item Efficient training methods for discrete LVMs \citep{deng2018vattn}
+\end{enumerate}
+% Elaborate on each of those points
+\begin{wrapfigure}[14]{r}{0.45\textwidth}
+\centering
+\begin{comment}
+\begin{subfigure}[]{0.4\textwidth}
+\centering
+\begin{tikzpicture}
+\node(x)[obs]{$\bx$};
+\node(r)[latent, right =of x]{$\br$};
+\node(y)[latent, right =of r]{$\by$};
+\edge {x} {r};
+\edge {r} {y};
+\end{tikzpicture}
+\caption{}
+\end{subfigure}
+\end{comment}
+\begin{subfigure}[]{0.4\textwidth}
+\centering
+\begin{tikzpicture}
+\node(x)[obs]{$\bx$};
+\node(s)[latent, right =of x]{$\bs$};
+\node(r)[latent, right =of s]{$\br$};
+\node(y)[latent, right =of r]{$\by$};
+\edge {x} {s};
+\edge [bend right=30] {x} {r};
+\edge {s} {r};
+\edge [bend right=30] {s} {y};
+\edge {r} {y};
+\end{tikzpicture}
+\label{tikz:simple}
+\caption{}
+\end{subfigure}
+
+\begin{subfigure}[]{0.4\textwidth}
+\centering
+\begin{tikzpicture}
+\node(s0)[latent]{$s_0$};
+\node(r0)[latent, below =of s0]{$r_0$};
+\node(r0d)[latent, below right =4mm and 3mm of r0]{$r_0^D$};
+\node(y0)[latent, below =of r0]{$y_0$};
+\node(s1)[latent, right =of s0]{$s_1$};
+\node(r1)[latent, below =of s1]{$r_1$};
+\node(r1d)[latent, below right =4mm and 3mm of r1]{$r_1^D$};
+\node(y1)[latent, below =of r1]{$y_1$};
+\node(s2)[latent, right =of s1]{$s_2$};
+\node(r2)[latent, below =of s2]{$r_2$};
+\node(r2d)[latent, below right =4mm and 3mm of r2]{$r_2^D$};
+\node(y2)[latent, below =of r2]{$y_2$};
+
+\edge {s0} {r0};
+\edge [bend right=35] {s0} {y0};
+\edge {r0} {y0};
+\edge {r0} {r0d};
+
+\edge {s1} {r1};
+\edge [bend right=35] {s1} {y1};
+\edge {r1} {y1};
+\edge {r1} {r1d};
+
+\edge {s2} {r2};
+\edge [bend right=35] {s2} {y2};
+\edge {r2} {y2};
+\edge {r2} {r2d};
+
+\edge {s0} {s1};
+\edge {r0} {r1};
+\edge {y0} {y1};
+\edge {r0d} {r1};
+
+\edge {r0d} {r1d};
+\edge [bend left=15] {y0} {s1};
+
+\edge {s1} {s2};
+\edge {r1} {r2};
+\edge [bend right=25] {y0} {y2};
+\edge {y1} {y2};
+\edge {r1d} {r2};
+
+\edge {r1d} {r2d};
+\edge [bend left=15] {y1} {s2};
+
+
+\end{tikzpicture}
+\label{tikz:full}
+\caption{}
+\end{subfigure}
+\label{fig:pgm}
+\caption{
+(a) is a simplified graphical representation of the model
+that ignores the temporal dependencies.
+(b) is the full graphical model which forgoes conditioning on $\bx$
+for brevity.
+$\bx$ is the input data, $s_i$ the current style, $r_i$ the current content,
+$r_i^D$ the duration, and $y_i$ the word.}
+\end{wrapfigure}
+
+We propose to model the conditional distribution of a summary given data as a 
+hierarchical hidden semi-markov model (HSMM), as in \citep{liang2009semalign}.
+Ignoring the temporal aspect of the model, we detail a simplified model
+with the following parts:
+\begin{enumerate}
+\item The given structured data $\bx$ 
+\item Each sentence is generated using a style $s_i$
+\item The content in each sentence $\br_i$ is chosen from $\bx$
+after choosing a style $s_i$
+\item The words in the summary $y_i$ are chosen conditioning on
+the current content from $r_i$ as well as the style $c_i$
+\end{enumerate}
+We also present a more detailed model:
+% Caveat: we don't want r_t to depend on r_{t-1} if starting a new sentence.
+\begin{enumerate}
+\item The style features $s_t\mid y_{t-1},s_{t-1},\bx\sim\Cat()$
+\item The record choices $r_t\mid r_{t-1}^D,r_{t-1},s_t,\bx\sim\Cat()$
+\item The record duration $r_t^D\mid r_{t-1}^D,r_t\sim\Unif()$
+\item The words in the summary $y_t\mid y_{<t},r_t,s_t\sim\Cat()$
+\end{enumerate}
+See Figure~\ref{fig:pgm} for a graphical depiction.
+
+% too expensive to align to records since there may be many of them
+As defined, the model would be very expensive to train via maximum marginal likelihood
+training, and thus we propose to use the method proposed in \citep{deng2018vattn}
+in order to make training tractable: namely define a variational approximation to the
+posterior and use REINFORCE.
+We also utilize the posterior regularization framework in order to incorporate 
+intermediate weak supervision in the form of record alignments.
+
+\paragraph{Argument for LVM}
+\begin{enumerate}
+\item The fully neural approach in \citep{puduppully2018contentselection} takes the output of
+an information extraction system as the ground truth and trains a content planning model with
+that assumption.
+Any mistakes in the information extraction system will be replicated in the final model.
+%In addition, the information extraction is trained via a heuristic alignment
+%procedure that aligns words that appear in the database to records containing those words. 
+%However, we argue that this particular procedure results in a compounding of mistakes.
+% should use more precise notation here
+Thus we argue that training the information extraction system by incorporating it
+into the definition of the approximate posterior will improve performance as measured by
+the likelihood of the data under our model.
+\item As demonstrated in \citep{liang2009semalign},
+given a LVM a structured one results in qualitatively better segmentations than an unstructured one.
+\item Convincing templates \citep{wiseman2018template} indicate that the separation of
+style and content is plausible.
+\end{enumerate}
+
+% Should I explain why I propose a LVM versus a fully discriminative model?
+% 
 \paragraph{Intellectual Merit}
-\lipsum[1]
+We hope to demonstrate that defining a modular model 
 \paragraph{Broader Impact}
-\lipsum[1]
 
 \bibliographystyle{plainnat}
 \bibliography{w}
