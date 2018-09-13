@@ -162,7 +162,6 @@ versus a soft approximation?
 % Thesis: structure will help with controllability and LVM formulation
 % with generalization as it presents a different inductive bias?
 We would like to unify works from several directions:
-
 \begin{enumerate}
 \item (Hierarchical?) Template learning \citep{sauper2009wiki}
 \item Neural HSMM and template induction \citep{wiseman2018template}
@@ -212,12 +211,12 @@ We would like to unify works from several directions:
 \node(y1)[latent, below =of r1]{$y_1$};
 
 \edge {c0} {r0};
-\edge [bend right=30] {c0} {y0};
+\edge [bend right=35] {c0} {y0};
 \edge {r0} {y0};
 \edge {r0} {r0d};
 
 \edge {c1} {r1};
-\edge [bend right=30] {c1} {y1};
+\edge [bend right=35] {c1} {y1};
 \edge {r1} {y1};
 \edge {r1} {r1d};
 
@@ -227,7 +226,7 @@ We would like to unify works from several directions:
 \edge {r0d} {r1};
 
 \edge {r0d} {r1d};
-\edge [bend left=10] {y0} {c1};
+\edge [bend left=15] {y0} {c1};
 
 \end{tikzpicture}
 \caption{}
@@ -241,14 +240,14 @@ state $s_t$, and target word $y_t$.}
 
 \paragraph{Data}
 % Example of D2T, should i present this early or later
-The dataset we consider primarily is the Rotowire dataset \citep{wiseman2017d2t},
+The dataset we focus on is the Rotowire dataset \citep{wiseman2017d2t},
 where a summary of a basketball game is modelled conditioned on the box score
 associated with that game.
 This is the most recent D2T dataset that has been developed.
 The box score consists of a list of records associating an entity with a value.
 Each record has a type which denotes the relationship between the entity and value
-contained in the record.
-An example record could look like: (type = POINTS, entity = Jeremy Lin, value = 19).
+contained in the record,
+for example: (type = POINTS, entity = Jeremy Lin, value = 19).
 
 \paragraph{What are the desiderata of a text generation system?}
 \begin{enumerate}
