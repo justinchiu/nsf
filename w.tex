@@ -108,7 +108,7 @@ Natural language processing (NLP) can largely be decomposed into two separate bu
 tightly related tasks: natural language understanding and natural language
 generation (NLG).
 In this proposal we focus primarily on generation, and in particular
-the generation of text that describes some data.
+the generation of text that describes structured data.
 We refer to this specific task as Data-to-Text (D2T).
 The assumption that the text describes data is central to the task as it allows
 for practitioners to define heuristics for evaluating a summary's fidelity to the
@@ -141,9 +141,16 @@ This insight motivates our proposal and will be elaborated on shortly.
 \begin{enumerate}
 \item Readability: Fluency and grammaticality.
 Prior work has shown that models with fully connected observations models
-in the form of a neural network have this quality.
-\item Informational adequacy: This corresponds to content fluency
-\item Fidelity to conditioning: 
+in the form of a neural network have this quality \citep{wiseman2017d2t} (as measured by BLEU).
+\item Informational adequacy: This is decomposed into content selection and planning.
+We can represent this directly in a model with a language model over
+records \citep{puduppully2018contentselection}.
+\item Fidelity to conditioning: We can decompose factual errors into two types.
+The first is misalignment of records and the second is ignoring the record
+completely and hallucinating values with a language model.
+\citep{puduppully2018contentselection} attempt to address this by
+attending over a content plan.
+% Should I address this in more detail?
 \item Controllability: Ability to impose constraints and intervene
 \end{enumerate}
 
@@ -186,10 +193,9 @@ into the definition of the approximate posterior will improve performance as mea
 the likelihood of the data under our model.
 \item As demonstrated in \citep{liang2009semalign},
 a structured LVM results in qualitatively better segmentations than an unstructured one.
-\item Convincing templates \citep{wiseman2018template} indicate that the separation of
+\item Convincing templates from prior work \citep{wiseman2018template} indicate that the separation of
 style and content is plausible.
 \end{enumerate}
-
 
 \paragraph{Data}
 % Example of D2T, should i present this early or later
@@ -325,13 +331,13 @@ The new variables $r_i^D$ represent the duration a record is used.
 We would like to unify works from several directions:
 \begin{enumerate}
 \item Separating style and content through templates \citep{sauper2009wiki,wiseman2018template}
-\item Content planning and weak supervision \citep{puduppully2018contentselection}
+\item Content planning and incorporating weak supervision \citep{puduppully2018contentselection}
 \item Efficient training methods for discrete LVMs \citep{deng2018vattn}
 \end{enumerate}
 % Elaborate on each of those points
 We propose to model the conditional distribution of a summary given data as a 
 hierarchical hidden semi-markov model (HSMM), as in \citep{liang2009semalign}.
-Ignoring the temporal aspect of the model, we detail a simplified model
+Ignoring the temporal aspect of the model, we define a simplified model
 with the following parts:
 \begin{enumerate}
 \item The given structured data $\bx$ 
@@ -360,10 +366,10 @@ but do not elaborate on it.
 
 % too expensive to align to records since there may be many of them
 As defined, the model would be very expensive to train via maximum marginal likelihood
-training, and thus we propose to use the method proposed in \citep{deng2018vattn}
+training. We therefore propose to use the method proposed in \citep{deng2018vattn}
 in order to make training tractable: namely define a variational approximation to the
 posterior and use REINFORCE.
-We also utilize the posterior regularization framework in order to incorporate 
+We also propose to utilize the posterior regularization framework in order to incorporate 
 intermediate weak supervision in the form of record alignments.
 
 % Should I explain why I propose a LVM versus a fully discriminative model?
@@ -374,7 +380,6 @@ We hope to demonstrate that defining a modular model
 
 \bibliographystyle{plainnat}
 \bibliography{w}
-
 
 \end{document}
 
