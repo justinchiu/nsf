@@ -320,7 +320,10 @@ We also present a more detailed model:
 \begin{enumerate}
 \item The style features $s_t\mid y_{t-1},s_{t-1},\bx\sim\Cat()$
 \item The record choices $r_t\mid r_{t-1}^D,r_{t-1},s_t,\bx\sim\Cat()$
-\item The record duration $r_t^D\mid r_{t-1}^D,r_t\sim\Unif()$
+\item The record duration is given by 
+$r_t^D\mid r_{t-1}^D=0,r_t\sim\Unif(1,\ldots,L)$
+where $L$ is the max segment length and $r_t^D\mid r_{t-1}^D=x = x-1$
+
 \item The words in the summary $y_t\mid y_{<t},r_t,s_t\sim\Cat()$
 \end{enumerate}
 See Figure~\ref{fig:pgm} for a graphical depiction.
