@@ -137,6 +137,16 @@ However, the alignments can also be used for much more than evaluation; they can
 obtaining weak supervision \citep{puduppully2018contentselection}. %in a latent variable model.
 This insight motivates our proposal and will be elaborated on shortly.
 
+\paragraph{What are the desiderata of a text generation system?}
+\begin{enumerate}
+\item Readability: Fluency and grammaticality.
+Prior work has shown that models with fully connected observations models
+in the form of a neural network have this quality.
+\item Informational adequacy: This corresponds to content fluency
+\item Fidelity to conditioning: 
+\item Controllability: Ability to impose constraints and intervene
+\end{enumerate}
+
 \paragraph{Current Trends}
 Early work on D2T focused on the use of templates and grammars, 
 which generally resulted in generations with little stylistic variation.
@@ -145,8 +155,10 @@ After neural language models demonstrated state of the art performance,
 they were then transferred to the conditional language modeling setting,
 i.e. D2T and more broadly NLG,
 where they supplanted template-based methods almost completely.
-However, by relying largely on the language modeling capabilities of neural networks,
-practitioners have eschewed modularity of the model for ease of inference.
+The result of this using neural language models was an improvement in readability
+at the cost of fidelity as well as controllability.
+%However, by relying largely on the language modeling capabilities of neural networks,
+%practitioners have eschewed modularity of the model for ease of inference.
 % Do I need to qualify this as well?
 %\citep{angeli2010d2t}, \citep{liang2009semalign}, \citep{sauper2009wiki}
 
@@ -159,6 +171,25 @@ form of a hierarchical segmental model?
 %As we add more complexity to our graphical model, what is the benefit of a latent variable model
 %versus a soft approximation?
 
+\paragraph{Argument for LVM}
+\begin{enumerate}
+\item The fully neural approach in \citep{puduppully2018contentselection} takes the output of
+an information extraction system as the ground truth and trains a content planning model with
+that assumption.
+Any mistakes in the information extraction system will be replicated in the final model.
+%In addition, the information extraction is trained via a heuristic alignment
+%procedure that aligns words that appear in the database to records containing those words. 
+%However, we argue that this particular procedure results in a compounding of mistakes.
+% should use more precise notation here
+Thus we argue that training the information extraction system by incorporating it
+into the definition of the approximate posterior will improve performance as measured by
+the likelihood of the data under our model.
+\item As demonstrated in \citep{liang2009semalign},
+a structured LVM results in qualitatively better segmentations than an unstructured one.
+\item Convincing templates \citep{wiseman2018template} indicate that the separation of
+style and content is plausible.
+\end{enumerate}
+
 
 \paragraph{Data}
 % Example of D2T, should i present this early or later
@@ -170,14 +201,6 @@ The box score consists of a list of records associating an entity with a value.
 Each record has a type which denotes the relationship between the entity and value
 contained in the record,
 for example: (type = POINTS, entity = Jeremy Lin, value = 19).
-
-\paragraph{What are the desiderata of a text generation system?}
-\begin{enumerate}
-\item Readability: Fluency and grammaticality.
-\item Controllability: Ability to impose constraints and intervene
-\item Fidelity to conditioning: 
-\item Informational adequacy: This corresponds to content fluency
-\end{enumerate}
 
 \begin{comment}
 A vein in the recent work on integrating neural network systems and latent variable models
@@ -197,17 +220,6 @@ by learning how to order records from the table of statistics.
 Separate content from style
 \end{comment}
 
-\paragraph{Approach and Methods}
-% Proposal? Add more structure / modularity, principled inference...?
-% Thesis: structure will help with controllability and LVM formulation
-% with generalization as it presents a different inductive bias?
-We would like to unify works from several directions:
-\begin{enumerate}
-\item Separating style and content through templates \citep{sauper2009wiki,wiseman2018template}
-\item Content planning \citep{puduppully2018contentselection}
-\item Efficient training methods for discrete LVMs \citep{deng2018vattn}
-\end{enumerate}
-% Elaborate on each of those points
 \begin{wrapfigure}[14]{r}{0.45\textwidth}
 \centering
 \begin{comment}
@@ -297,12 +309,26 @@ We would like to unify works from several directions:
 \caption{
 (a) is a simplified graphical representation of the model
 that ignores the temporal dependencies.
-(b) is the full graphical model which forgoes conditioning on $\bx$
-for brevity.
-$\bx$ is the input data, $s_i$ the current style, $r_i$ the current content,
-$r_i^D$ the duration, and $y_i$ the word.}
+$\bx$ is the input data, $\bs$ the style, $\br$ the content,
+and $\by$ the words of the summary.
+(b) is the full graphical model.
+We leave out conditioning on $\bx$ for brevity.
+The new variables $r_i^D$ represent the duration a record is used.
+}
 \end{wrapfigure}
 
+
+\paragraph{Approach and Methods}
+% Proposal? Add more structure / modularity, principled inference...?
+% Thesis: structure will help with controllability and LVM formulation
+% with generalization as it presents a different inductive bias?
+We would like to unify works from several directions:
+\begin{enumerate}
+\item Separating style and content through templates \citep{sauper2009wiki,wiseman2018template}
+\item Content planning and weak supervision \citep{puduppully2018contentselection}
+\item Efficient training methods for discrete LVMs \citep{deng2018vattn}
+\end{enumerate}
+% Elaborate on each of those points
 We propose to model the conditional distribution of a summary given data as a 
 hierarchical hidden semi-markov model (HSMM), as in \citep{liang2009semalign}.
 Ignoring the temporal aspect of the model, we detail a simplified model
@@ -315,6 +341,7 @@ after choosing a style $s_i$
 \item The words in the summary $y_i$ are chosen conditioning on
 the current content from $r_i$ as well as the style $c_i$
 \end{enumerate}
+\begin{comment}
 We also present a more detailed model:
 % Caveat: we don't want r_t to depend on r_{t-1} if starting a new sentence.
 \begin{enumerate}
@@ -326,7 +353,10 @@ where $L$ is the max segment length and $r_t^D\mid r_{t-1}^D=x = x-1$
 
 \item The words in the summary $y_t\mid y_{<t},r_t,s_t\sim\Cat()$
 \end{enumerate}
-See Figure~\ref{fig:pgm} for a graphical depiction.
+\end{comment}
+See Figure~\ref{fig:pgm} for a simplified graphical depiction of the model.
+We include a fully-specified slice of the time-series model as well,
+but do not elaborate on it.
 
 % too expensive to align to records since there may be many of them
 As defined, the model would be very expensive to train via maximum marginal likelihood
@@ -335,25 +365,6 @@ in order to make training tractable: namely define a variational approximation t
 posterior and use REINFORCE.
 We also utilize the posterior regularization framework in order to incorporate 
 intermediate weak supervision in the form of record alignments.
-
-\paragraph{Argument for LVM}
-\begin{enumerate}
-\item The fully neural approach in \citep{puduppully2018contentselection} takes the output of
-an information extraction system as the ground truth and trains a content planning model with
-that assumption.
-Any mistakes in the information extraction system will be replicated in the final model.
-%In addition, the information extraction is trained via a heuristic alignment
-%procedure that aligns words that appear in the database to records containing those words. 
-%However, we argue that this particular procedure results in a compounding of mistakes.
-% should use more precise notation here
-Thus we argue that training the information extraction system by incorporating it
-into the definition of the approximate posterior will improve performance as measured by
-the likelihood of the data under our model.
-\item As demonstrated in \citep{liang2009semalign},
-given a LVM a structured one results in qualitatively better segmentations than an unstructured one.
-\item Convincing templates \citep{wiseman2018template} indicate that the separation of
-style and content is plausible.
-\end{enumerate}
 
 % Should I explain why I propose a LVM versus a fully discriminative model?
 % 
