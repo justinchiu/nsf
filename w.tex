@@ -150,8 +150,17 @@ The first is misalignment of records and the second is ignoring the record
 completely and hallucinating values with a language model.
 \citep{puduppully2018contentselection} attempt to address this by
 attending over a content plan.
+However, there are additional constraints that we know to be true
+but are not modelled in their model:
+namely that the alignment between text and record should be monotonic.
 % Should I address this in more detail?
-\item Controllability: Ability to impose constraints and intervene
+% Hypothesize that constraining the model results in sharper alignments
+% and less noise, increasing fidelity to records
+\item Controllability: The ability to impose constraints and intervene
+is a strict superset of interpretability.
+We see this materialize in \citep{puduppully2018contentselection}
+as with their model they can manipulate the content plan
+and control the generated summary.
 \end{enumerate}
 
 \paragraph{Current Trends}
