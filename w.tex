@@ -105,7 +105,7 @@ latent variable models, conditional text generation, data to text
 
 \paragraph{Background}
 Natural language processing (NLP) can largely be decomposed into two separate but
-tightly related tasks: natural language understanding and natural language
+closely related tasks: natural language understanding and natural language
 generation (NLG).
 In this proposal we focus primarily on generation, and in particular
 the generation of text that describes structured data.
@@ -140,16 +140,18 @@ This insight motivates our proposal and will be elaborated on shortly.
 \paragraph{What are the desiderata of a text generation system?}
 \begin{enumerate}
 % This is an iffy statement
-\item Readability: Fluency and grammaticality.
-Prior work has shown that models with fully connected observations models
-in the form of a neural network have this quality \citep{wiseman2017d2t} (as measured by BLEU).
+\item Readability: Prior work has shown that models with fully connected observation models
+in the form of a neural network have this quality \citep{wiseman2017d2t} as measured by BLEU.
 \item Informational adequacy: This is decomposed into content selection and planning.
-We can represent this directly in a model with a language model over
-records \citep{puduppully2018contentselection}.
-\item Fidelity to conditioning: We can decompose factual errors into two types.
-The first is misalignment of records and the second is ignoring the record
-completely and hallucinating values with a language model.
-\citep{puduppully2018contentselection} attempt to address this by
+We can learn this directly as a model over
+records as in \citep{puduppully2018contentselection}.
+\item Fidelity to conditioning: We decompose factual errors into two types.
+The first is the misalignment of records and the second is ignoring the record
+completely and hallucinating values with a language model instead of copying them.
+% Wow, so poorly phrased.
+We posit that both errors are caused by insufficient conditioning of the
+text given the records, which can be ameliorated with a strong model over records.
+\citep{puduppully2018contentselection} attempts to address this by
 attending over a content plan.
 However, there are additional constraints that we know to be true
 but are not modelled in their model:
@@ -158,10 +160,11 @@ namely that the alignment between text and record should be monotonic.
 % Hypothesize that constraining the model results in sharper alignments
 % and less noise, increasing fidelity to records
 \item Controllability: The ability to impose constraints and intervene
-is a strict superset of interpretability.
+requires some notion of interpretability.
 We see this materialize in \citep{puduppully2018contentselection}
-as with their model they can manipulate the content plan
-and control the generated summary.
+as they can manipulate the model's content plan and control the generated summary.
+By using oracle content plans extracted from the data,
+they manage to obtain an upper bound on BLEU using only the raw data in the table.
 \end{enumerate}
 
 \paragraph{Current Trends}
@@ -217,6 +220,10 @@ The box score consists of a list of records associating an entity with a value.
 Each record has a type which denotes the relationship between the entity and value
 contained in the record,
 for example: (type = POINTS, entity = Jeremy Lin, value = 19).
+We learn a model that generates the summary conditioned on the box score.
+The model is evaluated based on its fidelity to data and
+is also compared to a human-generated summary in terms of which records are chosen,
+their order, as well as the n-gram overlap of the summaries themselves.
 
 \begin{comment}
 A vein in the recent work on integrating neural network systems and latent variable models
@@ -340,8 +347,10 @@ The new variables $r_i^D$ represent the duration a record is used.
 % with generalization as it presents a different inductive bias?
 We would like to unify works from several directions:
 \begin{enumerate}
-\item Separating style and content through templates \citep{sauper2009wiki,wiseman2018template}
-\item Content planning and incorporating weak supervision \citep{puduppully2018contentselection}
+\item Separating style or purpose from content through templates
+\citep{sauper2009wiki,wiseman2018template}
+\item Content planning and incorporating weak supervision
+\citep{puduppully2018contentselection}
 \item Efficient training methods for discrete LVMs \citep{deng2018vattn}
 \end{enumerate}
 % Elaborate on each of those points
@@ -378,15 +387,26 @@ but do not elaborate on it.
 As defined, the model would be very expensive to train via maximum marginal likelihood
 training. We therefore propose to use the method proposed in \citep{deng2018vattn}
 in order to make training tractable: namely define a variational approximation to the
-posterior and use REINFORCE.
+posterior and use REINFORCE to maximize a lower bound on the marginal likelihood.
 We also propose to utilize the posterior regularization framework in order to incorporate 
-intermediate weak supervision in the form of record alignments.
+intermediate weak supervision in the form of heuristic record-to-text alignments.
 
 % Should I explain why I propose a LVM versus a fully discriminative model?
 % 
 \paragraph{Intellectual Merit}
-We hope to demonstrate that defining a modular model 
+We hope to demonstrate that defining a modular probabilistic model allows us
+to integrate progress from parallel research directions:
+% mention that a LVM opens up possibility of unsupervised data aggregation
+
 \paragraph{Broader Impact}
+The task of D2T itself is important, rather than simply a compromise between
+short and long-form generation tasks.
+Given a complicated set of structured data with possibly many records
+which are irrelevant, an ideal D2T system would perform information triage by 
+picking salient records then organize those records into prose.
+This would be much easier to understand for someone unfamiliar with the
+particular structure of the data.
+
 
 \bibliographystyle{plainnat}
 \bibliography{w}
