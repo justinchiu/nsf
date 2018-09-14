@@ -139,6 +139,7 @@ This insight motivates our proposal and will be elaborated on shortly.
 
 \paragraph{What are the desiderata of a text generation system?}
 \begin{enumerate}
+% This is an iffy statement
 \item Readability: Fluency and grammaticality.
 Prior work has shown that models with fully connected observations models
 in the form of a neural network have this quality \citep{wiseman2017d2t} (as measured by BLEU).
@@ -198,7 +199,7 @@ Any mistakes in the information extraction system will be replicated in the fina
 %However, we argue that this particular procedure results in a compounding of mistakes.
 % should use more precise notation here
 Thus we argue that training the information extraction system by incorporating it
-into the definition of the approximate posterior will improve performance as measured by
+into an approximate posterior will improve performance as measured by
 the likelihood of the data under our model.
 \item As demonstrated in \citep{liang2009semalign},
 a structured LVM results in qualitatively better segmentations than an unstructured one.
