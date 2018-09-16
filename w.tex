@@ -388,8 +388,8 @@ As defined, the model would be very expensive to train via maximum marginal like
 training. We therefore propose to use the method proposed in \citep{deng2018vattn}
 in order to make training tractable: namely define a variational approximation to the
 posterior and use REINFORCE to maximize a lower bound on the marginal likelihood.
-We also propose to utilize the posterior regularization framework in order to incorporate 
-intermediate weak supervision in the form of heuristic record-to-text alignments.
+We also propose to incorporate intermediate weak supervision in the form of
+heuristic record-to-text alignments.
 
 % Should I explain why I propose a LVM versus a fully discriminative model?
 % 
@@ -406,7 +406,6 @@ which are irrelevant, an ideal D2T system would perform information triage by
 picking salient records then organize those records into prose.
 This would be much easier to understand for someone unfamiliar with the
 particular structure of the data.
-
 
 \bibliographystyle{plainnat}
 \bibliography{w}
