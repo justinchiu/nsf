@@ -103,6 +103,8 @@
 \paragraph{Keywords}
 latent variable models, conditional text generation, data to text
 
+\begin{comment}
+
 \paragraph{Background}
 Natural language processing (NLP) can largely be decomposed into two separate but
 closely related tasks: natural language understanding and natural language
@@ -193,30 +195,16 @@ in very unstructured models, what is the benefit of imbuing more structure, name
 form of a hierarchical segmental model?
 %As we add more complexity to our graphical model, what is the benefit of a latent variable model
 %versus a soft approximation?
-For the task of data-to-text, using a {hierarchical} HSMM allows us to model
+Using a hierarchical HSMM allows us to model
 sentences in a modular and controllable way;
 we can control the number of records referred to in a sentence and 
-%{hopefully, but seems plausible given Sam's template work}
- the structure of the sentence itself.
+the structure of the sentence itself.
 The formulation as a latent variable model allows us to enforce strict constraints on
 the modeled characteristics (namely the number of reference records and sentence structure)
 during inference, allowing a user to intervene during the text generation process.
 
 \begin{wrapfigure}[22]{r}{0.45\textwidth}
 \centering
-\begin{comment}
-\begin{subfigure}[]{0.4\textwidth}
-\centering
-\begin{tikzpicture}
-\node(x)[obs]{$\bx$};
-\node(r)[latent, right =of x]{$\br$};
-\node(y)[latent, right =of r]{$\by$};
-\edge {x} {r};
-\edge {r} {y};
-\end{tikzpicture}
-\caption{}
-\end{subfigure}
-\end{comment}
 \begin{subfigure}[]{0.4\textwidth}
 \centering
 \begin{tikzpicture}
@@ -341,34 +329,13 @@ The model is evaluated based on its fidelity to data and
 is also compared to a human-generated summary in terms of which records are chosen,
 their order, as well as the n-gram overlap of the summaries themselves.
 
-\begin{comment}
-A vein in the recent work on integrating neural network systems and latent variable models
-has aimed to separate content from style.
-Separate style and content, where content will come from for controllable generation.
-\end{comment}
-%Can we also model intention in a similar way?
-%Hierarchical planning, multiple levels
-%cite fair thing with dialogue planning? 
-
-\begin{comment}
-\paragraph{Related Work}
-In the task of generating basketball summaries from game statistics,
-\citet{puduppully2018contentselection} learn a model of content progression
-by learning how to order records from the table of statistics.
-\citep{puduppully2018contentselection,wiseman2018template}
-Separate content from style
-\end{comment}
-
-
-
-
 \paragraph{Approach and Methods}
 % Proposal? Add more structure / modularity, principled inference...?
 % Thesis: structure will help with controllability and LVM formulation
 % with generalization as it presents a different inductive bias?
 We would like to unify works from several directions:
 \begin{enumerate}
-\item Separating style or purpose from content through templates
+\item Structure away content modeling through templates
 \citep{sauper2009wiki,wiseman2018template}
 \item Content planning and incorporating weak supervision
 \citep{puduppully2018contentselection}
@@ -387,7 +354,6 @@ after choosing a style $s_i$
 \item The words in the summary $y_i$ are chosen conditioning on
 the current content from $r_i$ as well as the style $c_i$
 \end{enumerate}
-\begin{comment}
 We also present a more detailed model:
 % Caveat: we don't want r_t to depend on r_{t-1} if starting a new sentence.
 \begin{enumerate}
@@ -399,7 +365,6 @@ where $L$ is the max segment length and $r_t^D\mid r_{t-1}^D=x = x-1$
 
 \item The words in the summary $y_t\mid y_{<t},r_t,s_t\sim\Cat()$
 \end{enumerate}
-\end{comment}
 See Figure~\ref{fig:pgm} for a simplified graphical depiction of the model.
 We include a fully-specified slice of the time-series model as well,
 but do not elaborate on it.
@@ -415,9 +380,11 @@ heuristic record-to-text alignments.
 % Should I explain why I propose a LVM versus a fully discriminative model?
 % 
 \paragraph{Intellectual Merit}
-We hope to demonstrate that defining a modular probabilistic model allows us
-to integrate progress from parallel research directions:
-% mention that a LVM opens up possibility of unsupervised data aggregation
+We hope to demonstrate the benefits of a hierarchical model in the task of text generation.
+We propose a structure-aware content model similar to
+work in \citep{sauper2009wiki,wiseman2017d2t,liang2009semalign}
+that incorporates the computational advances in \citep{deng2018vattn}
+in order to scale training.
 
 \paragraph{Broader Impact}
 The task of D2T itself is important, rather than simply a compromise between
@@ -426,52 +393,96 @@ Given a complicated set of structured data with possibly many records
 which are irrelevant, an ideal D2T system would perform information triage by 
 picking salient records then organize those records into prose.
 This would be much easier to understand for someone unfamiliar with the
-particular structure of the data.
+particular structure of the data and would aid in the dissemination of 
+technological understanding.
+With an interpretable LVM the user would also be able to examine the aligned
+records that generated the summary, allowing the user to learn to read
+the data by following the system's example.
+% Stretch
+\end{comment}
 
-\section{outline}
+\section{Outline}
 \begin{enumerate}
 \item Background
 \begin{enumerate}
-\item Importance of D2T
+\item Breakdown of NLP into NLU and NLG
+\item Importance of D2T, an instance of NLG
 \begin{enumerate}
 \item A compromise between short-form and long-form conditional generation  
 \item Easily evaluable benchmark due to limited use of external knowledge
+\item Convenient representation of input allows us to isolate
+progress on generation metrics
 \end{enumerate}
-\item Desiderata of Text Gen Systems
+\item Introduce Rotowire \citep{wiseman2017d2t}
 \begin{enumerate}
-\item Readability
-\item Informational Adequacy
-\item Fidelity to conditioning
-\item Controllability
+\item A summary of a basketball game is modelled conditioned on the box score
+associated with that game.
+\item The box score consists of a list of records associating an entity with a value.
+Each record has a type which denotes the relationship between the entity and value
+contained in the record,
+for example: (type = POINTS, entity = Jeremy Lin, value = 19).
 \end{enumerate}
-\item Current Trends
+\item Desiderata of Text Gen Systems, and how they are measured
 \begin{enumerate}
-\item Early work on D2T focused on the use of templates and grammars, which generally resulted 
-in generations with little stylistic variation
-\item After neural language models demon- strated state of the art performance,
-they were then transferred to the conditional language mod- eling setting, i.e. D2T and more broadly NLG,
-where they supplanted template-based methods almost completely.
-The result of using neural language models was an improvement in readability at the cost of fidelity as well as controllability.
+\item Readability: How easy is it for a human to read the generated summary?
+Refers to fluency and grammaticality, and is with BLEU as the two have been
+shown to be correlated {cite BLEU paper}.
+\item Informational Adequacy: How well does the model recreate the informational content
+of a human-generated summary?
+Measured through metrics concerning the selection and ordering of records.
+\item Fidelity to conditioning: 
+A lack of fidelity occurs if the model either ignores the data input and hallucinates
+a value through the language model or if the model misaligns a record to a given segment of text.
+\item Controllability:
+Although a precise definition is available for dynamical systems,
+we have yet to formalize a notion of controllability for NLG.
+We loosely define controllability as the ability to apply constraints during inference.
+\end{enumerate}
+\item Current trends addressing desiderata
+\begin{enumerate}
+\item Initially research focused largely on readability,
+and improved on BLEU scores through the use of conditional neural language models.
+Compared to template-based methods, summaries were more fluent and natural.
+However, by removing structure from the model and relying on the flexibility of neural networks
+informational adequacy, fidelity, and controllability were sacrificed \citep{wiseman2017d2t}.
+\item Follow-up work re-introduced the explicit modeling of content
+\citep{puduppully2018contentselection}, which improved on informational adequacy and
+fidelity to conditioning through a latent content plan.
+Although not entirely explored in the aforementioned work,
+modeling the content plan also affords a degree of controllability.
+By using oracle content plans extracted from the data,
+they manage to obtain an upper bound on BLEU using only the raw data in the table.
 \end{enumerate}
 \end{enumerate}
 \item Research Question
 \begin{enumerate}
-\item As research on D2T has embraced neural systems and end-to-end training resulting in very unstructured models,
-what is the benefit of imbuing more structure, namely in the form of a hierarchical segmental model?
-For the task of data-to-text, using a hierarchical HSMM allows us to model sentences in a modular and controllable way;
-we can control the number of records referred to in a sentence and the structure of the sentence itself.
-The formulation as a latent variable model allows us to enforce strict constraints on the modeled characteristics (namely the
+\item As research on D2T has embraced neural systems and end-to-end training
+resulting in very unstructured models,
+what is the benefit of imbuing more structure,
+namely in the form of a hierarchical segmental model?
+For the task of data-to-text, using a hierarchical HSMM allows us to model sentences
+in a modular and controllable way;
+we can control the number of records referred to in a sentence and the structure
+of the sentence itself.
+The formulation as a latent variable model allows us to enforce strict constraints on
+the modeled characteristics (namely the
 number of reference records and sentence structure) during the text generation process.
 \end{enumerate}
-\item Argument for LVM
+\item Argument for a LVM:
+Although the argument for modularity applies equally to models expressible as
+neural networks as well as latent variable models, LVMs allow us to:
 \begin{enumerate}
-\item Learn an information extraction system jointly with the generative model
-\item Has different inductive biases due to the ability to make hard decisions
-\item Asdf
+\item Learn an information extraction system jointly with the generative model.
+\item Encode different inductive biases than neural models due to the ability to make hard decisions
+and enforce structure.
+\item Utilize weak supervision in a principled way.
 \end{enumerate}
 \item Approach and Methods
 \begin{enumerate}
-\item 
+\item Structure-aware content selection \citep{sauper2009wiki}
+through a hierarchical HSMM \citep{wiseman2018template}.
+\item Weak supervision for the content planning model and information extraction model
+through posterior constraints.
 \end{enumerate}
 \end{enumerate}
 
