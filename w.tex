@@ -425,11 +425,12 @@ for example: (type = POINTS, entity = Jeremy Lin, value = 19).
 \item Desiderata of Text Gen Systems, and how they are measured
 \begin{enumerate}
 \item Readability: How easy is it for a human to read the generated summary?
-Refers to fluency and grammaticality, and is with BLEU as the two have been
-shown to be correlated {cite BLEU paper}.
+Refers to fluency and grammaticality, and is measured by BLEU as the two have been
+shown to be correlated.
 \item Informational Adequacy: How well does the model recreate the informational content
 of a human-generated summary?
 Measured through metrics concerning the selection and ordering of records.
+% Discuss difficulties
 \item Fidelity to conditioning: 
 A lack of fidelity occurs if the model either ignores the data input and hallucinates
 a value through the language model or if the model misaligns a record to a given segment of text.
@@ -441,17 +442,17 @@ We loosely define controllability as the ability to apply constraints during inf
 \item Current trends addressing desiderata
 \begin{enumerate}
 \item Initially research focused largely on readability,
-and improved on BLEU scores through the use of conditional neural language models.
+and improved BLEU scores through the use of conditional neural language models.
 Compared to template-based methods, summaries were more fluent and natural.
 However, by removing structure from the model and relying on the flexibility of neural networks
 informational adequacy, fidelity, and controllability were sacrificed \citep{wiseman2017d2t}.
-\item Follow-up work re-introduced the explicit modeling of content
-\citep{puduppully2018contentselection}, which improved on informational adequacy and
+\item Subsequent work re-introduced the explicit modeling of content
+\citep{puduppully2018contentselection}, which improved informational adequacy and
 fidelity to conditioning through a latent content plan.
 Although not entirely explored in the aforementioned work,
 modeling the content plan also affords a degree of controllability.
 By using oracle content plans extracted from the data,
-they manage to obtain an upper bound on BLEU using only the raw data in the table.
+they manage to obtain an upper bound on BLEU under their model.
 \end{enumerate}
 \end{enumerate}
 \item Research Question
@@ -464,9 +465,6 @@ For the task of data-to-text, using a hierarchical HSMM allows us to model sente
 in a modular and controllable way;
 we can control the number of records referred to in a sentence and the structure
 of the sentence itself.
-The formulation as a latent variable model allows us to enforce strict constraints on
-the modeled characteristics (namely the
-number of reference records and sentence structure) during the text generation process.
 \end{enumerate}
 \item Argument for a LVM:
 Although the argument for modularity applies equally to models expressible as
@@ -475,15 +473,37 @@ neural networks as well as latent variable models, LVMs allow us to:
 \item Learn an information extraction system jointly with the generative model.
 \item Encode different inductive biases than neural models due to the ability to make hard decisions
 and enforce structure.
-\item Utilize weak supervision in a principled way.
+\item Utilize indirect supervision over record alignments in a principled way.
 \end{enumerate}
 \item Approach and Methods
 \begin{enumerate}
-\item Structure-aware content selection \citep{sauper2009wiki}
-through a hierarchical HSMM \citep{wiseman2018template}.
-\item Weak supervision for the content planning model and information extraction model
-through posterior constraints.
+\item We propose a structure-aware content selection \citep{sauper2009wiki} model
+as a hierarchical HSMM \citep{wiseman2018template}.
+\item We incorporate weak supervision for the content planning model and
+information extraction model through posterior constraints during sampling.
+\item Our conditional generative model takes the form of a hierarchical
+HSMM, where a sentence structure is first chosen, then the resulting records, and finally
+the text to describe those records in accordance with the structure of the sentence.
+\item At training time inference is quite difficult due to the large number of records,
+so we resort to variational inference as in \citep{deng2018vattn}. 
 \end{enumerate}
+\item Intellectual Merit:
+We hope to demonstrate the benefits of a hierarchical model in the task of text generation.
+We propose a structure-aware content model similar to
+work in \citep{sauper2009wiki,wiseman2017d2t,liang2009semalign}
+that incorporates the computational advances in \citep{deng2018vattn}
+in order to scale training.
+\item Broader Impact:
+The task of D2T itself is important, rather than simply a compromise between
+short and long-form generation tasks.
+Given a complicated set of structured data with possibly many records
+which are irrelevant, an ideal D2T system would perform information triage by 
+picking salient records then organize those records into prose.
+This would be much easier to understand for someone unfamiliar with the
+particular structure of the data.
+With an interpretable LVM the user would also be able to examine the aligned
+records that generated the summary, allowing the user to learn to read
+the data by following the system's example.
 \end{enumerate}
 
 \bibliographystyle{plainnat}
