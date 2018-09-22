@@ -406,11 +406,18 @@ the data by following the system's example.
 \item Background
 \begin{enumerate}
 \item Breakdown of NLP into NLU and NLG
+\item Why can't we handle long form generation right now?
 \item Importance of D2T, an instance of NLG
 \begin{enumerate}
+\item Given the recent success with short-form generation in translation,
+we can claim that we are good at generating text with strong conditioning.
+In most cases, the source sentence provides all the information the model needs to translate.
+However, for long-form translation current neural models do to not perform well.
+%We hypothesize that this is because 
 \item A compromise between short-form and long-form conditional generation  
 \item Easily evaluable benchmark due to limited use of external knowledge
-\item Convenient representation of input allows us to isolate
+\item Convenient representation of input allows us to isolate progress
+\item 
 progress on generation metrics
 \end{enumerate}
 \item Introduce Rotowire \citep{wiseman2017d2t}
@@ -438,6 +445,7 @@ a value through the language model or if the model misaligns a record to a given
 Although a precise definition is available for dynamical systems,
 we have yet to formalize a notion of controllability for NLG.
 We loosely define controllability as the ability to apply constraints during inference.
+% Maybe delta BLEU when using an oracle plan?
 \end{enumerate}
 \item Current trends addressing desiderata
 \begin{enumerate}
