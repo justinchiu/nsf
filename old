@@ -111,33 +111,31 @@ In this proposal we focus primarily on generation, and in particular
 the generation of text that describes structured data.
 We refer to this specific task as Data-to-Text (D2T).
 The assumption that the text describes data is central to the task as it allows
-practitioners to define heuristics for evaluating a summary's fidelity to the
+for practitioners to define heuristics for evaluating a summary's fidelity to the
 underlying data.
 
 \paragraph{Why is D2T important?}
-D2T serves as a useful benchmark for conditional text generation.
-Modern neural systems have demonstrated state-of-the-art performance on short-form
-text generation tasks, but the performance seemingly fails to generalize to long-form generation.
-D2T is a task that isolates performance on long-form generation by disentangling 
-generation quality from input representation.
-Rather than conditioning on unstructured data in the form of natural language,
-D2T uses a collection of facts that are already in an unambiguous machine-readable format.
-This has the important benefit of allowing practitioners to automatically evaluate
-a generated summary's fidelity to the underlying facts.
-
-We provide a concrete example: a recently proposed D2T dataset is
-the Rotowire dataset \citep{wiseman2017d2t},
-which we focus on in this proposal.
-Rotowire contains summaries of basketball games aligned with the respective
-boxscores of those games.
-We consider a boxscore to be a collection or set of facts,
-where a fact is a tuple of an entity, relation type, and value.
-For example, consider the simplest collection possible:
-a collection that consists of a single fact, (entity = Jeremy Lin, type = POINTS, value = 19),
-and a simple statement ``Jeremy Lin scored 19 points''.
-In order to automatically evaluate this statement,
-we could use an information extraction system to extract a tuple
-and compare that to the given collection of facts.
+\begin{itemize}
+\item Long-form generation but with structured input: a compromise between
+short-form with unstructured inputs and long-form with unstructured inputs
+\item Easily evaluable benchmark due to limited use of external knowledge
+\end{itemize}
+The D2T task's importance is two-fold.
+First, D2T serves as a useful benchmark for conditional generation.
+D2T exists as a compromise between short-form generative tasks such as sentence-level
+translation and unstructured long-form tasks such as generating Wikipedia articles
+from internet resources.
+This is because D2T is a long-form generation task but uses structured data
+as input instead of free-form text.
+Secondly, the existence of structured data represents a simplifying assumption
+which makes D2T easier than other long-form tasks but also, more importantly,
+amenable to automatic evaluation.
+Given a list of records and the assumption that in a data-text pair the text's purpose
+is to describe the data,
+it is straightforward to obtain possible alignments between the text and records for evaluation.
+However, the alignments can also be used for much more than evaluation; they can be used for
+obtaining weak supervision \citep{puduppully2018contentselection}.
+%This insight motivates our proposal and will be elaborated on shortly.
 
 \paragraph{What are the desiderata of a text generation system?}
 \begin{enumerate}
@@ -313,6 +311,21 @@ style and content is plausible.
 \item Explicitly modeling characteristics such as the number of records in a given
 sentence is possible in a latent variable model such as a HSMM.
 \end{enumerate}
+
+\paragraph{Data}
+% Example of D2T, should i present this early or later
+The dataset we focus on is the Rotowire dataset \citep{wiseman2017d2t},
+where a summary of a basketball game is modelled conditioned on the box score
+associated with that game.
+This is the most recent D2T dataset that has been developed.
+The box score consists of a list of records associating an entity with a value.
+Each record has a type which denotes the relationship between the entity and value
+contained in the record,
+for example: (type = POINTS, entity = Jeremy Lin, value = 19).
+We learn a model that generates the summary conditioned on the box score.
+The model is evaluated based on its fidelity to data and
+is also compared to a human-generated summary in terms of which records are chosen,
+their order, as well as the n-gram overlap of the summaries themselves.
 
 \paragraph{Approach and Methods}
 % Proposal? Add more structure / modularity, principled inference...?
