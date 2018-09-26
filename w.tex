@@ -93,99 +93,146 @@
 
 \begin{document}
 \lhead{Justin Chiu}
-\chead{2018 NSF GRFP}
+\chead{2018 NDSEG Application}
 \rhead{Research Proposal}
 
 \begin{center}
-\textbf{Latent Variable Models for Data to Text Generation}
+%\textbf{Exploiting the Duality of Natural Language Generation and Understanding}
+\textbf{Jointly Learning to Extract and Summarize}
 \end{center}
 
 \paragraph{Keywords}
-latent variable models, conditional text generation, data to text
+information systems, natural language processing, information extraction,
+summarization, latent variable models
 
 \paragraph{Background}
 Natural language processing (NLP) can largely be decomposed into two separate but
-closely related tasks: natural language understanding and natural language
+closely related tasks: natural language understanding (NLU) and natural language
 generation (NLG).
-In this proposal we focus primarily on generation, and in particular
-the generation of text that describes structured data.
-We refer to this specific task as Data-to-Text (D2T).
-The assumption that the text describes data is central to the task as it allows
-practitioners to define heuristics for evaluating a summary's fidelity to the
-underlying data.
+In this proposal we argue that the two tasks are highly complementary,
+and we capitalize on their duality by defining a latent variable model
+that jointly trains a NLU system and NLG system.
+We focus on the task of summarizing a table of data,
+which we refer to as Data-to-Text (D2T).
 
 \paragraph{Why is D2T important?}
-D2T serves as a useful benchmark for conditional text generation.
-Modern neural systems have demonstrated state-of-the-art performance on short-form
-text generation tasks, but the performance seemingly fails to generalize to long-form generation.
-D2T is a task that isolates performance on long-form generation by disentangling 
-generation quality from input representation.
-Rather than conditioning on unstructured data in the form of natural language,
-D2T uses a collection of facts that are already in an unambiguous machine-readable format.
-This has the important benefit of allowing practitioners to automatically evaluate
-a generated summary's fidelity to the underlying facts.
+Unlike other tasks such as translation or summarization where one would
+need to first understand a source passage then generate a target passage,
+D2T isolates the task of NLU from NLG by introducing an intermediate representation in
+the form of structured data.
+This makes the task similar to semantic parsing, program induction, and instruction following,
+except for the lack of compositionality of the intermediate representation in D2T.
+Whereas the other tasks assume an executable intermediate representation,
+D2T has a latent representation that takes the form of alignments from 
+words in the summary to their respective referent data.
+This allows D2T to serve as a useful benchmark for conditional text generation.
+In addition to establishing a convenient representation,
+D2T also allows us to assume the text is generated conditioned only on
+functions of the data table.
+This assumption is central to the task as it allows
+practitioners to define heuristics both for providing weak supervision to an
+information extraction system as well as evaluating a summary's fidelity
+to the underlying data.
 
-We provide a concrete example: a recently proposed D2T dataset is
-the Rotowire dataset \citep{wiseman2017d2t},
-which we focus on in this proposal.
+%Modern neural systems have demonstrated state-of-the-art performance on short-form
+%text generation tasks, but the performance seemingly fails to generalize to long-form generation.
+%D2T is a task that isolates performance on long-form generation by disentangling 
+%generation quality from input representation.
+
+\paragraph{Rotowire}
+We provide a concrete example from a D2T dataset:
+In this proposal we focus on the recently proposed
+the Rotowire dataset \citep{wiseman2017d2t}.
 Rotowire contains summaries of basketball games aligned with the respective
-boxscores of those games.
-We consider a boxscore to be a collection or set of facts,
+box scores of those games.
+We consider a box score to be a collection or set of facts,
 where a fact is a tuple of an entity, relation type, and value.
 For example, consider the simplest collection possible:
 a collection that consists of a single fact, (entity = Jeremy Lin, type = POINTS, value = 19),
 and a simple statement ``Jeremy Lin scored 19 points''.
-In order to automatically evaluate this statement,
-we could use an information extraction system to extract a tuple
-and compare that to the given collection of facts.
+The relation type is the label in the box score, for example POINTS, REBOUNDS, etc.
+In order to automatically evaluate this summary,
+we could use an information extraction system (IE) to extract entity-value pairs
+from text,
+predict the type of the relation between the entity and value,
+and compare resulting tuple (entity, type, value) to the given collection of facts.
 
-\paragraph{What are the desiderata of a text generation system?}
+% See algorithm etc findRecord(y_t)
+\paragraph{Problem Definition}
+Rotowire consists of aligned box score data and basketball game summaries
+$\set{(\bx^{(1)}, \by^{(1)}),(\bx^{(2)},\by^{(2)})\ldots}$.
+For brevity, we refer to a single data and summary as $\bx,\by$, omitting the superscript.
+Each data $\bx = \set{x_1,\ldots,x_N}$ is a set of $N$ records, each of which has
+an entity, type, and value $x = (\text{entity, type, value})$.
+Each summary $\by = \set{y_1,\ldots,y_T}$ is a sequence of tokens that makes up the
+text of the game description.
+For generation, the goal is to learn a conditional model $p(\by\mid\bx)$ of the text given the data.
+For information extraction, we would like to learn a model $p(t\mid e,v)$ that labels an entity-value pair $(e,v)$
+with its correct relation type $t$, which may be null if there is no correct configuration, i.e.
+$\set{x_i:x_i\in\bx, x_i = (e,t,v)}=\emptyset$.
+
+
+\paragraph{Prior Work}
+
+\paragraph{Our proposal}
+We decompose distribution this into a hierarchical hidden semi-Markov model (HSMM)
+\citep{liang2009semalign} augmented with structure-aware content planning
+\citep{sauper2009wiki}.
+
+
+
+The Rotowire dataset requires that the IE system be trained with limited supervision.
+As there are no explicit annotations, \citep{wiseman2017d2t} define the heuristic function
+\begin{equation}
+\text{findRecord}(y) = \set{ x : x.\text{entity} = y \vee x.\text{value} = y}
+\end{equation}
+in order to obtain gold alignments.
+The findRecord function takes a word from the summary and returns all records where
+either the entity or value is an exact match of the word.
+An information extraction system is then trained via max marginal likelihood over
+all entity-value pairs extractable from a given summary $\by$,
+where an entity-value pair is extractable if it appears in the data $\bx$.
+
+\paragraph{Desiderata of IE Systems, and how they are measured}
 \begin{enumerate}
-% This is an iffy statement
-\item Readability: Prior work has shown that models with fully connected observation models
-in the form of a neural network result achieve higher BLEU scores than templated variants \citep{wiseman2017d2t},
-which is correlated with readability.
-\item Informational adequacy: This is decomposed into content selection and planning.
-We can learn this directly as a model over
-records as in \citep{puduppully2018contentselection}.
-\item Fidelity to conditioning: We decompose factual errors into two types.
-The first is the misalignment of records and the second is ignoring the record
-completely and hallucinating values with a language model instead of copying them.
-% Wow, so poorly phrased.
-We posit that both errors are caused by insufficient conditioning of the
-text given the records.
-\citep{puduppully2018contentselection} attempts to address this by aligning
-words to a content plan to provide more granular conditioning.
-However, there are additional constraints that we know to be true:
-the alignment between text and a record plan should be monotonic.
-% Should I address this in more detail?
-% Hypothesize that constraining the model results in sharper alignments
-% and less noise, increasing fidelity to records
-\item Controllability: 
+\item Uncertainty: 
+\item Ability to learn with limited supervision:
+\item Coverage of text through alignments:
+\end{enumerate}
+\paragraph{Desiderata of Text Gen Systems, and how they are measured}
+\begin{enumerate}
+\item Readability: How easy is it for a human to read the generated summary?
+Refers to fluency and grammaticality, and is measured by BLEU as the two have been
+shown to be correlated.
+\item Informational Adequacy: How well does the model recreate the informational content
+of a human-generated summary?
+Measured through metrics concerning the selection and ordering of records.
+% Discuss difficulties
+\item Fidelity to conditioning: 
+A lack of fidelity occurs if the model either ignores the data input and hallucinates
+a value through the language model or if the model misaligns a record to a given segment of text.
+\item Controllability:
 Although a precise definition is available for dynamical systems,
 we have yet to formalize a notion of controllability for NLG.
-If we loosely define controllability as the ability to apply constraints during inference, 
-latent variable models appear to be a viable approach.
-We see this in \citep{puduppully2018contentselection}
-as they can manipulate the model's content plan and control the generated summary.
-By using oracle content plans extracted from the data,
-they manage to obtain an upper bound on BLEU using only the raw data in the table.
+We loosely define controllability as the ability to apply constraints during inference.
+% Maybe delta BLEU when using an oracle plan?
 \end{enumerate}
 
-\paragraph{Current Trends}
-Early work on D2T focused on the use of templates and grammars, 
-which generally resulted in generations with little stylistic variation.
-% Do I need to qualify this claim and say why?
-After neural language models demonstrated state of the art performance,
-they were then transferred to the conditional language modeling setting,
-i.e. D2T and more broadly NLG,
-where they supplanted template-based methods almost completely.
-The result of using neural language models was an improvement in readability
-at the cost of fidelity as well as controllability.
-%However, by relying largely on the language modeling capabilities of neural networks,
-%practitioners have eschewed modularity of the model for ease of inference.
-% Do I need to qualify this as well?
-%\citep{angeli2010d2t}, \citep{liang2009semalign}, \citep{sauper2009wiki}
+\paragraph{Current trends addressing generation desiderata}
+\begin{enumerate}
+\item Initially research focused largely on readability,
+and improved BLEU scores through the use of conditional neural language models.
+Compared to template-based methods, summaries were more fluent and natural.
+However, by removing structure from the model and relying on the flexibility of neural networks
+informational adequacy, fidelity, and controllability were sacrificed \citep{wiseman2017d2t}.
+\item Subsequent work re-introduced the explicit modeling of content
+\citep{puduppully2018contentselection}, which improved informational adequacy and
+fidelity to conditioning through a latent content plan.
+Although not entirely explored in the aforementioned work,
+modeling the content plan also affords a degree of controllability.
+By using oracle content plans extracted from the data,
+they manage to obtain an upper bound on BLEU under their model.
+\end{enumerate}
 
 \paragraph{Research Question}
 %We can train end-to-end modular systems,
@@ -202,6 +249,11 @@ the structure of the sentence itself.
 The formulation as a latent variable model allows us to enforce strict constraints on
 the modeled characteristics (namely the number of reference records and sentence structure)
 during inference, allowing a user to intervene during the text generation process.
+
+NEW: We propose to learn an information extraction system jointly with a 
+generative model of text.
+By doing so we incorporate recent advances in generative modeling
+in order to improve the information extraction model.
 
 \begin{wrapfigure}[22]{r}{0.45\textwidth}
 \centering
@@ -312,6 +364,8 @@ hidden semi-markov model (HSMM).
 style and content is plausible.
 \item Explicitly modeling characteristics such as the number of records in a given
 sentence is possible in a latent variable model such as a HSMM.
+\item Long-form text is HIGHLY multimodal, as there are many valid permutations of content. 
+However, conditioning on content should help greatly with that multimodality.
 \end{enumerate}
 
 \paragraph{Approach and Methods}
@@ -390,8 +444,7 @@ the data by following the system's example.
 \item Background
 \begin{enumerate}
 \item Breakdown of NLP into NLU and NLG
-\item Why can't we handle long form generation right now?
-\item Importance of D2T, an instance of NLG
+\item Importance of D2T, where we can learn a system to jointly perform NLU and NLG
 \begin{enumerate}
 \item Given the recent success with short-form generation in translation,
 we can claim that we are good at generating text with strong conditioning.
@@ -479,23 +532,20 @@ the text to describe those records in accordance with the structure of the sente
 \item At training time inference is quite difficult due to the large number of records,
 so we resort to variational inference as in \citep{deng2018vattn}. 
 \end{enumerate}
-\item Intellectual Merit:
-We hope to demonstrate the benefits of a hierarchical model in the task of text generation.
-We propose a structure-aware content model similar to
-work in \citep{sauper2009wiki,wiseman2017d2t,liang2009semalign}
-that incorporates the computational advances in \citep{deng2018vattn}
-in order to scale training.
-\item Broader Impact:
-The task of D2T itself is important, rather than simply a compromise between
-short and long-form generation tasks.
-Given a complicated set of structured data with possibly many records
-which are irrelevant, an ideal D2T system would perform information triage by 
-picking salient records then organize those records into prose.
-This would be much easier to understand for someone unfamiliar with the
-particular structure of the data.
-With an interpretable LVM the user would also be able to examine the aligned
-records that generated the summary, allowing the user to learn to read
-the data by following the system's example.
+\item Extensions:
+\begin{enumerate}
+\item Fully generative model to reason about uncertainty over table values.
+\item Fully generative model can include a model of table completion,
+where unobserved values are functions of existing elements.
+Maybe view this as a form of very limited reasoning.
+\end{enumerate}
+\item Relevance to BAA:
+\begin{enumerate}
+\item The thrust of information networks is concerned with representing
+and acquiring knowledge graphs from various streams of data.
+\item We propose to learn an information extraction system that is trained 
+jointly with a generative model of the text.
+\end{enumerate}
 \end{enumerate}
 
 \bibliographystyle{plainnat}
