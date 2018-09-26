@@ -116,12 +116,12 @@ We focus on the task of summarizing a table of data,
 which we refer to as Data-to-Text (D2T).
 
 \paragraph{Why is D2T important?}
-Unlike other tasks such as translation or summarization where one would
+Unlike tasks such as translation or summarization where one would
 need to first understand a source passage then generate a target passage,
 D2T isolates the task of NLU from NLG by introducing an intermediate representation in
 the form of structured data.
 This makes the task similar to semantic parsing, program induction, and instruction following,
-except for the lack of compositionality of the intermediate representation in D2T.
+except for the lack of compositionality in D2T's intermediate representation.
 Whereas the other tasks assume an executable intermediate representation,
 D2T has a latent representation that takes the form of alignments from 
 words in the summary to their respective referent data.
@@ -133,6 +133,8 @@ This assumption is central to the task as it allows
 practitioners to define heuristics both for providing weak supervision to an
 information extraction system as well as evaluating a summary's fidelity
 to the underlying data.
+
+% include brief review here?
 
 %Modern neural systems have demonstrated state-of-the-art performance on short-form
 %text generation tasks, but the performance seemingly fails to generalize to long-form generation.
@@ -157,47 +159,33 @@ from text,
 predict the type of the relation between the entity and value,
 and compare resulting tuple (entity, type, value) to the given collection of facts.
 
-% See algorithm etc findRecord(y_t)
-\paragraph{Problem Definition}
-Rotowire consists of aligned box score data and basketball game summaries
-$\set{(\bx^{(1)}, \by^{(1)}),(\bx^{(2)},\by^{(2)})\ldots}$.
-For brevity, we refer to a single data and summary as $\bx,\by$, omitting the superscript.
-Each data $\bx = \set{x_1,\ldots,x_N}$ is a set of $N$ records, each of which has
-an entity, type, and value $x = (\text{entity, type, value})$.
-Each summary $\by = \set{y_1,\ldots,y_T}$ is a sequence of tokens that makes up the
-text of the game description.
-For generation, the goal is to learn a conditional model $p(\by\mid\bx)$ of the text given the data.
-For information extraction, we would like to learn a model $p(t\mid e,v)$ that labels an entity-value pair $(e,v)$
-with its correct relation type $t$, which may be null if there is no correct configuration, i.e.
-$\set{x_i:x_i\in\bx, x_i = (e,t,v)}=\emptyset$.
-
-
-\paragraph{Prior Work}
-
+% should include current status quo on IE and GEN
 \paragraph{Our proposal}
-We decompose distribution this into a hierarchical hidden semi-Markov model (HSMM)
+We decompose the distribution over summaries given the data into a hierarchical hidden semi-Markov model (HSMM)
 \citep{liang2009semalign} augmented with structure-aware content planning
-\citep{sauper2009wiki}.
-
-
-
-The Rotowire dataset requires that the IE system be trained with limited supervision.
-As there are no explicit annotations, \citep{wiseman2017d2t} define the heuristic function
-\begin{equation}
-\text{findRecord}(y) = \set{ x : x.\text{entity} = y \vee x.\text{value} = y}
-\end{equation}
-in order to obtain gold alignments.
-The findRecord function takes a word from the summary and returns all records where
-either the entity or value is an exact match of the word.
-An information extraction system is then trained via max marginal likelihood over
-all entity-value pairs extractable from a given summary $\by$,
-where an entity-value pair is extractable if it appears in the data $\bx$.
+\citep{sauper2009wiki} in order to minimize the multimodality of each conditional distribution.
+We also propose to learn an information extraction (IE) system as the approximate posterior distribution over 
+alignments from segments of text to their generating data.
+Finally, we propose to view the given data as incomplete and learn functions of the data
+with boolean outputs.
+Our goal is to maximize the coverage of the information extraction system
+in terms of the number of words contained within segments that are aligned to data.
+The purpose of the HSMM formulation is to promote longer segments \citep{liang2009semalign},
+while the data completion model will allow the model to learn alignments between
+words and simple functions of the data, rather than just the data itself.
 
 \paragraph{Desiderata of IE Systems, and how they are measured}
 \begin{enumerate}
-\item Uncertainty: 
-\item Ability to learn with limited supervision:
-\item Coverage of text through alignments:
+\item Coverage of text through alignments (addressed in this proposal)
+\item Ability to learn with limited supervision (addressed in this proposal)
+\item Uncertainty
+\end{enumerate}
+\paragraph{Current trends addressing IE desiderata}
+\begin{enumerate}
+\item \citet{snyder2007d2t}
+\item \citet{liang2009semalign}
+\item \citet{dossantos2015classification}
+\item \citet{wiseman2017d2t}
 \end{enumerate}
 \paragraph{Desiderata of Text Gen Systems, and how they are measured}
 \begin{enumerate}
@@ -217,7 +205,6 @@ we have yet to formalize a notion of controllability for NLG.
 We loosely define controllability as the ability to apply constraints during inference.
 % Maybe delta BLEU when using an oracle plan?
 \end{enumerate}
-
 \paragraph{Current trends addressing generation desiderata}
 \begin{enumerate}
 \item Initially research focused largely on readability,
@@ -233,6 +220,56 @@ modeling the content plan also affords a degree of controllability.
 By using oracle content plans extracted from the data,
 they manage to obtain an upper bound on BLEU under their model.
 \end{enumerate}
+
+% See algorithm etc findRecord(y_t)
+\paragraph{Prior Work}
+\begin{enumerate}
+\item \citet{wiseman2017d2t} train an information extraction system
+that has minimal coverage; it only aligns entity-value pairs with records.
+\item \citet{puduppully2018contentselection} re-use the formulation of \citet{wiseman2017d2t}'s IE 
+system, but also introduce a content plan.
+\item \citet{wiseman2018template} propose a neural parameterization of a HSMM for learning templates.
+%They train by directly maximizing the marginal likelihood.
+%As our state space is too large, we cannot enumerate alignments directly and 
+%resort to approximate inference using techniques from \citet{deng2018vattn}.
+\item \citet{liang2009semalign}
+\item \citet{sauper2009wiki}
+\end{enumerate}
+
+\paragraph{Problem Definition}
+Rotowire consists of aligned box score data and basketball game summaries
+$\set{(\bx^{(1)}, \by^{(1)}),(\bx^{(2)},\by^{(2)})\ldots}$.
+For brevity, we refer to a single data and summary as $\bx,\by$, omitting the superscript.
+Each data $\bx = \set{x_1,\ldots,x_N}$ is a set of $N$ records, each of which has
+an entity, type, and value $x = (\text{entity, type, value})$.
+Each summary $\by = \set{y_1,\ldots,y_T}$ is a sequence of tokens that makes up the
+text of the game description.
+For generation, the goal is to learn a conditional model $p(\by\mid\bx)$ of the text given the data.
+For information extraction, we would like to learn a model $p(t\mid e,v)$ that labels an entity-value pair $(e,v)$
+with its correct relation type $t$, which may be null if there is no correct configuration, i.e.
+$\set{x_i:x_i\in\bx, x_i = (e,t,v)}=\emptyset$.
+
+Previous work assumed all entities and values discussed in $\by$ are known and present in $\bx$.
+% Break from previous work, introduce conditional distributions of structure and content
+
+
+\paragraph{Model}
+
+\paragraph{Learning and Inference}
+The Rotowire dataset requires that the IE system be trained with limited supervision.
+As there are no explicit annotations, we follow \citep{wiseman2017d2t} and define the function
+\begin{equation}
+\text{findRecord}(y) = \set{ x : x.\text{entity} = y \vee x.\text{value} = y}
+\end{equation}
+in order to obtain possible alignments.
+The findRecord function takes a word from the summary and returns all records where
+either the entity or value is an exact match of the word.
+
+An information extraction system is then trained via max marginal likelihood over
+all entity-value pairs extractable from a given summary $\by$,
+where an entity-value pair is extractable if it appears in the data $\bx$.
+
+\section{OLD}
 
 \paragraph{Research Question}
 %We can train end-to-end modular systems,
@@ -547,6 +584,8 @@ and acquiring knowledge graphs from various streams of data.
 jointly with a generative model of the text.
 \end{enumerate}
 \end{enumerate}
+
+REINFORCE HSMM training: use a soft HMM as baseline.
 
 \bibliographystyle{plainnat}
 \bibliography{w}
