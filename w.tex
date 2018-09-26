@@ -154,38 +154,56 @@ a collection that consists of a single fact, (entity = Jeremy Lin, type = POINTS
 and a simple statement ``Jeremy Lin scored 19 points''.
 The relation type is the label in the box score, for example POINTS, REBOUNDS, etc.
 In order to automatically evaluate this summary,
-we could use an information extraction system (IE) to extract entity-value pairs
+thanks to our assumption the summary was generated from only the data,
+we are able to use an information extraction system (IE) to extract entity-value pairs
 from text,
 predict the type of the relation between the entity and value,
 and compare resulting tuple (entity, type, value) to the given collection of facts.
 
 % should include current status quo on IE and GEN
 \paragraph{Our proposal}
-We decompose the distribution over summaries given the data into a hierarchical hidden semi-Markov model (HSMM)
+We have two goals: 1) our first is to maximize the coverage of the information extraction system
+in terms of the number of words contained within segments that are aligned to data,
+and 2) the second is to improve the conditional summarization model with a hierarchical model
+in order to better account for the multimodality of summaries.
+
+Towards 1), we propose to learn an information extraction (IE) system as the approximate posterior distribution over 
+alignments from segments of text to their generating data.
+We also propose to view the given data as incomplete and learn functions of the data
+with boolean outputs.
+
+Towards 2), We decompose the distribution over summaries given the data into a hierarchical hidden semi-Markov model (HSMM)
 \citep{liang2009semalign} augmented with structure-aware content planning
 \citep{sauper2009wiki} in order to minimize the multimodality of each conditional distribution.
-We also propose to learn an information extraction (IE) system as the approximate posterior distribution over 
-alignments from segments of text to their generating data.
-Finally, we propose to view the given data as incomplete and learn functions of the data
-with boolean outputs.
-Our goal is to maximize the coverage of the information extraction system
-in terms of the number of words contained within segments that are aligned to data.
-The purpose of the HSMM formulation is to promote longer segments \citep{liang2009semalign},
+The purpose of the HSMM is to promote longer segments \citep{liang2009semalign},
 while the data completion model will allow the model to learn alignments between
 words and simple functions of the data, rather than just the data itself.
 
+% Move desiderata before proposal, to demonstrate hole in research that we solve
+% but write in paragraph form to hide holes?
+% We can't really measure these as they are qualitative??????
+% are these obvious?
 \paragraph{Desiderata of IE Systems, and how they are measured}
 \begin{enumerate}
-\item Coverage of text through alignments (addressed in this proposal)
+\item Coverage of text through alignments (addressed in this proposal):
+We can measure this through the number of words aligned to a non-null record.
+Note that this does not take into account the correctness of the alignments;
+however, in conjunction with the likelihood of the summary this serves
+as a strong measure of performance. (overclaim for now, will fix argument)
 \item Ability to learn with limited supervision (addressed in this proposal)
 \item Uncertainty
 \end{enumerate}
 \paragraph{Current trends addressing IE desiderata}
+% Maybe mention pipelined approach?
 \begin{enumerate}
 \item \citet{snyder2007d2t}
 \item \citet{liang2009semalign}
-\item \citet{dossantos2015classification}
-\item \citet{wiseman2017d2t}
+\item \citet{dossantos2015classification} achieve strong performance on
+a text classification dataset with supervision.
+\item The information extraction system in \citet{wiseman2017d2t}
+borrows the architecture from \citet{dossantos2015classification},
+but trains the model via max marginal likelihood as there is
+no strong supervision.
 \end{enumerate}
 \paragraph{Desiderata of Text Gen Systems, and how they are measured}
 \begin{enumerate}
@@ -251,7 +269,6 @@ $\set{x_i:x_i\in\bx, x_i = (e,t,v)}=\emptyset$.
 
 Previous work assumed all entities and values discussed in $\by$ are known and present in $\bx$.
 % Break from previous work, introduce conditional distributions of structure and content
-
 
 \paragraph{Model}
 
