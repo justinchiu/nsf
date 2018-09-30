@@ -104,6 +104,9 @@
 \end{center}
 
 Spectrum from hard attention => hard segmental => HSMM for generative model, coverage / recall
+Should we go into HSMM??? or is hard segmental attention enough
+
+composition function = categorical over two entries of x
 
 structured attention for IE posterior?
 
@@ -211,6 +214,8 @@ borrows the architecture from \citet{dossantos2015classification},
 but trains the model via max marginal likelihood as there is
 no strong supervision.
 \end{enumerate}
+
+\begin{comment}
 \paragraph{Desiderata of Text Gen Systems, and how they are measured}
 \begin{enumerate}
 \item Readability: How easy is it for a human to read the generated summary?
@@ -244,11 +249,12 @@ modeling the content plan also affords a degree of controllability.
 By using oracle content plans extracted from the data,
 they manage to obtain an upper bound on BLEU under their model.
 \end{enumerate}
+\end{comment}
 
 % See algorithm etc findRecord(y_t)
 \paragraph{Prior Work}
 \begin{enumerate}
-\item \citet{wiseman2017d2t} train an information extraction system
+\item Data2Text \citet{wiseman2017d2t} train an information extraction system
 that has minimal coverage; it only aligns entity-value pairs with records.
 \item \citet{puduppully2018contentselection} re-use the formulation of \citet{wiseman2017d2t}'s IE 
 system, but also introduce a content plan.
