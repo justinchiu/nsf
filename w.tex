@@ -115,15 +115,25 @@ structured attention for IE posterior?
 \end{comment}
 
 \paragraph{Keywords}
-information systems, natural language processing, information extraction,
+information networks, natural language processing, information extraction,
 latent variable models
 
+\paragraph{Relevance to BAA}
+As information networks get larger and more complex,
+acquiring explicit supervision for the training of information extraction systems
+becomes extremely expensive.
+Both the representation of the information in the knowledge base
+as well as the extraction process itself must be hand-designed.
+In this proposal we present a framework towards automating the
+training of information extraction systems with minimal supervision.
+
 \paragraph{Background}
-\begin{enumerate}
+\begin{comment}
 \item Train NLU and use the NLG system as signal
 \item Train an NLU system by extracting information that makes it 
 easy to reconstruct text (NLG)
-\end{enumerate}
+\item maybe redundant with prev section, can merge later
+\end{comment}
 Natural language processing (NLP) can largely be decomposed into two separate but
 closely related tasks: natural language understanding (NLU) and natural language
 generation (NLG).
@@ -136,12 +146,13 @@ We focus on the task of summarizing a table of data,
 which we refer to as Data-to-Text (D2T).
 
 \paragraph{Why is D2T important?}
-\begin{enumerate}
+\begin{comment}
 \item Convince readers that this is a good information extraction task,
 similar to semantic parsing / instruction following?
 \item Well-defined
 \item Highlight: Closed domain
-\end{enumerate}
+\item probably need to rewrite this
+\end{comment}
 Unlike tasks such as translation or summarization where one would
 need to first understand a source passage then generate a target passage,
 D2T isolates the task of NLU from NLG by introducing an intermediate representation in
@@ -169,10 +180,10 @@ to the underlying data.
 %generation quality from input representation.
 
 \paragraph{Rotowire}
-\begin{enumerate}
+\begin{comment}
 \item Motivating extraction example
 \item Transition towards more formal definitions so that we can define the tasks
-\end{enumerate}
+\end{comment}
 We provide a concrete example from a D2T dataset:
 In this proposal we focus on the recently proposed
 the Rotowire dataset \citep{wiseman2017d2t}.
@@ -192,11 +203,11 @@ predict the type of the relation between the entity and value,
 and compare resulting tuple (entity, type, value) to the given collection of facts.
 
 \paragraph{Problem Definition}
-\begin{enumerate}
+\begin{comment}
 \item Define notation
 \item Define generation, mention sam and puduppully work.
 \item Define extraction and its subtasks, mention regina and percy's work.
-\end{enumerate}
+\end{comment}
 Rotowire consists of aligned box score data and basketball game summaries
 $\set{(\bx^{(1)}, \by^{(1)}),(\bx^{(2)},\by^{(2)})\ldots}$.
 For brevity, we refer to a single data and summary as $\bx,\by$, omitting the superscript.
@@ -209,27 +220,38 @@ text of the game description.
 
 For generation, the goal is to learn a conditional model $p(\by\mid\bx)$ of the text given the data.
 In \citet{wiseman2017d2t} this takes the form of a conditional language model that can copy values directly from records in $\bx$.
-Following work in \citet{puduppully2018contentselection} decompose the distribution 
+Subsequent work in \citet{puduppully2018contentselection} decompose the distribution 
 \begin{equation}
 p(\by\mid\bx) = \sum_{\bc}p(\by\mid\bc)p(\bc\mid\bx)
 \end{equation}
 by introducing a content plan $\bc$, which is a sequence of records drawn from $\bx$.
+This was also previously implemented in prior work \citep{liang2009semalign},
+which had modelled the text generation process through a hierarchical HSMM.
 % Definitely need a figure here
 
 The definition of the information extraction task is more subtle.
 We propose three subtasks that fall under the umbrella of information extraction.
 The first task A) is aligning segments of text to the records that generated them.
+This is similar to learning a content plan $\bc\mid\bx$ as in \citet{puduppully2018contentselection},
+however we interested in the \textbf{posterior} distribution $p(\bc\mid\bx,\by)$ of
+the content plan $\bc$ after observing the text $\by$.
+\citet{liang2009semalign} utilize the fact that they define a model in which posterior inference is tractable,
+however tractability does not hold once the latent distribution becomes autoregressive.
+% Elaborate
+In \citet{wiseman2017d2t} and subsequently in \citet{puduppully2018contentselection} this was accomplished by 
+separately training 
 % This was accomplished in \citet{wiseman2017d2t,puduppully2018contentselection} by predicting t\mid e,v and aligning to a complete record in $\bx$
 The second task B) is reconstructing values $v$ in the table $\bx$.
-Blah: $p(\bv \mid \by,\be,\bt)$
+In particular, we would want to learn $p(\bv \mid \by,\be,\bt)$,
+the distribution over all values given the summary, all entities, and all types.
 The third task C) is the most ambitious: We would like to further learn 
 functions of $\bx$ in an unsupervised manner.
 
-For information extraction, we would like to learn a model $p(t\mid e,v)$ that labels an entity-value pair $(e,v)$
-with its correct relation type $t$, which may be null if there is no correct configuration, i.e.
-$\set{x_i:x_i\in\bx, x_i = (e,t,v)}=\emptyset$.
+%For information extraction, we would like to learn a model $p(t\mid e,v)$ that labels an entity-value pair $(e,v)$
+%with its correct relation type $t$, which may be null if there is no correct configuration, i.e.
+%$\set{x_i:x_i\in\bx, x_i = (e,t,v)}=\emptyset$.
 
-Previous work assumed all entities and values discussed in $\by$ are known and present in $\bx$.
+%Previous work assumed all entities and values discussed in $\by$ are known and present in $\bx$.
 % Break from previous work, introduce conditional distributions of structure and content
 
 % Move desiderata before proposal, to demonstrate hole in research that we solve
@@ -267,6 +289,7 @@ alignments from segments of text to their generating data.
 We also propose to view the given data as incomplete and learn functions of the data
 with boolean outputs.
 
+\begin{comment}
 % See algorithm etc findRecord(y_t)
 \paragraph{Prior Work}
 \begin{enumerate}
@@ -281,9 +304,10 @@ system, but also introduce a content plan.
 \item \citet{liang2009semalign}
 \item \citet{sauper2009wiki}
 \end{enumerate}
-
+\end{comment}
 
 \paragraph{Model}
+
 
 \paragraph{Learning and Inference}
 The Rotowire dataset requires that the IE system be trained with limited supervision.
