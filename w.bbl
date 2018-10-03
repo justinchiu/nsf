@@ -1,4 +1,4 @@
-\begin{thebibliography}{8}
+\begin{thebibliography}{6}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -10,13 +10,6 @@ Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, and Alexander~M. Rush.
 \newblock Latent alignment and variational attention.
 \newblock \emph{CoRR}, abs/1807.03756, 2018.
 \newblock URL \url{http://arxiv.org/abs/1807.03756}.
-
-\bibitem[dos Santos et~al.(2015)dos Santos, Xiang, and
-  Zhou]{dossantos2015classification}
-C{\'{\i}}cero~Nogueira dos Santos, Bing Xiang, and Bowen Zhou.
-\newblock Classifying relations by ranking with convolutional neural networks.
-\newblock \emph{CoRR}, abs/1504.06580, 2015.
-\newblock URL \url{http://arxiv.org/abs/1504.06580}.
 
 \bibitem[Liang et~al.(2009)Liang, Jordan, and Klein]{liang2009semalign}
 Percy Liang, Michael~I. Jordan, and Dan Klein.
@@ -47,14 +40,6 @@ Christina Sauper and Regina Barzilay.
   Linguistics.
 \newblock ISBN 978-1-932432-45-9.
 \newblock URL \url{http://dl.acm.org/citation.cfm?id=1687878.1687909}.
-
-\bibitem[Snyder and Barzilay(2007)]{snyder2007d2t}
-Benjamin Snyder and Regina Barzilay.
-\newblock Database-text alignment via structured multilabel classification.
-\newblock In \emph{{IJCAI} 2007, Proceedings of the 20th International Joint
-  Conference on Artificial Intelligence, Hyderabad, India, January 6-12, 2007},
-  pages 1713--1718, 2007.
-\newblock URL \url{http://ijcai.org/Proceedings/07/Papers/277.pdf}.
 
 \bibitem[Wiseman(2018)]{wiseman2018template}
 Sam Wiseman.

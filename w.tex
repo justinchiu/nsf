@@ -226,60 +226,44 @@ p(\by\mid\bx) = \sum_{\bc}p(\by\mid\bc)p(\bc\mid\bx)
 \end{equation}
 by introducing a content plan $\bc$, which is a sequence of records drawn from $\bx$.
 This was also previously implemented in prior work \citep{liang2009semalign},
-which had modelled the text generation process through a hierarchical HSMM.
+which modelled the text generation process through a hierarchical hidden semi-Markov model.
 % Definitely need a figure here
 
 The definition of the information extraction task is more subtle.
-We propose three subtasks that fall under the umbrella of information extraction.
+We propose three subtasks that fall under the umbrella of information extraction:
+
 The first task A) is aligning segments of text to the records that generated them.
 This is similar to learning a content plan $\bc\mid\bx$ as in \citet{puduppully2018contentselection},
-however we interested in the \textbf{posterior} distribution $p(\bc\mid\bx,\by)$ of
+however we are interested in the \textbf{posterior} distribution $p(\bc\mid\bx,\by)$ of
 the content plan $\bc$ after observing the text $\by$.
 \citet{liang2009semalign} utilize the fact that they define a model in which posterior inference is tractable,
 however tractability does not hold once the latent distribution becomes autoregressive.
 % Elaborate
 In \citet{wiseman2017d2t} and subsequently in \citet{puduppully2018contentselection} this was accomplished by 
-separately training 
-% This was accomplished in \citet{wiseman2017d2t,puduppully2018contentselection} by predicting t\mid e,v and aligning to a complete record in $\bx$
+separately training a classifier to predict the type $t$ of an entity $e$ and value $v$ pair within a sentence.
+The entity and value are extracted heuristically by checking exact string matches within $\be$ and $\bv$,
+and the supervision over $t$ is obtained through the following function \citep{wiseman2017d2t}:
+\begin{equation}
+\text{findType}(\hat{e},\hat{v}) = \set{ x.t :x\in\bx, x.e = \hat{e} \wedge x.v = \hat{v}}
+\end{equation}
+However, this limits alignments exclusively to entities and values.
+We would like to align whole segments of text in order to increase the \textit{coverage}
+of our information extraction system.
+We define coverage as the number of words contained in segments that are aligned to a record in $\bx$.
+Roughly: how do we evaluate when we don't have gold alignments?
+We would hope that a strong system extracts information from as much
+text as possible, but also explains the text well.
+These correspond to our notions of coverage and reconstruction respectively (not yet introduced, need to reorganize).
+We can broadly view coverage as a proxy for recall, and reconstruction for precision, although
+this comparison does not really hold up (delete this sentence).
+
 The second task B) is reconstructing values $v$ in the table $\bx$.
-In particular, we would want to learn $p(\bv \mid \by,\be,\bt)$,
-the distribution over all values given the summary, all entities, and all types.
-The third task C) is the most ambitious: We would like to further learn 
+This is implemented on top of task A).
+In particular, we want to learn $p(\bv \mid \by,\bc,\be,\bt)$,
+the distribution over all values given the summary, the content plan, all entities, and all types.
+
+The third task C) is the most ambitious. We would like to further learn 
 functions of $\bx$ in an unsupervised manner.
-
-%For information extraction, we would like to learn a model $p(t\mid e,v)$ that labels an entity-value pair $(e,v)$
-%with its correct relation type $t$, which may be null if there is no correct configuration, i.e.
-%$\set{x_i:x_i\in\bx, x_i = (e,t,v)}=\emptyset$.
-
-%Previous work assumed all entities and values discussed in $\by$ are known and present in $\bx$.
-% Break from previous work, introduce conditional distributions of structure and content
-
-% Move desiderata before proposal, to demonstrate hole in research that we solve
-% but write in paragraph form to hide holes?
-% We can't really measure these as they are qualitative??????
-% are these obvious?
-\paragraph{Desiderata of IE Systems, and how they are measured}
-\begin{enumerate}
-\item Coverage of text through alignments (addressed in this proposal):
-We can measure this through the number of words aligned to a non-null record.
-Note that this does not take into account the correctness of the alignments;
-however, in conjunction with the likelihood of the summary this serves
-as a strong measure of performance. (overclaim for now, will fix argument)
-\item Ability to learn with limited supervision (addressed in this proposal)
-\item Uncertainty
-\end{enumerate}
-\paragraph{Current trends addressing IE desiderata}
-% Maybe mention pipelined approach?
-\begin{enumerate}
-\item \citet{snyder2007d2t}
-\item \citet{liang2009semalign}
-\item \citet{dossantos2015classification} achieve strong performance on
-a text classification dataset with supervision.
-\item The information extraction system in \citet{wiseman2017d2t}
-borrows the architecture from \citet{dossantos2015classification},
-but trains the model via max marginal likelihood as there is
-no strong supervision.
-\end{enumerate}
 
 \paragraph{Our proposal}
 Our goal is to maximize the coverage of the information extraction system
