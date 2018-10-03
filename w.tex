@@ -202,40 +202,61 @@ from text,
 predict the type of the relation between the entity and value,
 and compare resulting tuple (entity, type, value) to the given collection of facts.
 
+\paragraph{Our proposal}
+Our goal is to maximize the coverage of the information extraction system
+in terms of the number of words contained within segments that are aligned to data.
+We propose to learn an information extraction (IE) system as the approximate posterior distribution over 
+alignments from segments of text to their generating data.
+We also propose to view the given data as incomplete
+and learn boolean-valued functions of the data.
+
 \paragraph{Problem Definition}
-NEED TO MOTIVATE RECONSTRUCTION AND COVERAGE
 \begin{comment}
 \item Define notation
 \item Define generation, mention sam and puduppully work.
 \item Define extraction and its subtasks, mention regina and percy's work.
 \end{comment}
 Rotowire consists of aligned box score data and basketball game summaries
-$\set{(\bx^{(1)}, \by^{(1)}),(\bx^{(2)},\by^{(2)})\ldots}$.
-For brevity, we refer to a single data and summary as $\bx,\by$, omitting the superscript.
-Each data $\bx = \set{x_1,\ldots,x_N}$ is a set of $N$ records, each of which has
-an entity, type, and value $x_i = (e_i, t_i, v_i)$.
-We refer collectively to all the entities, types, and values in a given data $\bx$ as
+$\set{(\br^{(1)}, \by^{(1)}),(\br^{(2)},\by^{(2)})\ldots}$.
+For brevity, we refer to a single data and summary as $\br,\by$, omitting the superscript.
+Each data $\br = \set{r_1,\ldots,r_N}$ is a set of $N$ records, each of which has
+an entity, type, and value $r_i = (e_i, t_i, v_i)$.
+We refer collectively to all the entities, types, and values in a given data $\br$ as
 $\be,\bt,\bv$ respectively.
 Each summary $\by = \set{y_1,\ldots,y_T}$ is a sequence of tokens that makes up the
 text of the game description.
 
-For generation, the goal is to learn a conditional model $p(\by\mid\bx)$ of the text given the data.
-In \citet{wiseman2017d2t} this takes the form of a conditional language model that can copy values directly from records in $\bx$.
+For generation, the goal is to learn a conditional model $p(\by\mid\br)$ of the text given the data.
+This is simple to evaluate, as we can use the log-likelihood of a given summary under our model
+as a measure of performance.
+In \citet{wiseman2017d2t} model takes the form of a conditional language model
+that can copy values directly from records in $\br$.
 Subsequent work in \citet{puduppully2018contentselection} decompose the distribution 
 \begin{equation}
-p(\by\mid\bx) = \sum_{\bc}p(\by\mid\bc)p(\bc\mid\bx)
+p(\by\mid\br) = \sum_{\bc}p(\by\mid\bc)p(\bc\mid\br)
 \end{equation}
-by introducing a content plan $\bc$, which is a sequence of records drawn from $\bx$.
+by introducing a content plan $\bc$, which is a sequence of records drawn from $\br$.
 This was also previously implemented in prior work \citep{liang2009semalign},
 which modelled the text generation process through a hierarchical hidden semi-Markov model.
 % Definitely need a figure here
 
-The definition of the information extraction task is more subtle.
-We propose three subtasks that fall under the umbrella of information extraction:
+We divide the information extraction task into three subtasks.
+Before outlining the tasks, we propose two measures of performance through which
+to evaluate an unsupervised information extraction system.
+The first is how well the information extracted from a summary allows a 
+generative model to reconstruct the summary measured by the likelihood
+of the summary given the extracted information.
+We refer to this as \underline{reconstruction}.
+The second is \underline{coverage}, 
+which we define as the number of words contained in segments
+that are aligned to a record in $\br$.
+(Do I need to argue why these are useful?
+And also how the tasks aim at increasing them by weakening assumptions
+or constraining model flexibility compared to previous work)
 
-The first task A) is aligning segments of text to the records that generated them.
-This is similar to learning a content plan $\bc\mid\bx$ as in \citet{puduppully2018contentselection},
-however we are interested in the \textbf{posterior} distribution $p(\bc\mid\bx,\by)$ of
+The first task (\textsc{align}) is to align segments of text to the records that generated them.
+This is similar to learning a content plan $\bc\mid\br$ as in \citet{puduppully2018contentselection},
+however we are interested in the \textbf{posterior} distribution $p(\bc\mid\br,\by)$ of
 the content plan $\bc$ after observing the text $\by$.
 \citet{liang2009semalign} utilize the fact that they define a model in which posterior inference is tractable,
 however tractability does not hold once the latent distribution becomes autoregressive.
@@ -245,34 +266,22 @@ separately training a classifier to predict the type $t$ of an entity $e$ and va
 The entity and value are extracted heuristically by checking exact string matches within $\be$ and $\bv$,
 and the supervision over $t$ is obtained through the following function \citep{wiseman2017d2t}:
 \begin{equation}
-\text{findType}(\hat{e},\hat{v}) = \set{ x.t :x\in\bx, x.e = \hat{e} \wedge x.v = \hat{v}}
+\text{findType}(\hat{e},\hat{v}) = \set{ r.t :x\in\br, r.e = \hat{e}, x.r = \hat{v}}
 \end{equation}
-However, this limits alignments exclusively to entities and values.
-We would like to align whole segments of text in order to increase the \textit{coverage}
+However, this limits alignments exclusively to entities and values explicitly in $\br$.
+We would like to align whole segments of text in order to increase the coverage
 of our information extraction system.
-We define coverage as the number of words contained in segments that are aligned to a record in $\bx$.
-Roughly: how do we evaluate when we don't have gold alignments?
-We would hope that a strong system extracts information from as much
-text as possible, but also explains the text well.
-These correspond to our notions of coverage and reconstruction respectively (not yet introduced, need to reorganize).
-We can broadly view coverage as a proxy for recall, and reconstruction for precision, although
-this comparison does not really hold up (delete this sentence).
 
-The second task B) is reconstructing values $v$ in the table $\bx$.
+
+The second task (\textsc{values}) is to reconstruct values $v$ in the table $\br$.
 This is implemented on top of task A).
 In particular, we want to learn $p(\bv \mid \by,\bc,\be,\bt)$,
 the distribution over all values given the summary, the content plan, all entities, and all types.
 
-The third task C) is the most ambitious. We would like to further learn 
-functions of $\bx$ in an unsupervised manner.
-
-\paragraph{Our proposal}
-Our goal is to maximize the coverage of the information extraction system
-in terms of the number of words contained within segments that are aligned to data.
-We propose to learn an information extraction (IE) system as the approximate posterior distribution over 
-alignments from segments of text to their generating data.
-We also propose to view the given data as incomplete and learn functions of the data
-with boolean outputs.
+The third task (\textsc{functions}) is the most ambitious.
+In order to demonstrate the flexibility of the framework,
+we propose a method to further learn functions of $\br$ in an unsupervised manner.
+(TO BE CONTINUED)
 
 \begin{comment}
 % See algorithm etc findRecord(y_t)
@@ -292,9 +301,28 @@ system, but also introduce a content plan.
 \end{comment}
 
 \paragraph{Model}
-
+We begin by defining a model for \textsc{align}
+and proceed to \textsc{values} and \textsc{functions}.
 
 \paragraph{Learning and Inference}
+A conditional latent variable model $p(\by,\bz\mid\bx)$ models an
+observed $\by$ as well as an unobserved $\bz$ conditioned on $\bx$.
+When fitting such a model, we would like to maximize the evidence
+$p(\by\mid\bx)=\sum_\bz p(\by,\bz\mid\bx)$ which marginalizes over
+the latent $\bz$.
+Depending on the structure of $p(\by,\bz\mid\bx)$
+(i.e. its graphical model representation admitted by the Hammersley-Clifford theorem),
+the marginalization procedure may be intractable to perform exactly.
+For example, this is the case with an autoregressive model for the latent
+variable $p(z_t\mid \bz_{<t})$, where variable elimination's runtime would be
+exponential in the length $|\bz|$.
+This also precludes tractable posterior inference, i.e. $p(\bz\mid\by,\bx)$,
+since by Bayes' Rule we have $p(\bz\mid\by,\bx)=p(\by,\bz\mid\bx)/p(\by\mid\bx)$
+which requires evaluating the intractable sum in the evidence.
+Therefore we resort to learning an approximation of the posterior through the variational principle:
+the best approximation within a family of distributions is the one with minimal KL-divergence
+to the model's posterior.
+
 The Rotowire dataset requires that the IE system be trained with limited supervision.
 As there are no explicit annotations, we follow \citep{wiseman2017d2t} and define the function
 \begin{equation}
