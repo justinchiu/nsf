@@ -231,10 +231,8 @@ This is simple to evaluate, as we can use the log-likelihood of a given summary 
 as a measure of performance.
 In \citet{wiseman2017d2t} model takes the form of a conditional language model
 that can copy values directly from records in $\br$.
-Subsequent work in \citet{puduppully2018contentselection} decompose the distribution 
-\begin{equation}
-p(\by\mid\br) = \sum_{\bc}p(\by\mid\bc)p(\bc\mid\br)
-\end{equation}
+Subsequent work in \citet{puduppully2018contentselection} decomposed the distribution 
+$p(\by\mid\br) = \sum_{\bc}p(\by\mid\bc)p(\bc\mid\br)$
 by introducing a content plan $\bc$, which is a sequence of records drawn from $\br$.
 This was also previously implemented in prior work \citep{liang2009semalign},
 which modelled the text generation process through a hierarchical hidden semi-Markov model.
@@ -274,14 +272,14 @@ of our information extraction system.
 
 
 The second task (\textsc{values}) is to reconstruct values $v$ in the table $\br$.
-This is implemented on top of task A).
+This is implemented on top of task (\textsc{align}).
 In particular, we want to learn $p(\bv \mid \by,\bc,\be,\bt)$,
 the distribution over all values given the summary, the content plan, all entities, and all types.
 
 The third task (\textsc{functions}) is the most ambitious.
 In order to demonstrate the flexibility of the framework,
 we propose a method to further learn functions of $\br$ in an unsupervised manner.
-(TO BE CONTINUED)
+(TODO)
 
 \begin{comment}
 % See algorithm etc findRecord(y_t)
@@ -304,6 +302,22 @@ system, but also introduce a content plan.
 We begin by defining a model for \textsc{align}
 and proceed to \textsc{values} and \textsc{functions}.
 
+Our generative model factors into the
+likelihood and prior: $p(\by,\bc\mid\br)=p(\by\mid\bc)p(\bc\mid\br)$.
+Our likelihood is given by a conditional language model
+with a copying mechanism as in \citet{wiseman2017d2t} (cite Caglar later)
+in addition to monotonic attention \citep{yu2016ssnt,wiseman2018template}.
+The prior is simply a language model over records.
+(This is the simplest baseline, can make things much more complicated)
+(Posterior is actually tractable for this, since it's an HSMM,
+will change this later)
+
+Our IE model is given by $p(\bc\mid\by,\br)$,
+which includes both a segmentation of the summary as well as the alignments.
+Initially we parameterize $p(\bc\mid\by,\br)=\prod_tp(c_i\mid\by,\br)$ as
+a fully factored distribution over alignments.
+(Structured attention for pairwise potentials)
+
 \paragraph{Learning and Inference}
 A conditional latent variable model $p(\by,\bz\mid\bx)$ models an
 observed $\by$ as well as an unobserved $\bz$ conditioned on $\bx$.
@@ -311,7 +325,7 @@ When fitting such a model, we would like to maximize the evidence
 $p(\by\mid\bx)=\sum_\bz p(\by,\bz\mid\bx)$ which marginalizes over
 the latent $\bz$.
 Depending on the structure of $p(\by,\bz\mid\bx)$
-(i.e. its graphical model representation admitted by the Hammersley-Clifford theorem),
+(i.e. its representation admitted by the Hammersley-Clifford theorem),
 the marginalization procedure may be intractable to perform exactly.
 For example, this is the case with an autoregressive model for the latent
 variable $p(z_t\mid \bz_{<t})$, where variable elimination's runtime would be
@@ -323,19 +337,13 @@ Therefore we resort to learning an approximation of the posterior through the va
 the best approximation within a family of distributions is the one with minimal KL-divergence
 to the model's posterior.
 
-The Rotowire dataset requires that the IE system be trained with limited supervision.
-As there are no explicit annotations, we follow \citep{wiseman2017d2t} and define the function
-\begin{equation}
-\text{findRecord}(y) = \set{ x : x.\text{entity} = y \vee x.\text{value} = y}
-\end{equation}
-in order to obtain possible alignments.
-The findRecord function takes a word from the summary and returns all records where
-either the entity or value is an exact match of the word.
+For task (\textsc{align}), we have the fully observed summary $\by=\by$,
+the unobserved content plan $\bz=\bc$, and all records as conditioning $\bx=\br$.
+For task (\textsc{values}), we again have the observed summary $\by=\by$,
+but we pretend the values are unobserved $\bz=\set{\bc,\bv}$, and
+use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
 
-An information extraction system is then trained via max marginal likelihood over
-all entity-value pairs extractable from a given summary $\by$,
-where an entity-value pair is extractable if it appears in the data $\bx$.
-
+\begin{comment}
 \section{OLD}
 
 \paragraph{Research Question}
@@ -653,6 +661,7 @@ jointly with a generative model of the text.
 \end{enumerate}
 
 REINFORCE HSMM training: use a soft HMM as baseline.
+\end{comment}
 
 \bibliographystyle{plainnat}
 \bibliography{w}
