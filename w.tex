@@ -128,12 +128,13 @@ In this proposal we present a framework towards automating the
 training of information extraction systems with minimal supervision.
 
 \paragraph{Background}
-\begin{comment}
+\begin{enumerate}
 \item Train NLU and use the NLG system as signal
 \item Train an NLU system by extracting information that makes it 
 easy to reconstruct text (NLG)
-\item maybe redundant with prev section, can merge later
-\end{comment}
+\item TODO: maybe redundant with prev section, can merge later
+\item TODO: Cite recent IE work to show all of them have strong supervision (hopefully)
+\end{enumerate}
 Natural language processing (NLP) can largely be decomposed into two separate but
 closely related tasks: natural language understanding (NLU) and natural language
 generation (NLG).
@@ -146,13 +147,12 @@ We focus on the task of summarizing a table of data,
 which we refer to as Data-to-Text (D2T).
 
 \paragraph{Why is D2T important?}
-\begin{comment}
+\begin{enumerate}
 \item Convince readers that this is a good information extraction task,
 similar to semantic parsing / instruction following?
-\item Well-defined
 \item Highlight: Closed domain
-\item probably need to rewrite this
-\end{comment}
+\item TODO: probably need to rewrite this, rethink framing
+\end{enumerate}
 Unlike tasks such as translation or summarization where one would
 need to first understand a source passage then generate a target passage,
 D2T isolates the task of NLU from NLG by introducing an intermediate representation in
@@ -180,10 +180,11 @@ to the underlying data.
 %generation quality from input representation.
 
 \paragraph{Rotowire}
-\begin{comment}
+\begin{enumerate}
 \item Motivating extraction example
 \item Transition towards more formal definitions so that we can define the tasks
-\end{comment}
+\item TODO: Can maybe replace this whole section with a picture.
+\end{enumerate}
 We provide a concrete example from a D2T dataset:
 In this proposal we focus on the recently proposed
 the Rotowire dataset \citep{wiseman2017d2t}.
@@ -204,18 +205,21 @@ and compare resulting tuple (entity, type, value) to the given collection of fac
 
 \paragraph{Our proposal}
 Our goal is to maximize the coverage of the information extraction system
-in terms of the number of words contained within segments that are aligned to data.
+in terms of the number of words contained within segments that are aligned to data,
+while minimizing the amount of supervision needed.
 We propose to learn an information extraction (IE) system as the approximate posterior distribution over 
 alignments from segments of text to their generating data.
 We also propose to view the given data as incomplete
 and learn boolean-valued functions of the data.
 
 \paragraph{Problem Definition}
-\begin{comment}
+\begin{enumerate}
 \item Define notation
 \item Define generation, mention sam and puduppully work.
 \item Define extraction and its subtasks, mention regina and percy's work.
-\end{comment}
+\item TODO: maybe combine align and values? Although I prefer to keep them separate
+since values will probably turn into fill in the away team's values given home team's
+\end{enumerate}
 Rotowire consists of aligned box score data and basketball game summaries
 $\set{(\br^{(1)}, \by^{(1)}),(\br^{(2)},\by^{(2)})\ldots}$.
 For brevity, we refer to a single data and summary as $\br,\by$, omitting the superscript.
@@ -279,25 +283,10 @@ In order to demonstrate the flexibility of the framework,
 we propose a method to further learn functions of $\br$ in an unsupervised manner.
 (TODO)
 
-\begin{comment}
-% See algorithm etc findRecord(y_t)
-\paragraph{Prior Work}
-\begin{enumerate}
-\item Data2Text \citet{wiseman2017d2t} train an information extraction system
-that has minimal coverage; it only aligns entity-value pairs with records.
-\item \citet{puduppully2018contentselection} re-use the formulation of \citet{wiseman2017d2t}'s IE 
-system, but also introduce a content plan.
-\item \citet{wiseman2018template} propose a neural parameterization of a HSMM for learning templates.
-%They train by directly maximizing the marginal likelihood.
-%As our state space is too large, we cannot enumerate alignments directly and 
-%resort to approximate inference using techniques from \citet{deng2018vattn}.
-\item \citet{liang2009semalign}
-\item \citet{sauper2009wiki}
-\end{enumerate}
-\end{comment}
-
 \paragraph{Model}
-TODO: flesh this out later.
+\begin{enumerate}
+\item TODO: flesh this out later.
+\end{enumerate}
 We begin by defining a model for (\textsc{align})
 and proceed to (\textsc{values}) and (\textsc{functions}).
 
@@ -320,6 +309,13 @@ a fully factored distribution over alignments.
 TODO: values, functions
 
 \paragraph{Learning and Inference}
+\begin{enumerate}
+\item TODO: flesh this out later
+\item Question: Do I need to motivate approximate inference?
+I could also argue that rather than computing the posterior exactly,
+at test time using the approximation directly can be more efficient,
+especially if it is fully factored
+\end{enumerate}
 (Is this the right place for this?) A conditional latent variable model $p(\by,\bz\mid\bx)$ models an
 observed $\by$ as well as an unobserved $\bz$ conditioned on $\bx$.
 When fitting such a model, we would like to maximize the evidence
