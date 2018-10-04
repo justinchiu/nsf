@@ -191,7 +191,7 @@ Rotowire contains summaries of basketball games aligned with the respective
 box scores of those games.
 We consider a box score to be a collection or set of facts,
 where a fact is a tuple of an entity, relation type, and value.
-For example, consider the simplest collection possible:
+For example, consider the collection:
 a collection that consists of a single fact, (entity = Jeremy Lin, type = POINTS, value = 19),
 and a simple statement ``Jeremy Lin scored 19 points''.
 The relation type is the label in the box score, for example POINTS, REBOUNDS, etc.
@@ -263,9 +263,7 @@ In \citet{wiseman2017d2t} and subsequently in \citet{puduppully2018contentselect
 separately training a classifier to predict the type $t$ of an entity $e$ and value $v$ pair within a sentence.
 The entity and value are extracted heuristically by checking exact string matches within $\be$ and $\bv$,
 and the supervision over $t$ is obtained through the following function \citep{wiseman2017d2t}:
-\begin{equation}
-\text{findType}(\hat{e},\hat{v}) = \set{ r.t :x\in\br, r.e = \hat{e}, x.r = \hat{v}}
-\end{equation}
+$\text{findType}(\hat{e},\hat{v}) = \set{ r.t :x\in\br, r.e = \hat{e}, x.r = \hat{v}}$.
 However, this limits alignments exclusively to entities and values explicitly in $\br$.
 We would like to align whole segments of text in order to increase the coverage
 of our information extraction system.
@@ -299,33 +297,35 @@ system, but also introduce a content plan.
 \end{comment}
 
 \paragraph{Model}
-We begin by defining a model for \textsc{align}
-and proceed to \textsc{values} and \textsc{functions}.
+TODO: flesh this out later.
+We begin by defining a model for (\textsc{align})
+and proceed to (\textsc{values}) and (\textsc{functions}).
 
 Our generative model factors into the
 likelihood and prior: $p(\by,\bc\mid\br)=p(\by\mid\bc)p(\bc\mid\br)$.
 Our likelihood is given by a conditional language model
 with a copying mechanism as in \citet{wiseman2017d2t} (cite Caglar later)
 in addition to monotonic attention \citep{yu2016ssnt,wiseman2018template}.
-The prior is simply a language model over records.
+The prior is simply an autoregressive model over records.
 (This is the simplest baseline, can make things much more complicated)
-(Posterior is actually tractable for this, since it's an HSMM,
+(Posterior is actually tractable for this, since it's a HSMM,
 will change this later)
 
-Our IE model is given by $p(\bc\mid\by,\br)$,
+Our initial IE model for (\textsc{align}) is given by $p(\bc\mid\by,\br)$,
 which includes both a segmentation of the summary as well as the alignments.
 Initially we parameterize $p(\bc\mid\by,\br)=\prod_tp(c_i\mid\by,\br)$ as
 a fully factored distribution over alignments.
-(Structured attention for pairwise potentials)
+(Structured attention for pairwise potentials later)
+
+TODO: values, functions
 
 \paragraph{Learning and Inference}
-A conditional latent variable model $p(\by,\bz\mid\bx)$ models an
+(Is this the right place for this?) A conditional latent variable model $p(\by,\bz\mid\bx)$ models an
 observed $\by$ as well as an unobserved $\bz$ conditioned on $\bx$.
 When fitting such a model, we would like to maximize the evidence
 $p(\by\mid\bx)=\sum_\bz p(\by,\bz\mid\bx)$ which marginalizes over
 the latent $\bz$.
-Depending on the structure of $p(\by,\bz\mid\bx)$
-(i.e. its representation admitted by the Hammersley-Clifford theorem),
+Depending on the structure of $p(\by,\bz\mid\bx)$,
 the marginalization procedure may be intractable to perform exactly.
 For example, this is the case with an autoregressive model for the latent
 variable $p(z_t\mid \bz_{<t})$, where variable elimination's runtime would be
@@ -343,6 +343,7 @@ For task (\textsc{values}), we again have the observed summary $\by=\by$,
 but we pretend the values are unobserved $\bz=\set{\bc,\bv}$, and
 use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
 
+TODO: functions, and then cover KLpost = -ELBO + evidence
 \begin{comment}
 \section{OLD}
 
