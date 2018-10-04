@@ -128,31 +128,26 @@ In this proposal we present a framework towards automating the
 training of information extraction systems with minimal supervision.
 
 \paragraph{Background}
-\begin{enumerate}
-\item Train NLU and use the NLG system as signal
-\item Train an NLU system by extracting information that makes it 
-easy to reconstruct text (NLG)
-\item TODO: maybe redundant with prev section, can merge later
-\item TODO: Cite recent IE work to show all of them have strong supervision (hopefully)
-\end{enumerate}
-Natural language processing (NLP) can largely be decomposed into two separate but
+Natural language processing can largely be decomposed into two separate but
 closely related tasks: natural language understanding (NLU) and natural language
 generation (NLG).
-In this proposal we argue that the two tasks are highly complementary,
-and we capitalize on their duality by proposing a method to train a NLU system
+We argue that the two tasks are complementary,
+and capitalize on their duality by proposing a method to train a NLU system
 without direct supervision.
-More specifically, we elaborate on a framework that allows an information
-extraction system to use the performance of a generative model of text as learning signal.
+More specifically, we utilize the latent variable model framework to train an information
+extraction system using the performance of a generative model of text as learning signal.
+Intuitively, we want an information extraction system to extract information that
+best explains the given text.
 We focus on the task of summarizing a table of data,
 which we refer to as Data-to-Text (D2T).
 
 \paragraph{Why is D2T important?}
-\begin{enumerate}
+\begin{comment}
 \item Convince readers that this is a good information extraction task,
 similar to semantic parsing / instruction following?
 \item Highlight: Closed domain
 \item TODO: probably need to rewrite this, rethink framing
-\end{enumerate}
+\end{comment}
 Unlike tasks such as translation or summarization where one would
 need to first understand a source passage then generate a target passage,
 D2T isolates the task of NLU from NLG by introducing an intermediate representation in
@@ -162,9 +157,10 @@ except for the lack of compositionality in D2T's intermediate representation.
 Whereas the other tasks assume an executable intermediate representation,
 D2T has a latent representation that takes the form of alignments from 
 words in the summary to their respective referent data.
-This allows D2T to serve as a useful benchmark for conditional text generation.
+This allows D2T to serve as a useful benchmark for conditional text generation
+because of the reduced complexity.
 In addition to establishing a convenient representation,
-D2T makes the assumption that the text is generated conditioned only on
+D2T allows us to assume relatively safely that the text is generated conditioned only on
 functions of the data table.
 This assumption is central to the task as it allows
 practitioners to define heuristics both for providing weak supervision to an
@@ -204,13 +200,14 @@ predict the type of the relation between the entity and value,
 and compare resulting tuple (entity, type, value) to the given collection of facts.
 
 \paragraph{Our proposal}
-Our goal is to maximize the coverage of the information extraction system
-in terms of the number of words contained within segments that are aligned to data,
+Our goal is to maximize the \underline{coverage} of the information extraction system,
+which we define as the number of words contained within segments of text that are correctly aligned to data,
 while minimizing the amount of supervision needed.
 We propose to learn an information extraction (IE) system as the approximate posterior distribution over 
 alignments from segments of text to their generating data.
 We also propose to view the given data as incomplete
-and learn boolean-valued functions of the data.
+and learn boolean-valued functions of the data as a step
+towards representation learning.
 
 \paragraph{Problem Definition}
 \begin{enumerate}
@@ -284,22 +281,19 @@ we propose a method to further learn functions of $\br$ in an unsupervised manne
 (TODO)
 
 \paragraph{Model}
-\begin{enumerate}
-\item TODO: flesh this out later.
-\end{enumerate}
 We begin by defining a model for (\textsc{align})
 and proceed to (\textsc{values}) and (\textsc{functions}).
 
+% Generative model
 Our generative model factors into the
 likelihood and prior: $p(\by,\bc\mid\br)=p(\by\mid\bc)p(\bc\mid\br)$.
 Our likelihood is given by a conditional language model
-with a copying mechanism as in \citet{wiseman2017d2t} (cite Caglar later)
+with a copy mechanism as in \citet{gulcehre2016cc,wiseman2017d2t}
 in addition to monotonic attention \citep{yu2016ssnt,wiseman2018template}.
 The prior is simply an autoregressive model over records.
-(This is the simplest baseline, can make things much more complicated)
-(Posterior is actually tractable for this, since it's a HSMM,
-will change this later)
+(This is the simplest baseline aside from HSMM, can make things much more complicated)
 
+% IE model
 Our initial IE model for (\textsc{align}) is given by $p(\bc\mid\by,\br)$,
 which includes both a segmentation of the summary as well as the alignments.
 Initially we parameterize $p(\bc\mid\by,\br)=\prod_tp(c_i\mid\by,\br)$ as
@@ -310,14 +304,14 @@ TODO: values, functions
 
 \paragraph{Learning and Inference}
 \begin{enumerate}
-\item TODO: flesh this out later
 \item Question: Do I need to motivate approximate inference?
 I could also argue that rather than computing the posterior exactly,
 at test time using the approximation directly can be more efficient,
 especially if it is fully factored
+\item Need to figure out if this is the right place for this
 \item Describe how to incorporate the weak supervision through posterior constraints
 \end{enumerate}
-(Is this the right place for this?) A conditional latent variable model $p(\by,\bz\mid\bx)$ models an
+A conditional latent variable model $p(\by,\bz\mid\bx)$ models an
 observed $\by$ as well as an unobserved $\bz$ conditioned on $\bx$.
 When fitting such a model, we would like to maximize the evidence
 $p(\by\mid\bx)=\sum_\bz p(\by,\bz\mid\bx)$ which marginalizes over
@@ -334,9 +328,9 @@ Therefore we resort to learning an approximation of the posterior through the va
 the best approximation within a family of distributions is the one with minimal KL-divergence
 to the model's posterior.
 
-For task (\textsc{align}), we have the fully observed summary $\by=\by$,
+For task (\textsc{align}), we have the fully observed summary $\by$,
 the unobserved content plan $\bz=\bc$, and all records as conditioning $\bx=\br$.
-For task (\textsc{values}), we again have the observed summary $\by=\by$,
+For task (\textsc{values}), we again have the observed summary $\by$,
 but we pretend the values are unobserved $\bz=\set{\bc,\bv}$, and
 use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
 
