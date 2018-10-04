@@ -15,3 +15,6 @@ all:$(TEX)
 
 clean:
 	latexmk -CA
+
+copy:
+	cp w.pdf temp.pdf
