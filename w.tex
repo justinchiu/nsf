@@ -92,7 +92,7 @@
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 
-\usepackage{lineno}
+\usepackage[displaymath,mathlines]{lineno}
 \linenumbers
 
 \begin{document}
@@ -313,8 +313,7 @@ as a fully factored distribution over alignments.
 since only has node potentials for now)
 Each $q(c_i\mid\by,\br)$ is parameterized by the output
 of a BLSTM run at the sentence level.
-
-TODO: values, functions
+(TODO: values, functions)
 
 \paragraph{Learning and Inference}
 \begin{comment}
@@ -325,7 +324,7 @@ especially if it is fully factored
 \item Need to figure out if this is the right place for this
 \item Describe how to incorporate the weak supervision through posterior constraints
 \end{comment}
-A conditional latent variable model $p(\by,\bz\mid\bx)$ models an
+A latent variable model $p(\by,\bz\mid\bx)$ models an
 observed $\by$ as well as an unobserved $\bz$ conditioned on $\bx$.
 When fitting such a model, we would like to maximize the evidence
 $p(\by\mid\bx)=\sum_\bz p(\by,\bz\mid\bx)$ which marginalizes over
@@ -337,18 +336,35 @@ variable $p(z_t\mid \bz_{<t})$, where variable elimination's runtime would be
 exponential in the length $|\bz|$.
 This also precludes tractable posterior inference, i.e. $p(\bz\mid\by,\bx)$,
 since by Bayes' Rule we have $p(\bz\mid\by,\bx)=p(\by,\bz\mid\bx)/p(\by\mid\bx)$
-which requires evaluating the intractable sum in the evidence.
+which requires evaluating the intractable sum in the evidence $p(\by\mid\bx)$.
 Therefore we resort to learning an approximation of the posterior through the variational principle:
 the best approximation within a family of distributions is the one with minimal KL-divergence
 to the model's posterior.
+The KL between the approximate posterior and true posterior is still intractable to minimize exactly,
+so we instead maximize the evidence lower bound ($\mathcal{L}_q$), which is the evidence minus the posterior KL:
+\begin{linenomath*}
+\begin{align}
+\mathcal{L}_q
+&= \underbrace{\log p(\by\mid\bx)}_{\textrm{Evidence}}
+- \underbrace{D_{KL}[q(\bz\mid\by,\bx)||p(\bz\mid\by,\bx)]}_{\textrm{Posterior KL}}\\
+&= \underbrace{\Es{\bz\sim q(\bz\mid\by,\bx)}{\log p(\by\mid\bz,\bx)}}_{\textrm{Reconstruction}}
+- \underbrace{D_{KL}[q(\bz\mid\by,\bx) || p(\bz\mid\bx)]}_{\textrm{Prior KL}}.
+\end{align}
+\end{linenomath*}
+Were it not for local extrema,
+maximizing this quantity would maximize the evidence and minimize the posterior KL jointly.
+Notice that in (2), the objective we use for training both the generative model and IE system,
+all expectations are taken with respect to the IE system or approximate posterior $q(\by\mid\bz,\bx)$.
+(TODO: training procedure via REINFORCE + control variate)
 
 For task (\textsc{align}), we have the fully observed summary $\by$,
 the unobserved content plan $\bz=\bc$, and all records as conditioning $\bx=\br$.
 For task (\textsc{values}), we again have the observed summary $\by$,
 but we pretend the values are unobserved $\bz=\set{\bc,\bv}$, and
 use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
+(TODO: functions)
 
-TODO: functions, and then cover KLpost = -ELBO + evidence
+
 \bibliographystyle{plainnat}
 \bibliography{w}
 
