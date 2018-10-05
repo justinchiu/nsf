@@ -230,7 +230,7 @@ text of the game description.
 For generation, the goal is to learn a conditional model $p(\by\mid\br)$ of the text given the data.
 This is simple to evaluate, as we can use the log-likelihood of a given summary under our model
 as a measure of performance.
-In \citet{wiseman2017d2t} model takes the form of a conditional language model
+In \citet{wiseman2017d2t} the model takes the form of a conditional language model
 that can copy values directly from records in $\br$.
 Subsequent work in \citet{puduppully2018contentselection} decomposed the distribution 
 $p(\by\mid\br) = \sum_{\bc}p(\by\mid\bc)p(\bc\mid\br)$
