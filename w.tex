@@ -366,6 +366,67 @@ but we pretend the values are unobserved $\bz=\set{\bc,\bv}$, and
 use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
 (TODO: functions)
 
+\newpage
+\section*{Outline}
+\begin{enumerate}
+\item Introduction
+    \begin{enumerate}
+    \item Relevance to BAA
+        \begin{enumerate}
+        \item What are information systems?
+        \item As they scale, acquiring explicit supervision 
+            for training an IE system becomes prohibitively expensive.
+        \item Propose a method towards training IE systems
+            with minimal supervision.
+        \end{enumerate}
+    \item Decomposition of NLP into NLU and NLG
+        \begin{enumerate}
+        \item Leverage the duality between NLU and NLG
+            to train an NLU system end-to-end without direct supervision
+        \item We want to train an IE system
+            that explains the given text.
+        \end{enumerate}
+    \item Recent advances in NLG and stagnation in NLU
+        \begin{enumerate}
+        \item Incorporation of neural networks in LVMs (templates, attention)
+        \item However, most still frame NLU as a classification problem.
+            Incorporate a degree of structure (Guillaume CRF BLSTM),
+            but still rely on strong supervision.
+        \end{enumerate}
+    \end{enumerate}
+\item Background
+    \begin{enumerate}
+    \item Formal problem definition? Or just intuition? (Need to ask Sasha)
+    \item 
+    \end{enumerate}
+\item Problem Definition
+    \begin{enumerate}
+    \item Setup notation
+    \item Link notation to an example?
+    \item Define tasks as the distributions we would like to learn
+    \end{enumerate}
+\item Proposal (All other items below are subsections?)
+    \begin{enumerate}
+    \item Learn the IE system by using it as the approximate posterior
+        of a LVM for summarization in order to leverage advances in NLG.
+    \end{enumerate}
+\item Model
+    \begin{enumerate}
+    \item 
+    \end{enumerate}
+\item Inference
+    \begin{enumerate}
+    \item 
+    \end{enumerate}
+\item Justification
+    \begin{enumerate}
+    \item 
+    \end{enumerate}
+\item Inference
+    \begin{enumerate}
+    \item 
+    \end{enumerate}
+\end{enumerate}
 
 \bibliographystyle{plainnat}
 \bibliography{w}
