@@ -152,12 +152,14 @@ as a supervised problem
 \item Previously \citet{liang2009semalign} formulated an unsupervised approach
     to aligning segments in summaries to records.
 \item Highlight: Relatively closed domain, but have facts that are functions of the
-given data table.
+given data table as well as .
 \end{comment}
 
-Recent work using neural network-based systems cast information extraction
+Recent work on extraction using neural network-based systems cast information extraction
 as a supervised learning problem
-\citep{wiseman2017d2t,dossantos2015classification,collobert2011nlpscratch,weissenborn17}.
+\citep{wiseman2017d2t,dossantos2015classification,collobert2011nlpscratch,weissenborn17},
+where we want to predict a quantity, which we observe during training,
+given some text.
 Although they obtain strong performance, the systems require large amounts of static annotation.
 The supervised framework constrains the model to learn only observed phenomenon.
 Explicitly using latent variable models allows us to explore more structure. 
@@ -165,7 +167,9 @@ Prior work using latent variable models saw some success,
 but did not surpass supervised methods
 \citep{liang2009semalign,grenager2005unsup}.
 Unsupervised methods for extraction have not seen a resurgence in recent times.
+FINISH?
 
+DELETE:
 Unlike tasks such as translation or summarization where one would
 need to first understand a source passage then generate a target passage,
 D2T isolates the task of NLU from NLG by introducing an intermediate representation in
@@ -192,6 +196,20 @@ to the underlying data.
 %text generation tasks, but the performance seemingly fails to generalize to long-form generation.
 %D2T is a task that isolates performance on long-form generation by disentangling 
 %generation quality from input representation.
+\paragraph{Problem Description}
+We consider datasets consisting of aligned data and summaries
+$\set{(\br^{(1)}, \by^{(1)}),(\br^{(2)},\by^{(2)})\ldots}$.
+For brevity, we refer to a single data and summary as $\br,\by$, omitting the superscript.
+Each data $\br = \set{r_1,\ldots,r_N}$ is a set of $N$ records, each of which has
+an entity, type, and value $r_i = (e_i, t_i, v_i)$.
+We use $\br$ as a flattened representation of an information network.
+Whereas an information network may also be represented as a hypergraph,
+$\br$ is a list of relations.
+We refer collectively to all the entities, types, and values in a given data $\br$ as
+$\be,\bt,\bv$ respectively.
+Each summary $\by = \set{y_1,\ldots,y_T}$ is a sequence of tokens of length $T$.
+As a concrete example, consider the BLANK dataset:
+BLANK
 
 \paragraph{Rotowire}
 \begin{comment}
@@ -199,6 +217,7 @@ to the underlying data.
 \item Transition towards more formal definitions so that we can define the tasks
 \item TODO: Can maybe replace this whole section with a picture.
 \end{comment}
+
 We provide a concrete example from a D2T dataset:
 In this proposal we focus on the recently proposed
 the Rotowire dataset \citep{wiseman2017d2t}.
