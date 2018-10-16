@@ -122,32 +122,50 @@ latent variable models
 As information networks get larger and more complex,
 acquiring explicit supervision for the training of information extraction systems
 becomes extremely expensive.
-Both the representation of the information in the knowledge base
+Information networks are also dynamic;
+over time one method for representing information may become inadequate.
+Currently, both the representation of the information in a knowledge base
 as well as the extraction process itself must be hand-designed.
 In this proposal we present a framework towards automating the
 training of information extraction systems with minimal supervision.
 
 \paragraph{Background}
-Natural language processing can largely be decomposed into two separate but
-closely related tasks: natural language understanding (NLU) and natural language
+Natural language processing contains two separate but
+closely related subfields: natural language understanding (NLU) and natural language
 generation (NLG).
+Recent approaches to information extraction use only the NLU perspective
+and frame extraction as a classification problem.
 We argue that the two tasks are complementary,
 and capitalize on their duality by proposing a method to train a NLU system
 without direct supervision.
-More specifically, we utilize the latent variable model framework to train an information
+More specifically, we utilize the latent variable model framework to train a 
+neural network-based information
 extraction system using the performance of a generative model of text as learning signal.
-Intuitively, we want an information extraction system to extract information that
-best explains the given text.
-We focus on the task of summarizing a table of data,
-which we refer to as Data-to-Text (D2T).
+By training in this fashion we obtain an information extraction system
+that extracts facts that best explains the given text under the respective generative model.
 
-\paragraph{Why is D2T important?}
+\paragraph{IE Trends}
 \begin{comment}
-\item Convince readers that this is a good information extraction task,
-similar to semantic parsing / instruction following?
-\item Highlight: Closed domain
-\item TODO: probably need to rewrite this, rethink framing
+\item Recent work using neural network-based systems cast information extraction
+as a supervised problem
+\citep{wiseman2017d2t,dossantos2015classification,collobert2011nlpscratch,weissenborn17}.
+\item Previously \citet{liang2009semalign} formulated an unsupervised approach
+    to aligning segments in summaries to records.
+\item Highlight: Relatively closed domain, but have facts that are functions of the
+given data table.
 \end{comment}
+
+Recent work using neural network-based systems cast information extraction
+as a supervised learning problem
+\citep{wiseman2017d2t,dossantos2015classification,collobert2011nlpscratch,weissenborn17}.
+Although they obtain strong performance, the systems require large amounts of static annotation.
+The supervised framework constrains the model to learn only observed phenomenon.
+Explicitly using latent variable models allows us to explore more structure. 
+Prior work using latent variable models saw some success,
+but did not surpass supervised methods
+\citep{liang2009semalign,grenager2005unsup}.
+Unsupervised methods for extraction have not seen a resurgence in recent times.
+
 Unlike tasks such as translation or summarization where one would
 need to first understand a source passage then generate a target passage,
 D2T isolates the task of NLU from NLG by introducing an intermediate representation in
@@ -367,6 +385,7 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
 (TODO: functions)
 
 \newpage
+
 \section*{Outline}
 \begin{enumerate}
 \item Introduction
