@@ -144,7 +144,7 @@ without direct supervision.
 More specifically, we train an information extraction system by using
 the performance of a deep generative model as signal.
 By training in this fashion we obtain an information extraction system
-that extracts facts that best explains the given text.
+that extracts facts that best explain the given text.
 
 %\paragraph{Supervision in NLU}
 Recent work using neural network-based systems cast information extraction
@@ -208,13 +208,14 @@ Consider a datum that consists of a single record,
 $\br = \set{(e_1 = \textrm{Jeremy Lin}, t_1 = \textrm{POINTS}, v_1 = 19)}$,
 and a simple statement $\by = $``Jeremy Lin scored 19 points''.
 In a simple case, the process of information extraction may be to infer any
-subset of $\br$, which in this case will be our latent $\bz$, given its complement in $\br, \bx = \bz^C$,
+subset of $\br$, which in this case will be our latent $\bz$, given the remaining elements in $\br$
+which corresponds to $\bx$,
 as well as the text $\by$.
 For example, we may want to infer the type of the relation $t$ given 
 the entity Jeremy Lin, the value 19, as well as the text $\by$.
-In this case, we would have $\bz = \set{t_1}, \bx = \set{e_1,v_1}$.
+In this case, we would have $\bz = \set{t_1}$ and $\bx = \set{e_1,v_1}$.
 In an alternative task, we may want to infer the value $v_1$ 
-as well as the type $t_1$ given $\by$ and $e_1$, therefore $\bz = \set{t_1,v_1}, \bx=\set{e_1}$.
+as well as the type $t_1$ given $\by$ and $e_1$, therefore $\bz = \set{t_1,v_1}$ and $\bx=\set{e_1}$.
 
 Note that we are not constrained to setting $\bz$ to subsets of $\br$.
 We also consider the case where $\bz$ includes alignments from individual words $y_t$
@@ -225,9 +226,20 @@ where each $c_t$ is associated with $y_t$ and selects a record $r_i$ such that $
 We propose to demonstrate the efficacy of the LVM framework in the
 weakly supervised information extraction setting.
 We do so by estimating the distribution $p(\bz\mid\by,\bx)$,
-where $\bz = \set{\bc, \bv}$ .
+where $\bz = \set{\bc, \bv}$ and $\bx = \set{\be, \bt}$.
+In the previous section, we defined $\bc$ to be a latent variable that represents the
+alignments from words to records,
+while $\bv$ corresponds to all the values in a datum of records
+and $\be,\bt$ the entities and types respectively.
+This distribution $p(\bz\mid\by,\bx)$ is the information extraction system,
+which infers the alignments and values given the text, entities, and types.
 
-JUNK PAST THIS POINT, DO NOT READ.
+Since we do not assume that we have supervision for $\bz$,
+we cannot learn the information extraction system directly.
+Insead, we must instead learn a conditional model 
+$p(\by,\bz\mid\bx)$ since we do have supervision for $\by$.
+
+JUNK PAST THIS POINT.
 
 \paragraph{Old Prop}
 Our goal is to maximize the \underline{coverage} of the information extraction system,
@@ -460,14 +472,18 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
     \end{enumerate}
 \item Proposal
     \begin{enumerate}
-    \item Define IE tasks as the distributions we would like to learn
+    \item Define IE as the distribution we would like to learn
         \begin{enumerate}
         \item Align: $p(c\mid\by,\br)$
-        \item Values: $p(c,\bv\mid\by,\be,\bt)$
+        \item Values: $p(c,\bv\mid\by,\be,\bt)$ (Just this one)
         \item ??: $p()$
         \end{enumerate}
     \item Define generative model: h-HSMM as in \citep{liang2009semalign},
-        but with neural components as in \citep{wiseman2018template}
+        but with neural components as in \citep{wiseman2018template}.
+        The generative story:
+        \begin{enumerate}
+        \item 
+        \end{enumerate}
     \item Training and Inference
         \begin{enumerate}
         \item Maximize ELBO
