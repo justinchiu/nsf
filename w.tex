@@ -153,15 +153,12 @@ as a supervised problem
 Although approaches do incorporate structure into internal representations,
 for example to integrate multiple sources of information \citep{weissenborn17},
 the final output still uses strong supervision during training.
+Finding strong supervision is a difficult task, and as datasets get larger
+we must approach information extraction from a different perspective.
 Latent variable models (LVMs) are one method for alleviating the need for supervision.
 LVMs do not require manual labels, as they instead treat quantities of interest
 as latent random variables and deal with them in a probabilistically principled 
 fashion.
-
-Previously \citet{liang2009semalign} formulated an unsupervised approach
-using a LVM to aligning segments in summaries to records.
-Although the work achieved
-good results, the approach has not been revisited in a larger setting.
 We will leverage recent advances in deep generative modeling in order to
 scale and extend their model while still training without explicit supervision.
 
@@ -170,7 +167,7 @@ Neural models for language generation have seen much progress in recent years,
 with state of the art performance in both language modeling and translation \citep{?} (MoS + Transformer).
 By integrating the powerful language modeling capabilities of neural networks with
 the inductive biases of graphical models through LVMs,
-we can leverage the graphical model framework to derive a principled method
+we can leverage the LVM framework to derive a principled method
 for training an information extraction system with less supervision.
 Namely, we turn to an efficient technique for training hard attention 
 that relies on variational inference \citep{deng2018attn}.
@@ -178,8 +175,8 @@ This technique is applicable to sequential LVMs such as hidden Markov models
 and hidden semi-Markov models (HSMMs).
 HSMMs have been applied to small scale datasets for text generation \citep{wiseman2018template}
 as well as without integrating neural networks \citep{liang2009semalign}.
-We will scale HSMMs to large datasets through variational inference and use
-the signal from our generative model, the HSMM, in order to train an information extraction system (redundant).
+We will scale sequential LVMs to large datasets through variational inference and use
+the signal from our generative model in order to train an information extraction system.
 
 %Modern neural systems have demonstrated state-of-the-art performance on short-form
 %text generation tasks, but the performance seemingly fails to generalize to long-form generation.
