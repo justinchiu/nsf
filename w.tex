@@ -157,16 +157,16 @@ Latent variable models (LVMs) are one method for alleviating the need for superv
 LVMs do not require manual labels, as they instead treat quantities of interest
 as latent random variables and deal with them in a probabilistically principled 
 fashion.
+
 Previously \citet{liang2009semalign} formulated an unsupervised approach
-to aligning segments in summaries to records. Although the work achieved
-good results, the approach has not been revisited in a larger setting,
-namely with larger datasets consisting of long sequences of text 
-in addition to more flexible models.
+using a LVM to aligning segments in summaries to records.
+Although the work achieved
+good results, the approach has not been revisited in a larger setting.
 We will leverage recent advances in deep generative modeling in order to
 scale and extend their model while still training without explicit supervision.
 
 %\paragraph{Recent advances in NLG}
-Neural models for language have seen much progress in recent years,
+Neural models for language generation have seen much progress in recent years,
 with state of the art performance in both language modeling and translation \citep{?} (MoS + Transformer).
 By integrating the powerful language modeling capabilities of neural networks with
 the inductive biases of graphical models through LVMs,
@@ -178,8 +178,8 @@ This technique is applicable to sequential LVMs such as hidden Markov models
 and hidden semi-Markov models (HSMMs).
 HSMMs have been applied to small scale datasets for text generation \citep{wiseman2018template}
 as well as without integrating neural networks \citep{liang2009semalign}.
-We will scale HSMMs to long datasets through variational inference and use
-the signal from our generative model, the HSMM, in order to train an information extraction system.
+We will scale HSMMs to large datasets through variational inference and use
+the signal from our generative model, the HSMM, in order to train an information extraction system (redundant).
 
 %Modern neural systems have demonstrated state-of-the-art performance on short-form
 %text generation tasks, but the performance seemingly fails to generalize to long-form generation.
@@ -207,17 +207,17 @@ but $\by$ is always the text.
 As a concrete example, we use the Rotowire dataset \citep{wiseman2017d2t}.
 Rotowire contains summaries of basketball games $\by$ aligned with the respective
 box scores $\br$ of those games.
-Consider a datum that consists of a single fact,
-$\br = \set{(e = \textrm{Jeremy Lin}, t = \textrm{POINTS}, v = 19)}$,
+Consider a datum that consists of a single record,
+$\br = \set{(e_1 = \textrm{Jeremy Lin}, t_1 = \textrm{POINTS}, v_1 = 19)}$,
 and a simple statement $\by = $``Jeremy Lin scored 19 points''.
-The process of information extraction would be to infer any
-subset of $\br$, which we denote $\bz$, given its complement in $\br, \bz^C=\bx$,
+In a simple case, the process of information extraction may be to infer any
+subset of $\br$, which in this case will be our latent $\bz$, given its complement in $\br, \bx = \bz^C$,
 as well as the text $\by$.
 For example, we may want to infer the type of the relation $t$ given 
 the entity Jeremy Lin, the value 19, as well as the text $\by$.
-In this case, we would have $\bz = \set{t}, \bx = \set{e,v}$.
-In an alternative task, we may want to infer the value $v$ 
-as well as the type $t$ given $\by$ and $\be$, therefore $\bz = \set{t,v}, \bx=\set{e}$.
+In this case, we would have $\bz = \set{t_1}, \bx = \set{e_1,v_1}$.
+In an alternative task, we may want to infer the value $v_1$ 
+as well as the type $t_1$ given $\by$ and $e_1$, therefore $\bz = \set{t_1,v_1}, \bx=\set{e_1}$.
 
 \paragraph{Proposal}
 We propose to 
@@ -430,18 +430,12 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
         \item Recent work using neural network-based systems cast information extraction
         as a supervised problem
         \citep{wiseman2017d2t,dossantos2015classification}.
-        \item Although approaches do incorporate structure into internal representations,
-        for example to integrate multiple sources of information \citep{weissenborn17},
-        the final output still uses strong supervision during training.
+        \item Even with structured representations \citep{weissenborn17}, the final output is still supervised.
+        \item Highlight issues with this? Where do labels come from? What if we want to change our representation?
         \item Latent variable models (LVMs) are one method for alleviating the need for supervision.
         \item LVMs do not require manual labels, as they instead treat quantities of interest
             as latent random variables and deal with them in a probabilistically principled 
             fashion.
-        \item Previously \citet{liang2009semalign} formulated an unsupervised approach
-            to aligning segments in summaries to records. Although the work achieved
-            good results, the approach has not been revisited in a larger setting,
-            namely with larger datasets with long sequences of text as well as more powerful
-            models.
             We will leverage recent advances in deep generative modeling in order to
             train without supervision.
         \end{enumerate}
@@ -456,6 +450,11 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
             and hidden semi-Markov models (HSMMs).
         \item HSMMs have been applied to small scale datasets for text generation \citep{wiseman2018template}
             as well as without integrating neural networks \citep{liang2009semalign}.
+        \item Previously \citet{liang2009semalign} formulated an unsupervised approach
+            to aligning segments in summaries to records. Although the work achieved
+            good results, the approach has not been revisited in a larger setting,
+            namely with larger datasets with long sequences of text as well as more powerful
+            models.
         \item We will scale neural HSMMs to long datasets through variational inference and use
             the signal from our generative model, the HSMM, in order to train an information extraction system.
         \end{enumerate}
