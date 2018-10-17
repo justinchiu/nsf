@@ -219,25 +219,42 @@ as well as the type $t_1$ given $\by$ and $e_1$, therefore $\bz = \set{t_1,v_1}$
 
 Note that we are not constrained to setting $\bz$ to subsets of $\br$.
 We also consider the case where $\bz$ includes alignments from individual words $y_t$
-to records $r_i$. We denote the alignments $\bc = \set{c_1,\ldots,c_T}$,
-where each $c_t$ is associated with $y_t$ and selects a record $r_i$ such that $c_t = i$.
+to records $r_i$. We denote the alignments $\ba = \set{a_1,\ldots,a_T}$,
+where each $a_t$ is associated with $y_t$ and selects a record $r_i$ such that $a_t = i$.
 
 \paragraph{Proposal}
 We propose to demonstrate the efficacy of the LVM framework in the
 weakly supervised information extraction setting.
-We do so by estimating the distribution $p(\bz\mid\by,\bx)$,
-where $\bz = \set{\bc, \bv}$ and $\bx = \set{\be, \bt}$.
-In the previous section, we defined $\bc$ to be a latent variable that represents the
+We do so by estimating the distribution over alignments and values
+given the text, entities, and types.
+This is denoted by $p(\bz\mid\by,\bx)$,
+where $\bz = \set{\ba, \bv}$ and $\bx = \set{\be, \bt}$.
+In the previous section, we defined $\ba$ to be a latent variable that represents the
 alignments from words to records,
 while $\bv$ corresponds to all the values in a datum of records
 and $\be,\bt$ the entities and types respectively.
-This distribution $p(\bz\mid\by,\bx)$ is the information extraction system,
+This distribution $p(\bz\mid\by,\bx)$ is the IE system,
 which infers the alignments and values given the text, entities, and types.
 
 Since we do not assume that we have supervision for $\bz$,
 we cannot learn the information extraction system directly.
-Insead, we must instead learn a conditional model 
-$p(\by,\bz\mid\bx)$ since we do have supervision for $\by$.
+Insead, we must learn a conditional model 
+of the text and latent variables given the conditioning
+$p(\by,\bz\mid\bx)$ since we observe $\by$.
+We will subsequently show how to use this conditional model to
+train the IE system.
+We define the conditional model with the following generative story:
+\begin{enumerate}
+\item Value Choice:
+For each pair of entities and types in our datum of records, we predict a value.
+\item Record Choice:
+Conditioned on our choices of values as well as the given entities and records,
+we choose a sequence of records $\ba = \set{a_1,\ldots,a_I}$,
+denoted by their indices, to describe.
+\item Word Choice:
+For each record alignment $a_i$,
+we choose a sequence of words $\by_i = \set{y_{i1},\ldots,y_{iJ}}$ to describe the record.
+\end{enumerate}
 
 JUNK PAST THIS POINT.
 
