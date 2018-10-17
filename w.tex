@@ -129,114 +129,100 @@ as well as the extraction process itself must be hand-designed.
 In this proposal we present a framework towards automating the
 training of information extraction systems with minimal supervision.
 
-\paragraph{Background}
+\paragraph{Introduction}
+% Define generative model?
 Natural language processing contains two separate but
 closely related subfields: natural language understanding (NLU) and natural language
 generation (NLG).
 Recent approaches to information extraction use only the NLU perspective
 and frame extraction as a classification problem.
-We argue that the two tasks are complementary,
+We argue that the two perspectives, NLU and NLG, are complementary
 and capitalize on their duality by proposing a method to train a NLU system
 without direct supervision.
-More specifically, we utilize the latent variable model framework to train a 
-neural network-based information
-extraction system using the performance of a generative model of text as learning signal.
+%More specifically, we utilize the latent variable model framework to train a 
+%neural network-based information extraction system and use as signal 
+More specifically, we train an information extraction system by using
+the performance of a deep generative model as signal.
 By training in this fashion we obtain an information extraction system
-that extracts facts that best explains the given text under the respective generative model.
+that extracts facts that best explains the given text.
 
-\paragraph{IE Trends}
-\begin{comment}
-\item Recent work using neural network-based systems cast information extraction
+%\paragraph{Supervision in NLU}
+Recent work using neural network-based systems cast information extraction
 as a supervised problem
-\citep{wiseman2017d2t,dossantos2015classification,collobert2011nlpscratch,weissenborn17}.
-\item Previously \citet{liang2009semalign} formulated an unsupervised approach
-    to aligning segments in summaries to records.
-\item Highlight: Relatively closed domain, but have facts that are functions of the
-given data table as well as .
-\end{comment}
+\citep{wiseman2017d2t,dossantos2015classification}.
+Although approaches do incorporate structure into internal representations,
+for example to integrate multiple sources of information \citep{weissenborn17},
+the final output still uses strong supervision during training.
+Latent variable models (LVMs) are one method for alleviating the need for supervision.
+LVMs do not require manual labels, as they instead treat quantities of interest
+as latent random variables and deal with them in a probabilistically principled 
+fashion.
+Previously \citet{liang2009semalign} formulated an unsupervised approach
+to aligning segments in summaries to records. Although the work achieved
+good results, the approach has not been revisited in a larger setting,
+namely with larger datasets consisting of long sequences of text 
+in addition to more flexible models.
+We will leverage recent advances in deep generative modeling in order to
+scale and extend their model while still training without explicit supervision.
 
-Recent work on extraction using neural network-based systems cast information extraction
-as a supervised learning problem
-\citep{wiseman2017d2t,dossantos2015classification,collobert2011nlpscratch,weissenborn17},
-where we want to predict a quantity, which we observe during training,
-given some text.
-Although they obtain strong performance, the systems require large amounts of static annotation.
-The supervised framework constrains the model to learn only observed phenomenon.
-Explicitly using latent variable models allows us to explore more structure. 
-Prior work using latent variable models saw some success,
-but did not surpass supervised methods
-\citep{liang2009semalign,grenager2005unsup}.
-Unsupervised methods for extraction have not seen a resurgence in recent times.
-FINISH?
-
-DELETE:
-Unlike tasks such as translation or summarization where one would
-need to first understand a source passage then generate a target passage,
-D2T isolates the task of NLU from NLG by introducing an intermediate representation in
-the form of structured data.
-This makes the task similar to semantic parsing, program induction, and instruction following,
-except for the lack of compositionality in D2T's intermediate representation.
-Whereas the other tasks assume an executable intermediate representation,
-D2T has a latent representation that takes the form of alignments from 
-words in the summary to their respective referent data.
-This allows D2T to serve as a useful benchmark for conditional text generation
-because of the reduced complexity.
-In addition to establishing a convenient representation,
-D2T allows us to assume relatively safely that the text is generated conditioned only on
-functions of the data table.
-This assumption is central to the task as it allows
-practitioners to define heuristics both for providing weak supervision to an
-information extraction system as well as evaluating a summary's fidelity
-to the underlying data.
-% initial analysis shows this assumption holds x% of the time.
-
-% include brief review here?
+%\paragraph{Recent advances in NLG}
+Neural models for language have seen much progress in recent years,
+with state of the art performance in both language modeling and translation \citep{?} (MoS + Transformer).
+By integrating the powerful language modeling capabilities of neural networks with
+the inductive biases of graphical models through LVMs,
+we can leverage the graphical model framework to derive a principled method
+for training an information extraction system with less supervision.
+Namely, we turn to an efficient technique for training hard attention 
+that relies on variational inference \citep{deng2018attn}.
+This technique is applicable to sequential LVMs such as hidden Markov models 
+and hidden semi-Markov models (HSMMs).
+HSMMs have been applied to small scale datasets for text generation \citep{wiseman2018template}
+as well as without integrating neural networks \citep{liang2009semalign}.
+We will scale HSMMs to long datasets through variational inference and use
+the signal from our generative model, the HSMM, in order to train an information extraction system.
 
 %Modern neural systems have demonstrated state-of-the-art performance on short-form
 %text generation tasks, but the performance seemingly fails to generalize to long-form generation.
 %D2T is a task that isolates performance on long-form generation by disentangling 
 %generation quality from input representation.
-\paragraph{Problem Description}
-We consider datasets consisting of aligned data and summaries
+\paragraph{Background}
+We consider datasets consisting of aligned data and text
 $\set{(\br^{(1)}, \by^{(1)}),(\br^{(2)},\by^{(2)})\ldots}$.
-For brevity, we refer to a single data and summary as $\br,\by$, omitting the superscript.
-Each data $\br = \set{r_1,\ldots,r_N}$ is a set of $N$ records, each of which has
+For brevity, we refer to a single datum and text as $\br,\by$, omitting the superscript.
+Each datum $\br = \set{r_1,\ldots,r_N}$ is a set of $N$ records, each of which has
 an entity, type, and value $r_i = (e_i, t_i, v_i)$.
-We use $\br$ as a flattened representation of an information network.
+The datum $\br$ is a flattened representation of an information network.
 Whereas an information network may also be represented as a hypergraph,
-$\br$ is a list of relations.
-We refer collectively to all the entities, types, and values in a given data $\br$ as
+$\br$ is a list of relations or records.
+We refer collectively to all the entities, types, and values in a given datum $\br$ as
 $\be,\bt,\bv$ respectively.
-Each summary $\by = \set{y_1,\ldots,y_T}$ is a sequence of tokens of length $T$.
-As a concrete example, consider the BLANK dataset:
-BLANK
+Each text $\by = \set{y_1,\ldots,y_T}$ is a sequence of tokens.
 
-\paragraph{Rotowire}
-\begin{comment}
-\item Motivating extraction example
-\item Transition towards more formal definitions so that we can define the tasks
-\item TODO: Can maybe replace this whole section with a picture.
-\end{comment}
+Let random variables $\bz$ be unobserved or latent, $\by$ observed, and $\bx$ taken as conditioning
+and thus not modelled.
+For information extraction we are interested in distributions $p(\bz\mid\by,\bx)$,
+where $\bz$ and $\bx$ may correspond to various quantities depending on the task
+but $\by$ is always the text.
 
-We provide a concrete example from a D2T dataset:
-In this proposal we focus on the recently proposed
-the Rotowire dataset \citep{wiseman2017d2t}.
-Rotowire contains summaries of basketball games aligned with the respective
-box scores of those games.
-We consider a box score to be a collection or set of facts,
-where a fact is a tuple of an entity, relation type, and value.
-For example, consider the collection:
-a collection that consists of a single fact, (entity = Jeremy Lin, type = POINTS, value = 19),
-and a simple statement ``Jeremy Lin scored 19 points''.
-The relation type is the label in the box score, for example POINTS, REBOUNDS, etc.
-In order to automatically evaluate this summary,
-thanks to our assumption the summary was generated from only the data,
-we are able to use an information extraction system (IE) to extract entity-value pairs
-from text,
-predict the type of the relation between the entity and value,
-and compare resulting tuple (entity, type, value) to the given collection of facts.
+As a concrete example, we use the Rotowire dataset \citep{wiseman2017d2t}.
+Rotowire contains summaries of basketball games $\by$ aligned with the respective
+box scores $\br$ of those games.
+Consider a datum that consists of a single fact,
+$\br = \set{(e = \textrm{Jeremy Lin}, t = \textrm{POINTS}, v = 19)}$,
+and a simple statement $\by = $``Jeremy Lin scored 19 points''.
+The process of information extraction would be to infer any
+subset of $\br$, which we denote $\bz$, given its complement in $\br, \bz^C=\bx$,
+as well as the text $\by$.
+For example, we may want to infer the type of the relation $t$ given 
+the entity Jeremy Lin, the value 19, as well as the text $\by$.
+In this case, we would have $\bz = \set{t}, \bx = \set{e,v}$.
+In an alternative task, we may want to infer the value $v$ 
+as well as the type $t$ given $\by$ and $\be$, therefore $\bz = \set{t,v}, \bx=\set{e}$.
 
-\paragraph{Our proposal}
+\paragraph{Proposal}
+We propose to 
+
+\paragraph{Old Prop}
 Our goal is to maximize the \underline{coverage} of the information extraction system,
 which we define as the number of words contained within segments of text that are correctly aligned to data,
 while minimizing the amount of supervision needed.
@@ -413,51 +399,85 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
         \begin{enumerate}
         \item What are information networks? Characterized by large graphs and voluminous data.
         \item Representation is key
-        \item As they scale, acquiring explicit supervision 
-            for training an IE system to populate nodes and edges
-            becomes prohibitively expensive.
-        \item We propose a method towards training IE systems
-            with minimal supervision.
-        \item How will this have practical applications as in the
-            description in the BAA?
+        \item As information networks get larger and more complex,
+            acquiring explicit supervision for the training of information extraction systems
+            becomes extremely expensive.
+        \item Information networks are also dynamic;
+            over time one method for representing information may become inadequate.
+        \item Currently, both the representation of the information in a knowledge base
+            as well as the extraction process itself must be hand-designed.
+        \item In this proposal we present a framework towards automating the
+            training of information extraction systems with minimal supervision.
         \end{enumerate}
     \item Decomposition of NLP into NLU and NLG
         \begin{enumerate}
-        \item Leverage the duality between NLU and NLG
-            to train an NLU system end-to-end without direct supervision
-        \item We want to train an IE system
-            that explains the given text.
+        \item Natural language processing contains two separate but
+            closely related subfields: natural language understanding (NLU) and natural language
+            generation (NLG).
+        \item Recent approaches to information extraction use only the NLU perspective
+            and frame extraction as a classification problem.
+        \item We argue that the two tasks are complementary,
+            and capitalize on their duality by proposing a method to train a NLU system
+            without direct supervision.
+        \item More specifically, we utilize the latent variable model framework to train a 
+            neural network-based information
+            extraction system using the performance of a generative model of text as learning signal.
+        \item By training in this fashion we obtain an information extraction system
+            that extracts facts that best explains the given text under the respective generative model.
         \end{enumerate}
-    \item Stagnation in NLU
+    \item Supervision in NLU
         \begin{enumerate}
-        \item Most still frame NLU as a classification problem.
-            Incorporate a degree of structure (Guillaume CRF BLSTM),
-            but still rely on strong supervision.
+        \item Recent work using neural network-based systems cast information extraction
+        as a supervised problem
+        \citep{wiseman2017d2t,dossantos2015classification}.
+        \item Although approaches do incorporate structure into internal representations,
+        for example to integrate multiple sources of information \citep{weissenborn17},
+        the final output still uses strong supervision during training.
+        \item Latent variable models (LVMs) are one method for alleviating the need for supervision.
+        \item LVMs do not require manual labels, as they instead treat quantities of interest
+            as latent random variables and deal with them in a probabilistically principled 
+            fashion.
+        \item Previously \citet{liang2009semalign} formulated an unsupervised approach
+            to aligning segments in summaries to records. Although the work achieved
+            good results, the approach has not been revisited in a larger setting,
+            namely with larger datasets with long sequences of text as well as more powerful
+            models.
+            We will leverage recent advances in deep generative modeling in order to
+            train without supervision.
         \end{enumerate}
-    \item Recent advances in NLG? (Probably don't talk about this)
+    \item Recent advances in NLG
         \begin{enumerate}
-        \item Incorporation of neural networks in LVMs (templates, attention)
+        \item Deep generative models, namely LVMs with neural network components,
+            have integrated the flexibility of neural networks with the
+            inductive biases of graphical models.
+        \item Most importantly, efficient techniques for training hard attention 
+            that rely on variational inference \citep{deng2018attn}.
+            This technique is applicable to sequential LVMs such as hidden Markov models 
+            and hidden semi-Markov models (HSMMs).
+        \item HSMMs have been applied to small scale datasets for text generation \citep{wiseman2018template}
+            as well as without integrating neural networks \citep{liang2009semalign}.
+        \item We will scale neural HSMMs to long datasets through variational inference and use
+            the signal from our generative model, the HSMM, in order to train an information extraction system.
         \end{enumerate}
     \end{enumerate}
 \item Background
     \begin{enumerate}
-    \item Formal problem definition? Or just intuition? (Need to ask Sasha)
-        For now, let's go with formal notation.
-    \item Motivate LVMs by highlighting the latent structure (sounds difficult)
-    \item Should I get into LVMs and posterior inference? (Ask Sasha),
-        most likely no, since the motivation and task are not super clear yet.
+    \item Formal notation for elements of the dataset
+    \item Define the distribution we would like to learn: $p(z\mid y, x)$.
+        $z$ and $x$ are placeholders and will change, but $y$ is always the text.
+    \item Link to rotowire example
+        (argument is that ACE is made up of ontonotes-like sentences, so all short-form)
     \end{enumerate}
-\item Problem Definition
+\item Proposal
     \begin{enumerate}
-    \item Notation should already be setup in background? Ask Sasha
-    \item Link notation to an example, either rotowire or ACE or 
-        some other IE dataset
     \item Define tasks as the distributions we would like to learn
         \begin{enumerate}
-        \item Align: $p()$
-        \item Values: $p()$
+        \item Align: $p(c\mid\by,\br)$
+        \item Values: $p(c,\bv\mid\by,\be,\bt)$
         \item ??: $p()$
         \end{enumerate}
+    \item Outline information extraction system
+    \item Define generative model
     \end{enumerate}
 \item Proposal (All other items below are subsections?)
     \begin{enumerate}
