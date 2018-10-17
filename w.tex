@@ -216,8 +216,18 @@ In this case, we would have $\bz = \set{t_1}, \bx = \set{e_1,v_1}$.
 In an alternative task, we may want to infer the value $v_1$ 
 as well as the type $t_1$ given $\by$ and $e_1$, therefore $\bz = \set{t_1,v_1}, \bx=\set{e_1}$.
 
+Note that we are not constrained to setting $\bz$ to subsets of $\br$.
+We also consider the case where $\bz$ includes alignments from individual words $y_t$
+to records $r_i$. We denote the alignments $\bc = \set{c_1,\ldots,c_T}$,
+where each $c_t$ is associated with $y_t$ and selects a record $r_i$ such that $c_t = i$.
+
 \paragraph{Proposal}
-We propose to 
+We propose to demonstrate the efficacy of the LVM framework in the
+weakly supervised information extraction setting.
+We do so by estimating the distribution $p(\bz\mid\by,\bx)$,
+where $\bz = \set{\bc, \bv}$ .
+
+JUNK PAST THIS POINT, DO NOT READ.
 
 \paragraph{Old Prop}
 Our goal is to maximize the \underline{coverage} of the information extraction system,
@@ -396,9 +406,7 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
         \begin{enumerate}
         \item What are information networks? Characterized by large graphs and voluminous data.
         \item Representation is key
-        \item As information networks get larger and more complex,
-            acquiring explicit supervision for the training of information extraction systems
-            becomes extremely expensive.
+        \item Supervision is expensive.
         \item Information networks are also dynamic;
             over time one method for representing information may become inadequate.
         \item Currently, both the representation of the information in a knowledge base
@@ -408,19 +416,13 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
         \end{enumerate}
     \item Decomposition of NLP into NLU and NLG
         \begin{enumerate}
-        \item Natural language processing contains two separate but
-            closely related subfields: natural language understanding (NLU) and natural language
+        \item Two separate but closely related subfields: natural language understanding (NLU) and natural language
             generation (NLG).
         \item Recent approaches to information extraction use only the NLU perspective
             and frame extraction as a classification problem.
         \item We argue that the two tasks are complementary,
             and capitalize on their duality by proposing a method to train a NLU system
             without direct supervision.
-        \item More specifically, we utilize the latent variable model framework to train a 
-            neural network-based information
-            extraction system using the performance of a generative model of text as learning signal.
-        \item By training in this fashion we obtain an information extraction system
-            that extracts facts that best explains the given text under the respective generative model.
         \end{enumerate}
     \item Supervision in NLU
         \begin{enumerate}
@@ -428,13 +430,12 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
         as a supervised problem
         \citep{wiseman2017d2t,dossantos2015classification}.
         \item Even with structured representations \citep{weissenborn17}, the final output is still supervised.
-        \item Highlight issues with this? Where do labels come from? What if we want to change our representation?
+        \item Again, supervision does not scale.
+        \item Maybe dynamism of information networks? Don't have an argument on hand, though.
         \item Latent variable models (LVMs) are one method for alleviating the need for supervision.
         \item LVMs do not require manual labels, as they instead treat quantities of interest
             as latent random variables and deal with them in a probabilistically principled 
             fashion.
-            We will leverage recent advances in deep generative modeling in order to
-            train without supervision.
         \end{enumerate}
     \item Recent advances in NLG
         \begin{enumerate}
@@ -447,13 +448,6 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
             and hidden semi-Markov models (HSMMs).
         \item HSMMs have been applied to small scale datasets for text generation \citep{wiseman2018template}
             as well as without integrating neural networks \citep{liang2009semalign}.
-        \item Previously \citet{liang2009semalign} formulated an unsupervised approach
-            to aligning segments in summaries to records. Although the work achieved
-            good results, the approach has not been revisited in a larger setting,
-            namely with larger datasets with long sequences of text as well as more powerful
-            models.
-        \item We will scale neural HSMMs to long datasets through variational inference and use
-            the signal from our generative model, the HSMM, in order to train an information extraction system.
         \end{enumerate}
     \end{enumerate}
 \item Background
@@ -466,35 +460,26 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
     \end{enumerate}
 \item Proposal
     \begin{enumerate}
-    \item Define tasks as the distributions we would like to learn
+    \item Define IE tasks as the distributions we would like to learn
         \begin{enumerate}
         \item Align: $p(c\mid\by,\br)$
         \item Values: $p(c,\bv\mid\by,\be,\bt)$
         \item ??: $p()$
         \end{enumerate}
-    \item Outline information extraction system
-    \item Define generative model
-    \end{enumerate}
-\item Proposal (All other items below are subsections?)
-    \begin{enumerate}
-    \item Learn the IE system by using it as the approximate posterior
-        of a LVM for summarization in order to leverage advances in NLG.
-    \end{enumerate}
-\item Model
-    \begin{enumerate}
-    \item 
-    \end{enumerate}
-\item Inference
-    \begin{enumerate}
-    \item 
-    \end{enumerate}
-\item Experiments
-    \begin{enumerate}
-    \item 
-    \end{enumerate}
-\item Conclusion
-    \begin{enumerate}
-    \item 
+    \item Define generative model: h-HSMM as in \citep{liang2009semalign},
+        but with neural components as in \citep{wiseman2018template}
+    \item Training and Inference
+        \begin{enumerate}
+        \item Maximize ELBO
+        \end{enumerate}
+    \item Experiments
+        \begin{enumerate}
+        \item 
+        \end{enumerate}
+    \item Conclusion
+        \begin{enumerate}
+        \item 
+        \end{enumerate}
     \end{enumerate}
 \end{enumerate}
 
