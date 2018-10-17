@@ -17,4 +17,4 @@ clean:
 	latexmk -CA
 
 copy:
-	cp w.pdf temp.pdf
+	cp w.pdf temp2.pdf

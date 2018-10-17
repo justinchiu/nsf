@@ -256,6 +256,7 @@ For each record alignment $a_i$,
 we choose a sequence of words $\by_i = \set{y_{i1},\ldots,y_{iJ}}$ to describe the record.
 \end{enumerate}
 
+\begin{comment}
 JUNK PAST THIS POINT.
 
 \paragraph{Old Prop}
@@ -269,13 +270,13 @@ and learn boolean-valued functions of the data as a step
 towards representation learning.
 
 \paragraph{Problem Definition}
-\begin{comment}
+\begin{enumerate}
 \item Define notation
 \item Define generation, mention sam and puduppully work.
 \item Define extraction and its subtasks, mention regina and percy's work.
 \item TODO: maybe combine align and values? Although I prefer to keep them separate
 since values will probably turn into fill in the away team's values given home team's
-\end{comment}
+\end{enumerate}
 Rotowire consists of aligned box score data and basketball game summaries
 $\set{(\br^{(1)}, \by^{(1)}),(\br^{(2)},\by^{(2)})\ldots}$.
 For brevity, we refer to a single data and summary as $\br,\by$, omitting the superscript.
@@ -376,14 +377,14 @@ of a BLSTM run at the sentence level.
 (TODO: values, functions)
 
 \paragraph{Learning and Inference}
-\begin{comment}
+\begin{enumerate}
 \item Question: Do I need to motivate approximate inference?
 I could also argue that rather than computing the posterior exactly,
 at test time using the approximation directly can be more efficient,
 especially if it is fully factored
 \item Need to figure out if this is the right place for this
 \item Describe how to incorporate the weak supervision through posterior constraints
-\end{comment}
+\end{enumerate}
 A latent variable model $p(\by,\bz\mid\bx)$ models an
 observed $\by$ as well as an unobserved $\bz$ conditioned on $\bx$.
 When fitting such a model, we would like to maximize the evidence
@@ -424,6 +425,7 @@ For task (\textsc{values}), we again have the observed summary $\by$,
 but we pretend the values are unobserved $\bz=\set{\bc,\bv}$, and
 use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
 (TODO: functions)
+\end{comment}
 
 \newpage
 
@@ -491,16 +493,20 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
     \begin{enumerate}
     \item Define IE as the distribution we would like to learn
         \begin{enumerate}
-        \item Align: $p(c\mid\by,\br)$
+        %\item Align: $p(c\mid\by,\br)$
         \item Values: $p(c,\bv\mid\by,\be,\bt)$ (Just this one)
-        \item ??: $p()$
+        %\item ??: $p()$
         \end{enumerate}
-    \item Define generative model: h-HSMM as in \citep{liang2009semalign},
-        but with neural components as in \citep{wiseman2018template}.
+    \item Define generative model: HSMM as in \citep{liang2009semalign},
+        and \citep{wiseman2018template}.
         The generative story:
         \begin{enumerate}
-        \item 
+        \item Fill in values
+        \item Choose alignments
+        \item Choose words
         \end{enumerate}
+    \item Either use the posterior of this model directly,
+        perform inference compilation, or train with approximate posterior.
     \item Training and Inference
         \begin{enumerate}
         \item Maximize ELBO

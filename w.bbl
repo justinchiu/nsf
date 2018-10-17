@@ -1,4 +1,4 @@
-\begin{thebibliography}{9}
+\begin{thebibliography}{6}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -18,14 +18,6 @@ C{\'{\i}}cero~Nogueira dos Santos, Bing Xiang, and Bowen Zhou.
 \newblock \emph{CoRR}, abs/1504.06580, 2015.
 \newblock URL \url{http://arxiv.org/abs/1504.06580}.
 
-\bibitem[G{\"{u}}l{\c{c}}ehre et~al.(2016)G{\"{u}}l{\c{c}}ehre, Ahn, Nallapati,
-  Zhou, and Bengio]{gulcehre2016cc}
-{\c{C}}aglar G{\"{u}}l{\c{c}}ehre, Sungjin Ahn, Ramesh Nallapati, Bowen Zhou,
-  and Yoshua Bengio.
-\newblock Pointing the unknown words.
-\newblock \emph{CoRR}, abs/1603.08148, 2016.
-\newblock URL \url{http://arxiv.org/abs/1603.08148}.
-
 \bibitem[Liang et~al.(2009)Liang, Jordan, and Klein]{liang2009semalign}
 Percy Liang, Michael~I. Jordan, and Dan Klein.
 \newblock Learning semantic correspondences with less supervision.
@@ -36,13 +28,6 @@ Percy Liang, Michael~I. Jordan, and Dan Klein.
   Linguistics.
 \newblock ISBN 978-1-932432-45-9.
 \newblock URL \url{http://dl.acm.org/citation.cfm?id=1687878.1687893}.
-
-\bibitem[Puduppully et~al.(2018)Puduppully, Dong, and
-  Lapata]{puduppully2018contentselection}
-Ratish Puduppully, Li~Dong, and Mirella Lapata.
-\newblock Data-to-text generation with content selection and planning.
-\newblock \emph{CoRR}, abs/1809.00582, 2018.
-\newblock URL \url{http://arxiv.org/abs/1809.00582}.
 
 \bibitem[Weissenborn et~al.(2017)Weissenborn, Kocisky, and Dyer]{weissenborn17}
 Dirk Weissenborn, Tomas Kocisky, and Chris Dyer.
@@ -60,11 +45,5 @@ Sam Wiseman.
 Sam Wiseman, Stuart~M. Shieber, and Alexander~M. Rush.
 \newblock Challenges in data-to-document generation.
 \newblock \emph{CoRR}, abs/1707.08052, 2017.
-
-\bibitem[Yu et~al.(2016)Yu, Buys, and Blunsom]{yu2016ssnt}
-Lei Yu, Jan Buys, and Phil Blunsom.
-\newblock Online segment to segment neural transduction.
-\newblock \emph{CoRR}, abs/1609.08194, 2016.
-\newblock URL \url{http://arxiv.org/abs/1609.08194}.
 
 \end{thebibliography}
