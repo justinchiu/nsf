@@ -436,40 +436,63 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
     \begin{enumerate}
     \item Relevance to BAA
         \begin{enumerate}
-        \item What are information networks? Characterized by large graphs and voluminous data.
-        \item Representation is key
-        \item Supervision is expensive.
-        \item Information networks are also dynamic;
+        \item What are information networks?
+            Graphical representation of objects, their characteristics of interest, and their relationship to objects.
+            Characterized by large graphs and voluminous data.
+        \item Information networks must also represent knowledge wihich is both
+            uncertain as well as dynamic;
             over time one method for representing information may become inadequate.
-        \item Currently, both the representation of the information in a knowledge base
-            as well as the extraction process itself must be hand-designed.
+        \item Obtaining supervision for large networks is expensive,
+            especially if the underlying schema is subject to change.
+        \item TODO: Make expensive argument more concrete by hammering in the dynamic schema aspect.
+            This argument might be weak since the model would also have to be retrained,
+            but that's much cheaper than additional labeling.
+        \item TODO: possibly establish a more military-focused
+            or at least information-gathering running example, as opposed to basketball.
         \item In this proposal we present a framework towards automating the
             training of information extraction systems with minimal supervision.
         \end{enumerate}
     \item Decomposition of NLP into NLU and NLG
+        (Keep this paragraph high-level, just an introduction to the thesis and proposal.)
         \begin{enumerate}
-        \item Two separate but closely related subfields: natural language understanding (NLU) and natural language
-            generation (NLG).
+        \item NLP consists of two separate but closely related subfields:
+            natural language understanding (NLU) and natural language generation (NLG).
+        \item Although both subfields have been dominated by neural network-base models,
+            there is a striking difference.
+        \item NLU models capitalize primarily on the representational power of neural networks.
+            Rather than requiring features as input, neural networks learn representations of
+            the data automatically.
+            (Maybe move the whole NLU paragraph here, but probably not since I feel like I have a strong opening paragraph.)
+        \item However, NLG utilizes neural networks not only for representation learning
+            but also for generative modeling.
+            Success on tasks such as language modeling and machine translation
+            demonstrate that generative and conditional models parameterized by
+            neural networks are able to approximate not only simple distributions over labels,
+            such as entity or not,
+            but also complex joint distributions. (Maybe move the whole generative paragraph here, X)
         \item Recent approaches to information extraction use only the NLU perspective
-            and frame extraction as a classification problem.
-        \item We argue that the two tasks are complementary,
+            and frame extraction as a classification problem, and thus do not take advantage of
+            the generative capability of neural networks.
+        \item TODO: Possibly give examples QA, information extraction (dos santos + sam).
+        \item We argue that the two subfields' approaches are complementary,
             and capitalize on their duality by proposing a method to train a NLU system
             without direct supervision.
         \end{enumerate}
     \item Supervision in NLU
+        (Need to hammer in the framing of supervision)
         \begin{enumerate}
         \item Recent work using neural network-based systems cast information extraction
         as a supervised problem
         \citep{wiseman2017d2t,dossantos2015classification}.
         \item Even with structured representations \citep{weissenborn17}, the final output is still supervised.
         \item Again, supervision does not scale.
-        \item Maybe dynamism of information networks? Don't have an argument on hand, though.
         \item Latent variable models (LVMs) are one method for alleviating the need for supervision.
         \item LVMs do not require manual labels, as they instead treat quantities of interest
             as latent random variables and deal with them in a probabilistically principled 
             fashion.
         \end{enumerate}
     \item Recent advances in NLG
+        (Need to argue the benefits of generative modeling, is the recent success enough?)
         \begin{enumerate}
         \item Deep generative models, namely LVMs with neural network components,
             have integrated the flexibility of neural networks with the
@@ -478,17 +501,17 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
             that rely on variational inference \citep{deng2018attn}.
             This technique is applicable to sequential LVMs such as hidden Markov models 
             and hidden semi-Markov models (HSMMs).
-        \item HSMMs have been applied to small scale datasets for text generation \citep{wiseman2018template}
-            as well as without integrating neural networks \citep{liang2009semalign}.
+        \item Use HSMM as signal for training IE.
         \end{enumerate}
     \end{enumerate}
-\item Background
+\item Background and Notation
     \begin{enumerate}
     \item Formal notation for elements of the dataset
     \item Define the distribution we would like to learn: $p(z\mid y, x)$.
         $z$ and $x$ are placeholders and will change, but $y$ is always the text.
     \item Link to rotowire example
         (argument is that ACE is made up of ontonotes-like sentences, so all short-form)
+    \item Clarify that the scope of posterior inference is very general.
     \end{enumerate}
 \item Proposal
     \begin{enumerate}
@@ -506,11 +529,12 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
         \item Choose alignments
         \item Choose words
         \end{enumerate}
-    \item Either use the posterior of this model directly,
-        perform inference compilation, or train with approximate posterior.
+    \item As we are dealing with documents of significant length,
+        we train with an approximate posterior in order to satisfy memory constraints.
     \item Training and Inference
         \begin{enumerate}
-        \item Maximize ELBO
+        \item We maximize a lower bound on the log marginal likelihood,
+            called the evidence lower bound.
         \end{enumerate}
     \item Experiments
         \begin{enumerate}
