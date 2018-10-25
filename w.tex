@@ -226,25 +226,33 @@ where each $a_t$ is associated with $y_t$ and selects a record $r_i$ such that $
 \paragraph{Proposal}
 We propose to demonstrate the efficacy of the LVM framework in the
 weakly supervised information extraction setting.
-We do so by estimating the distribution over alignments and values
-given the text, entities, and types.
-This is denoted by $p(\bz\mid\by,\bx)$,
-where $\bz = \set{\ba, \bv}$ and $\bx = \set{\be, \bt}$.
-In the previous section, we defined $\ba$ to be a latent variable that represents the
-alignments from words to records,
-while $\bv$ corresponds to all the values in a datum of records
-and $\be,\bt$ the entities and types respectively.
-This distribution $p(\bz\mid\by,\bx)$ is the IE system,
-which infers the alignments and values given the text, entities, and types.
+We do so by defining a conditional model of the text,
+then using that generative model to obtain a distribution
+over quantities of interest to be extracted.
 
+We begin by first defining the information extraction
+system's distribution of interest, then the conditional model.
+Let $\ba$ be a latent variable that represents the
+alignments from words to records,
+$\bv$ all the values in a datum of records,
+and $\be,\bt$ the entities and types respectively.
+We denote the distribution over alignments and values given the
+text, entities, and types by $p(\bz\mid\by,\bx)$,
+where $\bz = \set{\ba, \bv}$ and $\bx = \set{\be, \bt}$.
+This distribution $p(\bz\mid\by,\bx)$ is the IE system,
+which allows us to infer the alignments and values given the text, entities, and types.
+\begin{comment}
 Since we do not assume that we have supervision for $\bz$,
 we cannot learn the information extraction system directly.
-Insead, we must learn a conditional model 
+Insead, we use a conditional model 
 of the text and latent variables given the conditioning
 $p(\by,\bz\mid\bx)$ since we observe $\by$.
 We will subsequently show how to use this conditional model to
 train the IE system.
-We define the conditional model with the following generative story:
+\end{comment}
+
+We define the conditional model $p(\by,\bz\mid\bx)$,
+with $\bz,\bx$ defined as above. with the following generative story:
 \begin{enumerate}
 \item Value Choice:
 For each pair of entities and types in our datum of records, we predict a value.
