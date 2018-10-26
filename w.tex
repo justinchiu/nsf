@@ -164,7 +164,8 @@ train without explicit supervision.
 
 %\paragraph{Recent advances in NLG}
 Neural models for language generation have seen much progress in recent years,
-with state of the art performance in both language modeling and translation \citep{?} (MoS + Transformer).
+with state of the art performance in both language modeling and translation
+\citep{yang2017moslm,allattn}.
 By integrating the powerful language modeling capabilities of neural networks with
 the inductive biases of graphical models through LVMs,
 we can leverage the LVM framework to derive a principled method
@@ -538,12 +539,16 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
         \item Choose alignments
         \item Choose words
         \end{enumerate}
+    \item Argue that the segmental model encourages more coverage
+        by adding pairwise dependencies between labelings \citep{liang2009semalign}.
     \item Define IE as the distribution we would like to learn
         \begin{enumerate}
         %\item Align: $p(c\mid\by,\br)$
         \item Values: $p(c,\bv\mid\by,\be,\bt)$ (Just this one)
         %\item ??: $p()$
         \end{enumerate}
+    \item We either use the posterior distribution of the conditional model
+        or learn an approximation of it.
     \item Training and Inference
         \begin{enumerate}
         \item As we are dealing with documents of significant length,

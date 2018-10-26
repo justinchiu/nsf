@@ -1,4 +1,4 @@
-\begin{thebibliography}{6}
+\begin{thebibliography}{8}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -29,6 +29,14 @@ Percy Liang, Michael~I. Jordan, and Dan Klein.
 \newblock ISBN 978-1-932432-45-9.
 \newblock URL \url{http://dl.acm.org/citation.cfm?id=1687878.1687893}.
 
+\bibitem[Vaswani et~al.(2017)Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez,
+  Kaiser, and Polosukhin]{allattn}
+Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones,
+  Aidan~N. Gomez, Lukasz Kaiser, and Illia Polosukhin.
+\newblock Attention is all you need.
+\newblock \emph{CoRR}, abs/1706.03762, 2017.
+\newblock URL \url{http://arxiv.org/abs/1706.03762}.
+
 \bibitem[Weissenborn et~al.(2017)Weissenborn, Kocisky, and Dyer]{weissenborn17}
 Dirk Weissenborn, Tomas Kocisky, and Chris Dyer.
 \newblock Dynamic integration of background knowledge in neural nlu systems.
@@ -45,5 +53,10 @@ Sam Wiseman.
 Sam Wiseman, Stuart~M. Shieber, and Alexander~M. Rush.
 \newblock Challenges in data-to-document generation.
 \newblock \emph{CoRR}, abs/1707.08052, 2017.
+
+\bibitem[Yang et~al.(2017)Yang, Dai, Salakhutdinov, and Cohen]{yang2017moslm}
+Zhilin Yang, Zihang Dai, Ruslan Salakhutdinov, and William~W. Cohen.
+\newblock Breaking the softmax bottleneck: {A} high-rank {RNN} language model.
+\newblock \emph{CoRR}, abs/1711.03953, 2017.
 
 \end{thebibliography}
