@@ -225,11 +225,11 @@ where each $a_t$ is associated with $y_t$ and selects a record $r_i$ such that $
 \paragraph{Proposal}
 We propose to demonstrate the efficacy of the LVM framework in the
 weakly supervised information extraction setting.
-We define a conditional model of the text given the entities and types in the data,
-then use that model to induce a distribution over quantities of interest to be extracted.
-
-We begin by first defining the conditional model that specifies
-the relationship between data and text.
+We present one instance of a LVM and outline how it can be used to obtain
+an information extraction model without direct supervision,
+then argue that the same approach can be applied in even more ambitious settings.
+Our first LVM is a conditional model that specifies
+the relationship between data, specifically the entities and types, and text.
 %Let $\by$ be the text, $\ba$ be a latent variable that represents the
 %alignments from words to records,
 %$\bv$ all the values in a datum of records,
@@ -241,14 +241,14 @@ For each pair of entities and types in our datum of records, we predict a value.
 We assume that each record type constrains the values to be members of a finite set.
 Thus each record type is assigned a categorical distribution over its respective values,
 and the values are drawn independently from that respective distribution.
-The distribution is represented as
-$$p(\bv\mid\be,\bt) = \prod_{i=1}^N p(v_i\mid e_i,t_i)$$
+%The distribution is represented as
+%#$$p(\bv\mid\be,\bt) = \prod_{i=1}^N p(v_i\mid e_i,t_i)$$
 \item Record Choice:
 Conditioned on our choices of values as well as the given entities and records,
 we choose a sequence of records $\ba = \set{a_1,\ldots,a_I}$,
 denoted by their indices, to describe.
-We parameterize this with a first-order Markov model:
-$$p(\ba\mid\bv,\be,\bt) = \prod_{t=1}^T p(a_t\mid a_{t-1},\bv,\be,\bt)$$
+%We parameterize this with a first-order Markov model:
+%$$p(\ba\mid\bv,\be,\bt) = \prod_{t=1}^T p(a_t\mid a_{t-1},\bv,\be,\bt)$$
 \item Word Choice:
 For each record alignment $a_i$,
 we choose a sequence of words $\by_i = \set{y_{i1},\ldots,y_{iJ}}$ to describe the record.
