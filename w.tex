@@ -241,18 +241,26 @@ For each pair of entities and types in our datum of records, we predict a value.
 We assume that each record type constrains the values to be members of a finite set.
 Thus each record type is assigned a categorical distribution over its respective values,
 and the values are drawn independently from that respective distribution.
+Each $v_i\sim\Cat(f_{t_i}(e_i))$, where $f_{t_i}$ is a neural network
+shared across record types.
 %The distribution is represented as
 %#$$p(\bv\mid\be,\bt) = \prod_{i=1}^N p(v_i\mid e_i,t_i)$$
 \item Record Choice:
 Conditioned on our choices of values as well as the given entities and records,
-we choose a sequence of records $\ba = \set{a_1,\ldots,a_I}$,
-denoted by their indices, to describe.
+we choose a sequence of records $\ba = \set{a_1,\ldots,a_I}$ to describe.
+Each record alignment $a_i$ points to the index of its corresponding record.
+The records are parameterized as a Markov model where each
+$a_t\sim\Cat(f_\theta(a_{t-1},\bv,\be,\bt))$,
+where $f_\theta$ is a neural network.
 %We parameterize this with a first-order Markov model:
 %$$p(\ba\mid\bv,\be,\bt) = \prod_{t=1}^T p(a_t\mid a_{t-1},\bv,\be,\bt)$$
 \item Word Choice:
 For each record alignment $a_i$,
 we choose a sequence of words $\by_i = \set{y_{i1},\ldots,y_{iJ}}$ to describe the record.
-(TODO: finish)
+The words are modelled by an autoregressive emission model within each segment
+that is aligned to a record:
+$y_{ij}\sim\Cat(f_\theta(\by_{i<j},a_i,\bv,\be,\bt)) = \Cat(f_\theta(\by_{i<j},v_i,e_i,t_i))$,
+where $f_\theta$ is another neural network.
 \end{enumerate}
 
 
