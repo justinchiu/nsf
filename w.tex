@@ -150,7 +150,7 @@ that extracts facts that best explain the given text.
 Recent work using neural network-based systems cast information extraction
 as a supervised problem
 \citep{wiseman2017d2t,dossantos2015classification}.
-Although approaches do incorporate structure into internal representations,
+Although approaches do incorporate structure (?) into internal representations,
 for example to integrate multiple sources of information \citep{weissenborn17},
 the final output still uses strong supervision during training.
 Finding strong supervision is a difficult task, and as datasets get larger
@@ -197,7 +197,7 @@ Each text $\by = \set{y_1,\ldots,y_T}$ is a sequence of tokens.
 
 Let random variables $\bz$ be unobserved or latent, $\by$ observed, and $\bx$ taken as conditioning
 and thus not modelled.
-For information extraction we are interested in distributions $p(\bz\mid\by,\bx)$,
+For information extraction we are interested in distributions that can be specified as $p(\bz\mid\by,\bx)$,
 where $\bz$ and $\bx$ may correspond to various quantities depending on the task
 but $\by$ is always the text.
 
@@ -207,10 +207,9 @@ box scores $\br$ of those games.
 Consider a datum that consists of a single record,
 $\br = \set{(e_1 = \textrm{Jeremy Lin}, t_1 = \textrm{POINTS}, v_1 = 19)}$,
 and a simple statement $\by = $``Jeremy Lin scored 19 points''.
-In a simple case, the process of information extraction may be to infer any
+In its simplest incarnation, the process of information extraction may be to infer any
 subset of $\br$, which in this case will be our latent $\bz$, given the remaining elements in $\br$
-which corresponds to $\bx$,
-as well as the text $\by$.
+which corresponds to $\bx$, as well as the text $\by$.
 For example, we may want to infer the type of the relation $t$ given 
 the entity Jeremy Lin, the value 19, as well as the text $\by$.
 In this case, we would have $\bz = \set{t_1}$ and $\bx = \set{e_1,v_1}$.
@@ -226,46 +225,46 @@ where each $a_t$ is associated with $y_t$ and selects a record $r_i$ such that $
 \paragraph{Proposal}
 We propose to demonstrate the efficacy of the LVM framework in the
 weakly supervised information extraction setting.
-We do so by defining a conditional model of the text,
-then using that generative model to obtain a distribution
-over quantities of interest to be extracted.
+We define a conditional model of the text given the entities and types in the data,
+then use that model to induce a distribution over quantities of interest to be extracted.
 
-We begin by first defining the information extraction
-system's distribution of interest, then the conditional model.
-Let $\ba$ be a latent variable that represents the
-alignments from words to records,
-$\bv$ all the values in a datum of records,
-and $\be,\bt$ the entities and types respectively.
-We denote the distribution over alignments and values given the
-text, entities, and types by $p(\bz\mid\by,\bx)$,
-where $\bz = \set{\ba, \bv}$ and $\bx = \set{\be, \bt}$.
-This distribution $p(\bz\mid\by,\bx)$ is the IE system,
-which allows us to infer the alignments and values given the text, entities, and types.
-\begin{comment}
-Since we do not assume that we have supervision for $\bz$,
-we cannot learn the information extraction system directly.
-Insead, we use a conditional model 
-of the text and latent variables given the conditioning
-$p(\by,\bz\mid\bx)$ since we observe $\by$.
-We will subsequently show how to use this conditional model to
-train the IE system.
-\end{comment}
-
-We define the conditional model $p(\by,\bz\mid\bx)$,
-with $\bz,\bx$ defined as above. with the following generative story:
+We begin by first defining the conditional model that specifies
+the relationship between data and text.
+%Let $\by$ be the text, $\ba$ be a latent variable that represents the
+%alignments from words to records,
+%$\bv$ all the values in a datum of records,
+%and $\be,\bt$ the entities and types respectively.
+The conditional model is given by the following generative process:
 \begin{enumerate}
 \item Value Choice:
 For each pair of entities and types in our datum of records, we predict a value.
+We assume that each record type constrains the values to be members of a finite set.
+Thus each record type is assigned a categorical distribution over its respective values,
+and the values are drawn independently from that respective distribution.
+The distribution is represented as
+$$p(\bv\mid\be,\bt) = \prod_{i=1}^N p(v_i\mid e_i,t_i)$$
 \item Record Choice:
 Conditioned on our choices of values as well as the given entities and records,
 we choose a sequence of records $\ba = \set{a_1,\ldots,a_I}$,
 denoted by their indices, to describe.
+We parameterize this with a first-order Markov model:
+$$p(\ba\mid\bv,\be,\bt) = \prod_{t=1}^T p(a_t\mid a_{t-1},\bv,\be,\bt)$$
 \item Word Choice:
 For each record alignment $a_i$,
 we choose a sequence of words $\by_i = \set{y_{i1},\ldots,y_{iJ}}$ to describe the record.
+(TODO: finish)
 \end{enumerate}
 
+
+
+
 \begin{comment}
+We denote the distribution over alignments and values given the
+text, entities, and types by $p(\bz\mid\by,\bx)$,
+where $\bz = \set{\ba, \bv}$ and $\bx = \set{\be, \bt}$.
+This distribution $p(\bz\mid\by,\bx)$ is the IE system,
+which models the alignments and values given the text, entities, and types.
+
 JUNK PAST THIS POINT.
 
 \paragraph{Old Prop}
@@ -523,24 +522,24 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
     \end{enumerate}
 \item Proposal
     \begin{enumerate}
+    \item Define generative model: HSMM as in \citep{liang2009semalign},
+        and \citep{wiseman2018template}.
+        The generative story (a picture would be helpful):
+        \begin{enumerate}
+        \item Fill in values
+        \item Choose alignments
+        \item Choose words
+        \end{enumerate}
     \item Define IE as the distribution we would like to learn
         \begin{enumerate}
         %\item Align: $p(c\mid\by,\br)$
         \item Values: $p(c,\bv\mid\by,\be,\bt)$ (Just this one)
         %\item ??: $p()$
         \end{enumerate}
-    \item Define generative model: HSMM as in \citep{liang2009semalign},
-        and \citep{wiseman2018template}.
-        The generative story:
-        \begin{enumerate}
-        \item Fill in values
-        \item Choose alignments
-        \item Choose words
-        \end{enumerate}
-    \item As we are dealing with documents of significant length,
-        we train with an approximate posterior in order to satisfy memory constraints.
     \item Training and Inference
         \begin{enumerate}
+        \item As we are dealing with documents of significant length,
+            we train with an approximate posterior in order to satisfy memory constraints.
         \item We maximize a lower bound on the log marginal likelihood,
             called the evidence lower bound.
         \end{enumerate}
