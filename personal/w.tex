@@ -1,0 +1,115 @@
+\documentclass[11pt]{article}
+
+\usepackage[letterpaper,margin=1in]{geometry}
+\usepackage{lipsum}
+
+% ToC
+\usepackage{blindtext} 
+\usepackage[linktocpage]{hyperref}
+\usepackage{bookmark}
+\usepackage[compact]{titlesec}
+
+% bib
+%\usepackage[round]{natbib}
+\usepackage[square,sort,numbers]{natbib}
+
+% Math Imports
+\usepackage{amsmath, amssymb, bm, fancyhdr, sectsty, dsfont, mathtools}
+
+% Tikz
+\usepackage{tikz}
+\usetikzlibrary{bayesnet}
+\usetikzlibrary{arrows}
+
+\usepackage{wrapfig}
+\usepackage{comment}
+\usepackage{subcaption}
+\usepackage{cleveref}
+
+% Symbols
+\newcommand\ind{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+\newcommand\norm[1]{\left\lVert#1\right\rVert}
+\newcommand\set[1]{\left\{#1\right\}}
+
+\newcommand\RNN{\mathrm{RNN}}
+\newcommand\MLP{\mathrm{MLP}}
+\newcommand\enc{\mathrm{enc}}
+\newcommand\softmax{\mathrm{softmax}}
+
+% Distributions
+\newcommand{\Cat}{\mathrm{Cat}}
+\newcommand\Expo{\mathrm{Expo}}
+\newcommand\Bern{\mathrm{Bern}}
+\newcommand\Pois{\mathrm{Pois}}
+\newcommand\Bin{\mathrm{Bin}}
+\newcommand\Unif{\mathrm{Unif}}
+\newcommand\Betad{\mathrm{Beta}}
+\newcommand\Gammad{\mathrm{Gamma}}
+\newcommand\Geom{\mathrm{Geom}}
+\newcommand\Logd{\mathrm{Logistic}}
+
+\newcommand\E[1]{\mathbb{E}\left[#1\right]}
+\newcommand\Es[2]{\mathbb{E}_{#1}\left[#2\right]}
+\newcommand{\Var}{\mathrm{Var}}
+\newcommand{\Cov}{\mathrm{Cov}}
+\newcommand{\Cor}{\mathrm{Cor}}
+
+% Bold stuff
+\newcommand{\ba}{\mathbf{a}}
+\newcommand{\bb}{\mathbf{b}}
+\newcommand{\bc}{\mathbf{c}}
+\newcommand{\bd}{\mathbf{d}}
+\newcommand{\be}{\mathbf{e}}
+\newcommand{\bg}{\mathbf{g}}
+\newcommand{\bh}{\mathbf{h}}
+\newcommand{\br}{\mathbf{r}}
+\newcommand{\bs}{\mathbf{s}}
+\newcommand{\bt}{\mathbf{t}}
+\newcommand{\bv}{\mathbf{v}}
+\newcommand{\bw}{\mathbf{w}}
+\newcommand{\bx}{\mathbf{x}}
+\newcommand{\by}{\mathbf{y}}
+\newcommand{\bz}{\mathbf{z}}
+
+% mathcal stuff
+\newcommand{\mcD}{\mathcal{D}}
+
+% math blackboard bold stuff
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+
+
+\DeclareMathOperator*{\argmin}{argmin}
+\DeclareMathOperator*{\argmax}{argmax}
+
+\titlespacing{\paragraph}{0pt}{*0}{*0}
+%\setlength{\parskip}{-5mm plus1mm minus1mm}
+
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+
+\usepackage[displaymath,mathlines]{lineno}
+\linenumbers
+
+\begin{document}
+\lhead{Justin Chiu}
+\chead{2018 NDSEG Application}
+\rhead{Personal Statement}
+
+\begin{center}
+%\textbf{Exploiting the Duality of Natural Language Generation and Understanding}
+\textbf{Information Extraction with Weak Supervision}
+\end{center}
+
+\begin{enumerate}
+\end{enumerate}
+
+\begin{comment\bibliographystyle{plainnat}
+\bibliography{w}
+
+\end{document}
+
