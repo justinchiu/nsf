@@ -224,13 +224,15 @@ to records $r_i$. We denote the alignments $\ba = \set{a_1,\ldots,a_T}$,
 where each $a_t$ is associated with $y_t$ and selects a record $r_i$ such that $a_t = i$.
 
 \paragraph{Proposal}
-We propose to demonstrate the efficacy of the LVM framework in the
-weakly supervised information extraction setting.
+We propose to verify the efficacy of the LVM framework in the
+weakly supervised information extraction setting,
+with the goal of demonstrating strong extractive performance with minimal labels.
 We present one instance of a LVM and outline how it can be used to obtain
 an information extraction model without direct supervision,
 then argue that the same approach can be applied in even more ambitious settings.
 Our first LVM is a conditional model that specifies
 the relationship between data, specifically the entities and types, and text.
+We denote this model \texttt{Values}.
 %Let $\by$ be the text, $\ba$ be a latent variable that represents the
 %alignments from words to records,
 %$\bv$ all the values in a datum of records,
@@ -239,15 +241,16 @@ Similar to the models defined in \citet{wiseman2018template} and \citet{liang200
 our model takes the form of a hidden semi-Markov model (HSMM).
 The primary difference is that the other models simply assumed the records
 were complete and conditioned on them, whereas ours learns to generate the values.
-The conditional model is given by the following generative process:
+\texttt{Values} is given by the following generative process:
 \begin{enumerate}
 \item Value Choice:
 For each pair of entities and types in our datum of records, we predict a value.
 We assume that each record type constrains the values to be members of a finite set.
 Thus each record type is assigned a categorical distribution over its respective values,
 and the values are drawn independently from that respective distribution.
-Each $v_i\sim\Cat(f_{t_i}(e_i))$, where $f_{t_i}$ is a neural network
-shared across record types.
+Each $v_i\sim\Cat(f_{t_i}(e_i))$ is drawn from a Categorical distribution,
+whose parameters $f_{t_i}$ are output by a neural network that is shared across record types
+and takes as input the entity.
 %The distribution is represented as
 %#$$p(\bv\mid\be,\bt) = \prod_{i=1}^N p(v_i\mid e_i,t_i)$$
 \item Record Choice:
@@ -272,7 +275,11 @@ while the word choice model gives us the likelihood of some text given our value
 In this case, we have latent $\bz = \set{\bv,\ba}$ and observed $\bx = \set{\be,\bt}$.
 We obtain an information extraction by using the 
 \textbf{posterior} distribution over alignments and values:
-$$p(\bz\mid\by,\bx)=\frac{p(\by,\bz\mid\bx)}{p(\by\mid\bx)}=\frac{p(\by,\bz\mid\bx)}{\sum_\bz p(\by,\bz\mid\bx)}.$$
+\begin{linenomath*}
+$$
+p(\bz\mid\by,\bx)=\frac{p(\by,\bz\mid\bx)}{p(\by\mid\bx)}=\frac{p(\by,\bz\mid\bx)}{\sum_\bz p(\by,\bz\mid\bx)}.
+$$
+\end{linenomath*}
 Luckily, the HSMM formulation allows the summation (marginalization) over $\bz$ in the denominator to be carried out efficiently
 as long as we constrain the distribution over values appropriately.
 % Mention amortized variational inference in case of intractable exact inference?
@@ -283,7 +290,16 @@ The role of the intermediate structure in the latent variable model is to encour
 Aligning segments to records correctly makes the prediction of values missing from the data much easier,
 and marginalizing over alignment distributions allows uncertainty over alignments
 to propagate to uncertainty over values.
+We can train this model by maximizing the marginal likelihood or evidence of $\by$,
+given formally by the expression $\sum_\bz p(\by,\bz\mid\bx)$.
 
+As we are interested in the LVM framework rather than a single model,
+we proceed to motivate and outline an extension to \texttt{Values}.
+In addition to inferring values, ideally an information extraction system 
+would also be able to infer new entities and relation types.
+We describe a model that can learn to parameterize new relation types in an
+unsupervised manner using the same LVM framework as \texttt{Values},
+which we denote \texttt{Types}.
 
 
 \begin{comment}
