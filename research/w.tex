@@ -235,6 +235,10 @@ the relationship between data, specifically the entities and types, and text.
 %alignments from words to records,
 %$\bv$ all the values in a datum of records,
 %and $\be,\bt$ the entities and types respectively.
+Similar to the models defined in \citet{wiseman2018template} and \citet{liang2009semalign},
+our model takes the form of a hidden semi-Markov model (HSMM).
+The primary difference is that the other models simply assumed the records
+were complete and conditioned on them, whereas ours learns to generate the values.
 The conditional model is given by the following generative process:
 \begin{enumerate}
 \item Value Choice:
@@ -263,7 +267,22 @@ that is aligned to a record:
 $y_{ij}\sim\Cat(f_\theta(\by_{i<j},a_i,\bv,\be,\bt)) = \Cat(f_\theta(\by_{i<j},v_i,e_i,t_i))$,
 where $f_\theta$ is another neural network.
 \end{enumerate}
-
+The value and record choices correspond to prior distributions over values $p(\bv\mid\be,\bt)$ and alignments $p(\ba\mid\bv,\be,\bt)$ respectively,
+while the word choice model gives us the likelihood of some text given our value and alignment choices $p(\by\mid\ba,\bv,\be,\bt)$.
+In this case, we have latent $\bz = \set{\bv,\ba}$ and observed $\bx = \set{\be,\bt}$.
+We obtain an information extraction by using the 
+\textbf{posterior} distribution over alignments and values:
+$$p(\bz\mid\by,\bx)=\frac{p(\by,\bz\mid\bx)}{p(\by\mid\bx)}=\frac{p(\by,\bz\mid\bx)}{\sum_\bz p(\by,\bz\mid\bx)}.$$
+Luckily, the HSMM formulation allows the summation (marginalization) over $\bz$ in the denominator to be carried out efficiently
+as long as we constrain the distribution over values appropriately.
+% Mention amortized variational inference in case of intractable exact inference?
+Given $p(\bz\mid\by,\bx)=p(\bv,\ba\mid\by,\be,\bt)$, we can then marginalize over alignments
+to obtain the posterior distribution over values $\sum_\ba p(\bv,\ba\mid\by,\be,\bt)=p(\bv\mid\by,\be,\bt)$
+which gives us an information extraction system.
+The role of the intermediate structure in the latent variable model is to encourage better alignments.
+Aligning segments to records correctly makes the prediction of values missing from the data much easier,
+and marginalizing over alignment distributions allows uncertainty over alignments
+to propagate to uncertainty over values.
 
 
 
@@ -531,6 +550,15 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
     \end{enumerate}
 \item Proposal
     \begin{enumerate}
+    \item Outline approach
+        \begin{enumerate}
+        \item Choose a subset of available data as conditioning,
+            and thus it is not modelled.
+        \item The joint distribution of the remaining variables,
+            both observed and unobserved, will be modelled.
+        \end{enumerate}
+    \item We present one model as an example, then later demonstrate how the framework
+        can handle extensions of the model.
     \item Define generative model: HSMM as in \citep{liang2009semalign},
         and \citep{wiseman2018template}.
         The generative story (a picture would be helpful):
@@ -539,8 +567,6 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
         \item Choose alignments
         \item Choose words
         \end{enumerate}
-    \item Argue that the segmental model encourages more coverage
-        by adding pairwise dependencies between labelings \citep{liang2009semalign}.
     \item Define IE as the distribution we would like to learn
         \begin{enumerate}
         %\item Align: $p(c\mid\by,\br)$
@@ -549,6 +575,10 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
         \end{enumerate}
     \item We either use the posterior distribution of the conditional model
         or learn an approximation of it.
+    \item Argue that the segmental model encourages more coverage
+        by adding pairwise dependencies between labelings \citep{liang2009semalign}.
+        We will check how much structure in the generative model
+        aids information extraction.
     \item Training and Inference
         \begin{enumerate}
         \item As we are dealing with documents of significant length,
