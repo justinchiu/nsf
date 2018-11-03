@@ -266,7 +266,7 @@ where $f_\theta$ is a neural network.
 For each record alignment $a_i$,
 we choose a sequence of words $\by_i = \set{y_{i1},\ldots,y_{iJ}}$ to describe the record.
 The words are modelled by an autoregressive emission model within each segment
-that is aligned to a record:
+that is aligned to the same record:
 $y_{ij}\sim\Cat(f_\theta(\by_{i<j},a_i,\bv,\be,\bt)) = \Cat(f_\theta(\by_{i<j},v_i,e_i,t_i))$,
 where $f_\theta$ is another neural network.
 \end{enumerate}
@@ -288,19 +288,36 @@ to obtain the posterior distribution over values $\sum_\ba p(\bv,\ba\mid\by,\be,
 which gives us an information extraction system.
 The role of the intermediate structure in the latent variable model is to encourage better alignments.
 Aligning segments to records correctly makes the prediction of values missing from the data much easier,
-and marginalizing over alignment distributions allows uncertainty over alignments
+and marginalizing over the alignment distribution allows uncertainty over alignments
 to propagate to uncertainty over values.
 We can train this model by maximizing the marginal likelihood or evidence of $\by$,
 given formally by the expression $\sum_\bz p(\by,\bz\mid\bx)$.
 
-As we are interested in the LVM framework rather than a single model,
+As we are interested in applying the LVM framework to information extraction rather than a single model,
 we proceed to motivate and outline an extension to \texttt{Values}.
 In addition to inferring values, ideally an information extraction system 
 would also be able to infer new entities and relation types.
-We describe a model that can learn to parameterize new relation types in an
+We propose a possible route towards defining model that can
+learn to parameterize new relation types in an
 unsupervised manner using the same LVM framework as \texttt{Values},
 which we denote \texttt{Types}.
+The motivation behind \texttt{Types} is that a text may refer to multiple records at the same time.
+For example, in basketball games a `triple-double' refers to more a player achieving a value of more than 10
+of any three of the five categories: points, steals, rebounds, blocks, or assists.
+The goal of \texttt{Types} is to attempt to capture the latent relationship behind a `triple-double' appearing in 
+the text and the underlying records in an unsupervised manner.
+We introduce a new step to the generative process of \texttt{Values} that 
+allows the model to learn new records as functions of ones already defined in the data.
+We may treat this as a program induction problem, where we would like to learn new relations
+that are the result of boolean functions applied to exists records.
+Alternatively, we may attempt to approximate a boolean function with neural networks directly.
+(TODO: finish this?)
 
+Given admittance to the NDSEG Fellowship Program, I will evaluate the application of
+unsupervised LVMs to the problem of information extraction.
+As a result of the digital age, the ubiquity of information networks as well as their 
+enormous growth make it clear that a method for training information extraction systems
+with minimal supervision is a necessity.
 
 \begin{comment}
 We denote the distribution over alignments and values given the
@@ -601,6 +618,15 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
             we train with an approximate posterior in order to satisfy memory constraints.
         \item We maximize a lower bound on the log marginal likelihood,
             called the evidence lower bound.
+        \end{enumerate}
+    \item Extension, \texttt{Types}
+        \begin{enumerate}
+        \item Introduce new step in generative process
+        \item Learn a boolean function that composes predicates applied to existing
+            records
+        \item The search space is very large, so we must either constrain our model 
+            in a very clever way or obtain 
+            large amounts of data as any stochastic gradient estimator will have very high variance
         \end{enumerate}
     \item Experiments
         \begin{enumerate}
