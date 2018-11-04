@@ -1,4 +1,4 @@
-\begin{thebibliography}{8}
+\begin{thebibliography}{9}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -17,6 +17,17 @@ C{\'{\i}}cero~Nogueira dos Santos, Bing Xiang, and Bowen Zhou.
 \newblock Classifying relations by ranking with convolutional neural networks.
 \newblock \emph{CoRR}, abs/1504.06580, 2015.
 \newblock URL \url{http://arxiv.org/abs/1504.06580}.
+
+\bibitem[George~Doddington@NIS et~al.(2004)George~Doddington@NIS,
+  Alexis~Mitchell@LD, Mark~Przybocki@NIS, Lance~Ramshaw@BB,
+  Stephanie~Strassel@LD, and Ralph~Weischedel@BB]{ace2004}
+T.~George~Doddington@NIS, C.~Alexis~Mitchell@LD, T.~Mark~Przybocki@NIS,
+  N.~Lance~Ramshaw@BB, C.~Stephanie~Strassel@LD, and N.~Ralph~Weischedel@BB.
+\newblock {The automatic content extraction (ACE) program–tasks, data, and
+  evaluation}.
+\newblock 2004.
+\newblock URL
+  \url{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.78.8442\&\#38;rep=rep1\&\#38;type=pdf}.
 
 \bibitem[Liang et~al.(2009)Liang, Jordan, and Klein]{liang2009semalign}
 Percy Liang, Michael~I. Jordan, and Dan Klein.

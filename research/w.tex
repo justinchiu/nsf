@@ -119,7 +119,7 @@ information networks, natural language processing, information extraction,
 latent variable models
 
 \paragraph{Relevance to BAA}
-As information networks get larger and more complex,
+As information networks grow larger and more complex,
 acquiring explicit supervision for the training of information extraction systems
 becomes extremely expensive.
 Information networks are also dynamic;
@@ -196,7 +196,7 @@ We refer collectively to all the entities, types, and values in a given datum $\
 $\be,\bt,\bv$ respectively.
 Each text $\by = \set{y_1,\ldots,y_T}$ is a sequence of tokens.
 
-Let random variables $\bz$ be unobserved or latent, $\by$ observed, and $\bx$ taken as conditioning
+Let variables $\bz$ be unobserved or latent, $\by$ observed, and $\bx$ taken as conditioning
 and thus not modelled.
 For information extraction we are interested in distributions that can be specified as $p(\bz\mid\by,\bx)$,
 where $\bz$ and $\bx$ may correspond to various quantities depending on the task
@@ -267,10 +267,11 @@ For each record alignment $a_i$,
 we choose a sequence of words $\by_i = \set{y_{i1},\ldots,y_{iJ}}$ to describe the record.
 The words are modelled by an autoregressive emission model within each segment
 that is aligned to the same record:
-$y_{ij}\sim\Cat(f_\theta(\by_{i<j},a_i,\bv,\be,\bt)) = \Cat(f_\theta(\by_{i<j},v_i,e_i,t_i))$,
+$y_{ij}\sim\Cat(f_\theta(\by_{i<j},v_{a_i},e_{a_i},t_{a_i}))$,
 where $f_\theta$ is another neural network.
 \end{enumerate}
-The value and record choices correspond to prior distributions over values $p(\bv\mid\be,\bt)$ and alignments $p(\ba\mid\bv,\be,\bt)$ respectively,
+The value and record choices correspond to prior distributions over values $p(\bv\mid\be,\bt)$
+and alignments $p(\ba\mid\bv,\be,\bt)$ respectively,
 while the word choice model gives us the likelihood of some text given our value and alignment choices $p(\by\mid\ba,\bv,\be,\bt)$.
 In this case, we have latent $\bz = \set{\bv,\ba}$ and observed $\bx = \set{\be,\bt}$.
 We obtain an information extraction by using the 
@@ -280,18 +281,22 @@ $$
 p(\bz\mid\by,\bx)=\frac{p(\by,\bz\mid\bx)}{p(\by\mid\bx)}=\frac{p(\by,\bz\mid\bx)}{\sum_\bz p(\by,\bz\mid\bx)}.
 $$
 \end{linenomath*}
-Luckily, the HSMM formulation allows the summation (marginalization) over $\bz$ in the denominator to be carried out efficiently
-as long as we constrain the distribution over values appropriately.
-% Mention amortized variational inference in case of intractable exact inference?
-Given $p(\bz\mid\by,\bx)=p(\bv,\ba\mid\by,\be,\bt)$, we can then marginalize over alignments
-to obtain the posterior distribution over values $\sum_\ba p(\bv,\ba\mid\by,\be,\bt)=p(\bv\mid\by,\be,\bt)$
-which gives us an information extraction system.
-The role of the intermediate structure in the latent variable model is to encourage better alignments.
-Aligning segments to records correctly makes the prediction of values missing from the data much easier,
-and marginalizing over the alignment distribution allows uncertainty over alignments
-to propagate to uncertainty over values.
-We can train this model by maximizing the marginal likelihood or evidence of $\by$,
-given formally by the expression $\sum_\bz p(\by,\bz\mid\bx)$.
+Althought the HSMM formulation allows the summation (marginalization) over alignments to be carried out efficiently,
+we cannot marginalize over value assignments.
+We instead resort to variational inference as in \citet{deng2018attn},
+where we learn an approximation of the posterior distribution $q(\bz\mid\by,\bx)$
+with a separate model.
+% Can marginalize over alignments, so only a partial variational approximation is needed
+Given that we are primarily interested in the values rather than the alignments,
+we can obtain an information extraction system over only values by marginalizing over alignments.
+By marginalizing over the alignment distribution, the model propagates uncertainty over alignments
+to uncertainty over values.
+We can train this model by maximizing a lower bound on the log marginal likelihood or evidence of $\by$,
+called the evidence lower bound (ELBO) which is given formally by the expression
+$\textrm{ELBO}_q \triangleq \Es{q(\bz\mid\by,\bz)}{\log p(\by\mid\bz,\bx)}\leq \log \Es{p(\bz\mid\bx)} {p(\by\mid\bz,\bx)}$.
+This objective can be maximized with gradient-based methods.
+The resulting approximate posterior $q(\bz\mid\by,\bx)$ can be used independently of the 
+generative model as an information extraction system.
 
 As we are interested in applying the LVM framework to information extraction rather than a single model,
 we proceed to motivate and outline an extension to \texttt{Values}.
@@ -306,18 +311,31 @@ For example, in basketball games a `triple-double' refers to more a player achie
 of any three of the five categories: points, steals, rebounds, blocks, or assists.
 The goal of \texttt{Types} is to attempt to capture the latent relationship behind a `triple-double' appearing in 
 the text and the underlying records in an unsupervised manner.
-We introduce a new step to the generative process of \texttt{Values} that 
-allows the model to learn new records as functions of ones already defined in the data.
-We may treat this as a program induction problem, where we would like to learn new relations
-that are the result of boolean functions applied to exists records.
-Alternatively, we may attempt to approximate a boolean function with neural networks directly.
-(TODO: finish this?)
+We plan to introduce a new step to the generative process of \texttt{Values} that 
+allows the model to learn new records as boolean-valued functions of relations already defined in the data.
+By approximating these boolean functions with neural networks, we hope to find a model
+parameterization that admits a low variance monte carlo gradient estimator.
+
+%TODO: Experiments, Evaluation, and Expectations? Also shortcomings? Short paragraph
+We will evaluate our initial approach on the Rotowire dataset, and
+extensions to our model that will include entity tracking and event resolution on the 
+automatic content extraction (ACE) \citep{ace2004} and the Text Analysis Conference's
+Streaming Multimedia Knowledge Base Population (SM-KBP) datasets.
+We expect the variance of the gradient estimator to be an issue, in particular its
+effect on sample complexity. In previous work, we observed that gradient estimators
+based on exact inference resulted in better sample complexity than
+monte carlo gradient estimators \citep{deng2018attn}, and we expect that controlling the variance 
+of the gradient estimator with the inductive bias of neural architectures will be of paramount
+importance for the success of our proposed method.
 
 Given admittance to the NDSEG Fellowship Program, I will evaluate the application of
 unsupervised LVMs to the problem of information extraction.
 As a result of the digital age, the ubiquity of information networks as well as their 
-enormous growth make it clear that a method for training information extraction systems
+enormous growth makes it clear that a method for training information extraction systems
 with minimal supervision is a necessity.
+I will push for scalable information enformation extraction systems that require minimal supervision
+by recasting information extraction  as a generative modeling problem.
+
 
 \begin{comment}
 We denote the distribution over alignments and values given the
@@ -397,7 +415,6 @@ $\text{findType}(\hat{e},\hat{v}) = \set{ r.t :x\in\br, r.e = \hat{e}, x.r = \ha
 However, this limits alignments exclusively to entities and values explicitly in $\br$.
 We would like to align whole segments of text in order to increase the coverage
 of our information extraction system.
-
 
 The second task (\textsc{values}) is to reconstruct values $v$ in the table $\br$.
 This is implemented on top of task (\textsc{align}).
@@ -628,17 +645,28 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
             in a very clever way or obtain 
             large amounts of data as any stochastic gradient estimator will have very high variance
         \end{enumerate}
-    \item Experiments
-        \begin{enumerate}
-        \item 
-        \end{enumerate}
     \item Extensions
         \begin{enumerate}
         \item learn new types as functions of existing ones
+        \item learn a randomly initialized embedding of the type
+            and a neural network directly to predict the value
+        \item let the input distribution be 
+        \end{enumerate}
+    \item Experiments, evaluation, and expectation
+        \begin{enumerate}
+        \item Evaluate on Rotowire?
+        \item Also on ACE
+        \item As corpora may be too large, we might need more hierarchy in the generative model
+        \item and also since memory is linear in the length of the sequence, we may have
+            to resort to approximate inference. We can optimize a lower bound
+            on the marginal likelihood with an approximation of the
+            posterior distribution \citep{deng2018attn}.
         \end{enumerate}
     \item Conclusion
         \begin{enumerate}
-        \item 
+        \item Please accept!
+        \item Recap: Minimal supervision IE systems so that they can scale to
+            extracting information for large information networks from large bodies of text.
         \end{enumerate}
     \end{enumerate}
 \end{enumerate}
