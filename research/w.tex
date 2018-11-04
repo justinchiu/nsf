@@ -296,7 +296,8 @@ called the evidence lower bound (ELBO) which is given formally by the expression
 $\textrm{ELBO}_q \triangleq \Es{q(\bz\mid\by,\bz)}{\log p(\by\mid\bz,\bx)}\leq \log \Es{p(\bz\mid\bx)} {p(\by\mid\bz,\bx)}$.
 This objective can be maximized with gradient-based methods.
 The resulting approximate posterior $q(\bz\mid\by,\bx)$ can be used independently of the 
-generative model as an information extraction system.
+generative model as an information extraction system that gives a distribution over
+values in a table of records and alignments from text to records.
 
 As we are interested in applying the LVM framework to information extraction rather than a single model,
 we proceed to motivate and outline an extension to \texttt{Values}.
