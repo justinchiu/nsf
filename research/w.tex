@@ -281,7 +281,7 @@ $$
 p(\bz\mid\by,\bx)=\frac{p(\by,\bz\mid\bx)}{p(\by\mid\bx)}=\frac{p(\by,\bz\mid\bx)}{\sum_\bz p(\by,\bz\mid\bx)}.
 $$
 \end{linenomath*}
-Althought the HSMM formulation allows the summation (marginalization) over alignments to be carried out efficiently,
+Although the HSMM formulation allows the summation (marginalization) over alignments to be carried out efficiently,
 we cannot marginalize over value assignments.
 We instead resort to variational inference as in \citet{deng2018attn},
 where we learn an approximation of the posterior distribution $q(\bz\mid\by,\bx)$
@@ -330,7 +330,7 @@ of the gradient estimator with the inductive bias of neural architectures will b
 importance for the success of our proposed method.
 
 Given admittance to the NDSEG Fellowship Program, I will evaluate the application of
-unsupervised LVMs to the problem of information extraction.
+LVMs to the problem of information extraction.
 As a result of the digital age, the ubiquity of information networks as well as their 
 enormous growth makes it clear that a method for training information extraction systems
 with minimal supervision is a necessity.
@@ -523,8 +523,12 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
     \item Relevance to BAA
         \begin{enumerate}
         \item What are information networks?
-            Graphical representation of objects, their characteristics of interest, and their relationship to objects.
+            Graphical representation of objects, their characteristics of interest,
+            and their relationship to objects.
             Characterized by large graphs and voluminous data.
+        \item Information networks are dynamic knowledge graphs?
+            They must also capture dynamic relationships, i.e. the influence
+            of changing an attribute of one node on another node.
         \item Information networks must also represent knowledge wihich is both
             uncertain as well as dynamic;
             over time one method for representing information may become inadequate.
@@ -566,6 +570,7 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
         \end{enumerate}
     \item Supervision in NLU
         (Need to hammer in the framing of supervision)
+        (More related work on unsup IE)
         \begin{enumerate}
         \item Recent work using neural network-based systems cast information extraction
         as a supervised problem
@@ -608,6 +613,8 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
         \item The joint distribution of the remaining variables,
             both observed and unobserved, will be modelled.
         \end{enumerate}
+    \item Link back to motivation. We want to scale information extraction
+        by requiring less supervision.
     \item We present one model as an example, then later demonstrate how the framework
         can handle extensions of the model.
     \item Define generative model: HSMM as in \citep{liang2009semalign},
