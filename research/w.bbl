@@ -1,4 +1,4 @@
-\begin{thebibliography}{9}
+\begin{thebibliography}{10}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -39,6 +39,16 @@ Percy Liang, Michael~I. Jordan, and Dan Klein.
   Linguistics.
 \newblock ISBN 978-1-932432-45-9.
 \newblock URL \url{http://dl.acm.org/citation.cfm?id=1687878.1687893}.
+
+\bibitem[Surdeanu et~al.(2012)Surdeanu, Tibshirani, Nallapati, and
+  Manning]{surdeanu2012miml}
+Mihai Surdeanu, Julie Tibshirani, Ramesh Nallapati, and Christopher~D. Manning.
+\newblock Multi-instance multi-label learning for relation extraction.
+\newblock In \emph{Proceedings of the 2012 Joint Conference on Empirical
+  Methods in Natural Language Processing and Computational Natural Language
+  Learning}, EMNLP-CoNLL '12, pages 455--465, Stroudsburg, PA, USA, 2012.
+  Association for Computational Linguistics.
+\newblock URL \url{http://dl.acm.org/citation.cfm?id=2390948.2391003}.
 
 \bibitem[Vaswani et~al.(2017)Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez,
   Kaiser, and Polosukhin]{allattn}
