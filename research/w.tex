@@ -115,7 +115,7 @@ structured attention for IE posterior?
 \end{comment}
 
 \paragraph{Keywords}
-information networks, knowledge bases, natural language processing, information extraction,
+information networks, knowledge base completion, slot-filling, natural language processing, information extraction,
 latent variable models
 
 \paragraph{Relevance to Army BAA}
@@ -193,7 +193,7 @@ The datum $\br$ is a knowledge base, or equivalently an information network
 without a representation of the causal effects between records.
 We refer collectively to all the entities, types, and values in a given datum $\br$ as
 $\be,\bt,\bv$ respectively.
-Each text $\by = \set{y_1,\ldots,y_T}$ is a sequence of tokens.
+Each text $\by = \set{y_1,\ldots,y_T}$ is a sequence of tokens each from a vocbulary $V$.
 
 Let variables $\bz$ be unobserved or latent, $\by$ observed, and $\bx$ taken as conditioning
 and thus not modelled.
@@ -205,7 +205,7 @@ As a concrete example, we use the Rotowire dataset \citep{wiseman2017d2t}.
 Rotowire contains summaries of basketball games $\by$ aligned with the respective
 box scores $\br$ of those games.
 Consider a datum that consists of a single record,
-$\br = \set{(e_1 = \textrm{Jeremy Lin}, t_1 = \textrm{POINTS}, v_1 = 19)}$,
+$\br = \set{(e_1 = \textrm{Jeremy\_Lin}, t_1 = \textrm{POINTS}, v_1 = 19)}$,
 and a simple statement $\by = $``Jeremy Lin scored 19 points''.
 In its simplest incarnation, the process of information extraction may be to infer any
 subset of $\br$, which in this case will be our latent $\bz$, given the remaining elements in $\br$
@@ -221,6 +221,7 @@ Note that we are not constrained to setting $\bz$ to subsets of $\br$.
 We also consider the case where $\bz$ includes alignments from individual words $y_t$
 to records $r_i$. We denote the alignments $\ba = \set{a_1,\ldots,a_T}$,
 where each $a_t$ is associated with $y_t$ and selects a record $r_i$ such that $a_t = i$.
+(NEED TO FIX ALIGNMENTS AND T vs t, HMM vs HSMM)
 
 \paragraph{Proposal}
 We propose to verify the efficacy of the LVM framework in the
@@ -248,19 +249,19 @@ We assume that each record type constrains the values to be members of a finite 
 Thus each record type is assigned a categorical distribution over its respective values,
 and the values are drawn independently from that respective distribution.
 Each $v_i\sim\Cat(f_{t_i}(e_i))$ is drawn from a Categorical distribution,
-whose parameters $f_{t_i}$ are output by a neural network that is shared across record types
-and takes as input the entity.
+whose parameters $f_{t_i}(e_i)$ are output by a neural network $f_{t_i}$ that is shared across record types
+and takes as input the entity $e_i$.
 %The distribution is represented as
 %#$$p(\bv\mid\be,\bt) = \prod_{i=1}^N p(v_i\mid e_i,t_i)$$
 \item Record Choice:
 Conditioned on our choices of values as well as the given entities and records,
-we choose a sequence of records $\ba = \set{a_1,\ldots,a_I}$ to describe.
-Each record alignment $a_i$ points to the index of its corresponding record.
-The records are parameterized as a Markov model where each
+we choose a sequence of records $\ba = \set{a_1,\ldots,a_I}$ to describe,
+given by their index $a_i$.
+Note that each record choice is described by at least one token, hence we have $I \le T$.
+The record choices are parameterized as a Markov model where each
 $a_t\sim\Cat(f_\theta(a_{t-1},\bv,\be,\bt))$,
 where $f_\theta$ is a neural network.
-%We parameterize this with a first-order Markov model:
-%$$p(\ba\mid\bv,\be,\bt) = \prod_{t=1}^T p(a_t\mid a_{t-1},\bv,\be,\bt)$$
+(NEED TO FIX ALIGNMENTS AND T vs t, HSMM vs HMM)
 \item Word Choice:
 For each record alignment $a_i$,
 we choose a sequence of words $\by_i = \set{y_{i1},\ldots,y_{iJ}}$ to describe the record.
@@ -309,9 +310,9 @@ unsupervised manner using the same LVM framework as \texttt{Values},
 which we denote \texttt{Types}.
 The motivation behind \texttt{Types} is that a segment of text may refer to multiple records at the same time.
 For example, in basketball games a `triple-double' refers to more a player achieving a value of more than 10
-of any three of the five categories: points, steals, rebounds, blocks, or assists.
-The goal of \texttt{Types} is to attempt to capture the latent relationship behind a `triple-double' appearing in 
-the text and the underlying records in an unsupervised manner.
+in any three of the five categories: points, steals, rebounds, blocks, or assists.
+The goal of \texttt{Types} is to attempt to capture the latent relationship behind utterances
+such as `triple-double' appearing in the text and the underlying records in an unsupervised manner.
 We plan to introduce a new step to the generative process of \texttt{Values} that 
 allows the model to learn new records as boolean-valued functions of relations already defined in the data.
 By approximating these boolean functions with neural networks, we hope to find a model
@@ -334,8 +335,8 @@ LVMs to the problem of information extraction.
 As a result of the digital age, the ubiquity of information networks as well as their 
 enormous growth makes it clear that a method for training information extraction systems
 with minimal supervision is a necessity.
-I will push for scalable information enformation extraction systems that require minimal supervision
-by recasting information extraction  as a generative modeling problem.
+I will push for scalable information extraction systems that require minimal supervision
+by recasting information extraction as a generative modeling problem.
 
 
 \begin{comment}
@@ -611,6 +612,9 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
         \begin{enumerate}
         \item As we are dealing with documents of significant length,
             we train with an approximate posterior in order to satisfy memory constraints.
+        \item Highlight that the approx posterior is a SEPARATE model
+            that can be used completely independently from generative model,
+            i.e. we throw away generative model after training.
         \item We maximize a lower bound on the log marginal likelihood,
             called the evidence lower bound.
         \end{enumerate}
@@ -632,13 +636,15 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
         \end{enumerate}
     \item Experiments, evaluation, and expectation
         \begin{enumerate}
-        \item Evaluate on Rotowire?
+        \item Evaluate on Rotowire? Highlight long-form text
         \item Also on ACE
         \item As corpora may be too large, we might need more hierarchy in the generative model
         \item and also since memory is linear in the length of the sequence, we may have
             to resort to approximate inference. We can optimize a lower bound
             on the marginal likelihood with an approximation of the
             posterior distribution \citep{deng2018attn}.
+        \item Evaluation metrics: for slot-filling, we evaluate 
+            the 
         \end{enumerate}
     \item Conclusion
         \begin{enumerate}
