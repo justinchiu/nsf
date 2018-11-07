@@ -183,61 +183,6 @@ we hope to incorporate recent progress in parameterizing LVMs with neural networ
 so as to learn a more accurate information extraction system by using a more powerful
 generative model -- taking care to ensure that the model can be trained with minimal supervision.
 
-\begin{comment}
-Natural language processing contains two separate but
-closely related subfields: natural language understanding (NLU) and natural language
-generation (NLG).
-Recent approaches to information extraction use only the NLU perspective
-and frame extraction as a classification problem.
-We argue that the two perspectives, NLU and NLG, are complementary
-and capitalize on their duality by proposing a method to train a NLU system
-without direct supervision.
-%More specifically, we utilize the latent variable model framework to train a 
-%neural network-based information extraction system and use as signal 
-More specifically, we train an information extraction system by using
-the performance of a deep generative model as signal.
-By training in this fashion we obtain an information extraction system
-that extracts facts that best explain the given text.
-
-%\paragraph{Supervision in NLU}
-Recent work using neural network-based systems cast information extraction
-as a supervised problem
-\citep{wiseman2017d2t,dossantos2015classification}.
-Although approaches do incorporate structure (?) into internal representations,
-for example to integrate multiple sources of information \citep{weissenborn17},
-the final output still uses strong supervision during training.
-Finding strong supervision is a difficult task, and as datasets get larger
-we must approach information extraction from a different perspective.
-Latent variable models (LVMs) are one method for alleviating the need for supervision.
-LVMs do not require manual labels, as they instead treat quantities of interest
-as latent random variables and deal with them in a probabilistically principled fashion.
-We will leverage recent advances in deep generative modeling in order to
-train without explicit supervision.
-\citep{surdeanu2012miml}
-\citep{liang2009semalign}
-
-%\paragraph{Recent advances in NLG}
-Neural models for language generation have seen much progress in recent years,
-with state of the art performance in both language modeling and translation
-\citep{yang2017moslm,allattn}.
-By integrating the powerful language modeling capabilities of neural networks with
-the inductive biases of graphical models through LVMs,
-we can leverage the LVM framework to derive a principled method
-for training an information extraction system with less supervision.
-Namely, we turn to an efficient technique for training hard attention 
-in machine translation models that relies on variational inference \citep{deng2018attn}.
-This technique is applicable to sequential LVMs such as hidden Markov models 
-and hidden semi-Markov models (HSMMs).
-HSMMs have been applied to small scale datasets for text generation \citep{wiseman2018template}
-as well as without integrating neural networks \citep{liang2009semalign}.
-We will scale sequential LVMs to large datasets through variational inference and use
-the signal from our generative model in order to train an information extraction system.
-\end{comment}
-
-%Modern neural systems have demonstrated state-of-the-art performance on short-form
-%text generation tasks, but the performance seemingly fails to generalize to long-form generation.
-%D2T is a task that isolates performance on long-form generation by disentangling 
-%generation quality from input representation.
 \paragraph{Background}
 We consider datasets consisting of aligned data and text
 $\set{(\br^{(1)}, \by^{(1)}),(\br^{(2)},\by^{(2)})\ldots}$.
@@ -618,58 +563,6 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
             information extraction system.
         \item Also that although worse sample complexity, using an approximate posterior
             with monte carlo sampling achieves comparable performance.
-        \end{enumerate}
-    \item (delete) Decomposition of NLP into NLU and NLG
-        (Keep this paragraph high-level, just an introduction to the thesis and proposal.)
-        \begin{enumerate}
-        \item NLP consists of two separate but closely related subfields:
-            natural language understanding (NLU) and natural language generation (NLG).
-        \item Although both subfields have been dominated by neural network-base models,
-            there is a striking difference.
-        \item NLU models capitalize primarily on the representational power of neural networks.
-            Rather than requiring features as input, neural networks learn representations of
-            the data automatically.
-            (Maybe move the whole NLU paragraph here, but probably not since I feel like I have a strong opening paragraph.)
-        \item However, NLG utilizes neural networks not only for representation learning
-            but also for generative modeling.
-            Success on tasks such as language modeling and machine translation
-            demonstrate that generative and conditional models parameterized by
-            neural networks are able to approximate not only simple distributions over labels,
-            such as entity or not,
-            but also complex joint distributions. (Maybe move the whole generative paragraph here, X)
-        \item Recent approaches to information extraction use only the NLU perspective
-            and frame extraction as a classification problem, and thus do not take advantage of
-            the generative capability of neural networks.
-        \item TODO: Possibly give examples QA, information extraction (dos santos + sam).
-        \item We argue that the two subfields' approaches are complementary,
-            and capitalize on their duality by proposing a method to train a NLU system
-            without direct supervision.
-        \end{enumerate}
-    \item (delete) Supervision in NLU
-        (Need to hammer in the framing of supervision)
-        (More related work on unsup IE)
-        \begin{enumerate}
-        \item Recent work using neural network-based systems cast information extraction
-        as a supervised problem
-        \citep{wiseman2017d2t,dossantos2015classification}.
-        \item Even with structured representations \citep{weissenborn17}, the final output is still supervised.
-        \item Again, supervision does not scale.
-        \item Latent variable models (LVMs) are one method for alleviating the need for supervision.
-        \item LVMs do not require manual labels, as they instead treat quantities of interest
-            as latent random variables and deal with them in a probabilistically principled 
-            fashion.
-        \end{enumerate}
-    \item (delete) Recent advances in NLG
-        (Need to argue the benefits of generative modeling, is the recent success enough?)
-        \begin{enumerate}
-        \item Deep generative models, namely LVMs with neural network components,
-            have integrated the flexibility of neural networks with the
-            inductive biases of graphical models.
-        \item Most importantly, efficient techniques for training hard attention 
-            that rely on variational inference \citep{deng2018attn}.
-            This technique is applicable to sequential LVMs such as hidden Markov models 
-            and hidden semi-Markov models (HSMMs).
-        \item Use HSMM as signal for training IE.
         \end{enumerate}
     \end{enumerate}
 \item Background and Notation

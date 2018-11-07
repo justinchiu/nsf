@@ -1,4 +1,4 @@
-\begin{thebibliography}{11}
+\begin{thebibliography}{9}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -10,13 +10,6 @@ Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, and Alexander~M. Rush.
 \newblock Latent alignment and variational attention.
 \newblock \emph{CoRR}, abs/1807.03756, 2018.
 \newblock URL \url{http://arxiv.org/abs/1807.03756}.
-
-\bibitem[dos Santos et~al.(2015)dos Santos, Xiang, and
-  Zhou]{dossantos2015classification}
-C{\'{\i}}cero~Nogueira dos Santos, Bing Xiang, and Bowen Zhou.
-\newblock Classifying relations by ranking with convolutional neural networks.
-\newblock \emph{CoRR}, abs/1504.06580, 2015.
-\newblock URL \url{http://arxiv.org/abs/1504.06580}.
 
 \bibitem[George~Doddington et~al.(2004)George~Doddington, Alexis~Mitchell,
   Mark~Przybocki, Lance~Ramshaw, Stephanie~Strassel, and
@@ -65,12 +58,6 @@ Mihai Surdeanu, Julie Tibshirani, Ramesh Nallapati, and Christopher~D. Manning.
   Learning}, EMNLP-CoNLL '12, pages 455--465, Stroudsburg, PA, USA, 2012.
   Association for Computational Linguistics.
 \newblock URL \url{http://dl.acm.org/citation.cfm?id=2390948.2391003}.
-
-\bibitem[Weissenborn et~al.(2017)Weissenborn, Kocisky, and Dyer]{weissenborn17}
-Dirk Weissenborn, Tomas Kocisky, and Chris Dyer.
-\newblock Dynamic integration of background knowledge in neural nlu systems.
-\newblock \emph{CoRR}, abs/1706.02596, 2017.
-\newblock URL \url{http://arxiv.org/abs/1706.02596}.
 
 \bibitem[Wiseman(2018)]{wiseman2018template}
 Sam Wiseman.
