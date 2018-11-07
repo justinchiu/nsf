@@ -149,23 +149,39 @@ while leaving other tasks as possible extensions to our proposed model.
 Since the addition of neural networks to the practitioner's toolbox,
 extracting information from text has been cast as a supervised classification problem.
 In fact, in many tasks where generative models were once used, such as coreference and slot-filling,
-recent approaches make progress by fitting large models large datasets \citep{lee2018coref,zhang2017slotfilling}.
+recent approaches make progress by fitting large models to large, labelled datasets \citep{lee2018coref,zhang2017slotfilling}.
 Although this does result in progress, this particular strategy is not scalable as acquiring supervision is expensive
 and time-consuming.
 An orthogonal strategy is to search for a class of models that is able to learn well under less supervision.
-Latent variable models (LVMs) in particular lend themselves well to sample efficiency and semi-supervised learning.
+Latent variable models (LVMs) in particular lend themselves well to label-efficient semi-supervised learning.
 A LVM is a model which includes both observed and unobserved (latent) random variables.
 Past work on coreference and slot-filling utilized LVMs in order to train with distant supervision.
 More specifically, \citet{haghighi2010coref} learn a semi-supervised generative model of mentions given mention
 segmentations and a relatively small set of labels,
 while \citet{surdeanu2012miml} learn to extract the relationships between two entities with noisy labels.
+We propose to unify past work on LVMs for information extraction with the powerful modeling capabilities
+of neural networks.
 
-Recent work has demonstrated that LVMs parameterized with neural networks can be trained efficiently,
-which indicates that the expressivity of neural networks can be combined with the LVM framework
-in order to train with less supervision.
-In machine translation, \citet{deng2018attn} demonstrate that formulating attention as
+Recent work has demonstrated that LVMs parameterized with neural networks can be trained efficiently.
+In machine translation, we demonstrated in \citet{deng2018attn} that formulating attention as
 a latent variable provides a boost in performance without increasing the computational complexity of training.
-
+The specific model we used did not incorporate interactions between the latent variables,
+however the technique we used generalizes to classes of LVMs that do specify interactions.
+In this proposal, we focus on the class of LVMs known as hidden semi-Markov models (HSMMs),
+used in \citet{liang2009semalign} as a generative model for the task of aligning segments of text to
+records in a knowledge base without supervision.
+As in \citet{liang2009semalign}, we are interested in learning a generative model of text so that
+we can minimize the amount of supervision necessary for training an information extraction system.
+The performance of their generative model of text provides signal for learning the alignments:
+if the likelihood of a segment of text improves when moving from a past alignment choice to a new one,
+then the new alignment is more likely to be correct given a suitably strong likelihood model.
+We use that same intuition to formulate a related LVM for weakly supervised information extraction
+which aims to model not just the alignments from segments of text to records in a knowledge base
+but also the values in the knowledge base itself.
+By parameterizing the generative HSMM with neural networks as in \citet{wiseman2018template},
+we hope to incorporate recent progress in parameterizing LVMs with neural networks
+so as to learn a more accurate information extraction system by using a more powerful
+generative model -- taking care to ensure that the model can be trained with minimal supervision.
 
 \begin{comment}
 Natural language processing contains two separate but
@@ -592,6 +608,14 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
         \begin{enumerate}
         \item Demonstrate that parameterization with a neural network does not affect computational
             complexity of inference.
+        \item Then the same technique can be applied to model with more structure,
+            as long as the graphical model itself permits tractable inference.
+        \item In this proposal, we focus on the hidden semi-Markov model (HSMM),
+            used in \citet{liang2009semalign} for the task of aligning segments of text to
+            records in a knowledge base without supervision. 
+        \item As in \citet{liang2009semalign}, we are interested in learning a generative model of text so that
+            we can minimize the amount of supervision necessary for training an
+            information extraction system.
         \item Also that although worse sample complexity, using an approximate posterior
             with monte carlo sampling achieves comparable performance.
         \end{enumerate}
