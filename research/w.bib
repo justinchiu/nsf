@@ -168,7 +168,6 @@ day="01",
 volume="79",
 number="3",
 pages="299--318",
-abstract="We present a novel unsupervised learning method for human action categories. A video sequence is represented as a collection of spatial-temporal words by extracting space-time interest points. The algorithm automatically learns the probability distributions of the spatial-temporal words and the intermediate topics corresponding to human action categories. This is achieved by using latent topic models such as the probabilistic Latent Semantic Analysis (pLSA) model and Latent Dirichlet Allocation (LDA). Our approach can handle noisy feature points arisen from dynamic background and moving cameras due to the application of the probabilistic models. Given a novel video sequence, the algorithm can categorize and localize the human action(s) contained in the video. We test our algorithm on three challenging datasets: the KTH human motion dataset, the Weizmann human action dataset, and a recent dataset of figure skating actions. Our results reflect the promise of such a simple approach. In addition, our algorithm can recognize and localize multiple actions in long and complex video sequences containing multiple motions.",
 issn="1573-1405",
 doi="10.1007/s11263-007-0122-4",
 url="https://doi.org/10.1007/s11263-007-0122-4"
@@ -809,13 +808,7 @@ url = {http://papers.nips.cc/paper/3170-expectation-maximization-and-posterior-c
 }
 
 @article{ace2004,
-    abstract = {{The objective of the ACE program is to develop technology to automatically infer from human language data the entities being
-mentioned, the relations among these entities that are directly expressed, and the events in which these entities participate. Data
-sources include audio and image data in addition to pure text, and Arabic and Chinese in addition to English. The effort involves
-defining the research tasks in detail, collecting and annotating data needed for training, development, and evaluation, and supporting
-the research with evaluation tools and research workshops. This program began with a pilot study in 1999. The next evaluation is
-scheduled for September 2004.}},
-    author = {George Doddington@NIS, T. and Alexis Mitchell@LD, C. and Mark Przybocki@NIS, T. and Lance Ramshaw@BB, N. and Stephanie Strassel@LD, C. and Ralph Weischedel@BB, N.},
+    author = {George Doddington, T. and Alexis Mitchell, C. and Mark Przybocki, T. and Lance Ramshaw, N. and Stephanie Strassel, C. and Ralph Weischede, N.},
     citeulike-article-id = {10003935},
     citeulike-linkout-0 = {http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.78.8442\&\#38;rep=rep1\&\#38;type=pdf},
     keywords = {ace, information-extraction, no-end-page, no-start-page},
@@ -842,3 +835,65 @@ scheduled for September 2004.}},
  address = {Stroudsburg, PA, USA},
 } 
 
+@article{lee2018coref,
+  author    = {Kenton Lee and
+               Luheng He and
+               Luke Zettlemoyer},
+  title     = {Higher-order Coreference Resolution with Coarse-to-fine Inference},
+  journal   = {CoRR},
+  volume    = {abs/1804.05392},
+  year      = {2018},
+  url       = {http://arxiv.org/abs/1804.05392},
+  archivePrefix = {arXiv},
+  eprint    = {1804.05392},
+  timestamp = {Mon, 13 Aug 2018 16:47:47 +0200},
+  biburl    = {https://dblp.org/rec/bib/journals/corr/abs-1804-05392},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@InProceedings{zhang2017slotfilling,
+  author =     "Zhang, Yuhao
+        and Zhong, Victor
+        and Chen, Danqi
+        and Angeli, Gabor
+        and Manning, Christopher D.",
+  title =     "Position-aware Attention and Supervised Data Improve Slot Filling",
+  booktitle =     "Proceedings of the 2017 Conference on Empirical Methods in Natural      Language Processing    ",
+  year =     "2017",
+  publisher =     "Association for Computational Linguistics",
+  pages =     "35--45",
+  location =     "Copenhagen, Denmark",
+  doi =     "10.18653/v1/D17-1004",
+  url =     "http://aclweb.org/anthology/D17-1004"
+}
+
+@InProceedings{zheng2013align,
+  author =     "Zheng, Jiaping
+        and Vilnis, Luke
+        and Singh, Sameer
+        and Choi, Jinho D.
+        and McCallum, Andrew",
+  title =     "Dynamic Knowledge-Base Alignment for Coreference Resolution",
+  booktitle =     "Proceedings of the Seventeenth Conference on Computational Natural Language Learning",
+  year =     "2013",
+  publisher =     "Association for Computational Linguistics",
+  pages =     "153--162",
+  location =     "Sofia, Bulgaria",
+  url =     "http://aclweb.org/anthology/W13-3517"
+}
+
+@inproceedings{haghighi2010coref,
+ author = {Haghighi, Aria and Klein, Dan},
+ title = {Coreference Resolution in a Modular, Entity-centered Model},
+ booktitle = {Human Language Technologies: The 2010 Annual Conference of the North American Chapter of the Association for Computational Linguistics},
+ series = {HLT '10},
+ year = {2010},
+ isbn = {1-932432-65-5},
+ location = {Los Angeles, California},
+ pages = {385--393},
+ numpages = {9},
+ url = {http://dl.acm.org/citation.cfm?id=1857999.1858060},
+ acmid = {1858060},
+ publisher = {Association for Computational Linguistics},
+ address = {Stroudsburg, PA, USA},
+} 

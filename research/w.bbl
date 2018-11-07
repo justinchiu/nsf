@@ -1,4 +1,4 @@
-\begin{thebibliography}{10}
+\begin{thebibliography}{11}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -18,16 +18,32 @@ C{\'{\i}}cero~Nogueira dos Santos, Bing Xiang, and Bowen Zhou.
 \newblock \emph{CoRR}, abs/1504.06580, 2015.
 \newblock URL \url{http://arxiv.org/abs/1504.06580}.
 
-\bibitem[George~Doddington@NIS et~al.(2004)George~Doddington@NIS,
-  Alexis~Mitchell@LD, Mark~Przybocki@NIS, Lance~Ramshaw@BB,
-  Stephanie~Strassel@LD, and Ralph~Weischedel@BB]{ace2004}
-T.~George~Doddington@NIS, C.~Alexis~Mitchell@LD, T.~Mark~Przybocki@NIS,
-  N.~Lance~Ramshaw@BB, C.~Stephanie~Strassel@LD, and N.~Ralph~Weischedel@BB.
+\bibitem[George~Doddington et~al.(2004)George~Doddington, Alexis~Mitchell,
+  Mark~Przybocki, Lance~Ramshaw, Stephanie~Strassel, and
+  Ralph~Weischede]{ace2004}
+T.~George~Doddington, C.~Alexis~Mitchell, T.~Mark~Przybocki, N.~Lance~Ramshaw,
+  C.~Stephanie~Strassel, and N.~Ralph~Weischede.
 \newblock {The automatic content extraction (ACE) program–tasks, data, and
   evaluation}.
 \newblock 2004.
 \newblock URL
   \url{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.78.8442\&\#38;rep=rep1\&\#38;type=pdf}.
+
+\bibitem[Haghighi and Klein(2010)]{haghighi2010coref}
+Aria Haghighi and Dan Klein.
+\newblock Coreference resolution in a modular, entity-centered model.
+\newblock In \emph{Human Language Technologies: The 2010 Annual Conference of
+  the North American Chapter of the Association for Computational Linguistics},
+  HLT '10, pages 385--393, Stroudsburg, PA, USA, 2010. Association for
+  Computational Linguistics.
+\newblock ISBN 1-932432-65-5.
+\newblock URL \url{http://dl.acm.org/citation.cfm?id=1857999.1858060}.
+
+\bibitem[Lee et~al.(2018)Lee, He, and Zettlemoyer]{lee2018coref}
+Kenton Lee, Luheng He, and Luke Zettlemoyer.
+\newblock Higher-order coreference resolution with coarse-to-fine inference.
+\newblock \emph{CoRR}, abs/1804.05392, 2018.
+\newblock URL \url{http://arxiv.org/abs/1804.05392}.
 
 \bibitem[Liang et~al.(2009)Liang, Jordan, and Klein]{liang2009semalign}
 Percy Liang, Michael~I. Jordan, and Dan Klein.
@@ -50,14 +66,6 @@ Mihai Surdeanu, Julie Tibshirani, Ramesh Nallapati, and Christopher~D. Manning.
   Association for Computational Linguistics.
 \newblock URL \url{http://dl.acm.org/citation.cfm?id=2390948.2391003}.
 
-\bibitem[Vaswani et~al.(2017)Vaswani, Shazeer, Parmar, Uszkoreit, Jones, Gomez,
-  Kaiser, and Polosukhin]{allattn}
-Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones,
-  Aidan~N. Gomez, Lukasz Kaiser, and Illia Polosukhin.
-\newblock Attention is all you need.
-\newblock \emph{CoRR}, abs/1706.03762, 2017.
-\newblock URL \url{http://arxiv.org/abs/1706.03762}.
-
 \bibitem[Weissenborn et~al.(2017)Weissenborn, Kocisky, and Dyer]{weissenborn17}
 Dirk Weissenborn, Tomas Kocisky, and Chris Dyer.
 \newblock Dynamic integration of background knowledge in neural nlu systems.
@@ -75,9 +83,15 @@ Sam Wiseman, Stuart~M. Shieber, and Alexander~M. Rush.
 \newblock Challenges in data-to-document generation.
 \newblock \emph{CoRR}, abs/1707.08052, 2017.
 
-\bibitem[Yang et~al.(2017)Yang, Dai, Salakhutdinov, and Cohen]{yang2017moslm}
-Zhilin Yang, Zihang Dai, Ruslan Salakhutdinov, and William~W. Cohen.
-\newblock Breaking the softmax bottleneck: {A} high-rank {RNN} language model.
-\newblock \emph{CoRR}, abs/1711.03953, 2017.
+\bibitem[Zhang et~al.(2017)Zhang, Zhong, Chen, Angeli, and
+  Manning]{zhang2017slotfilling}
+Yuhao Zhang, Victor Zhong, Danqi Chen, Gabor Angeli, and Christopher~D.
+  Manning.
+\newblock Position-aware attention and supervised data improve slot filling.
+\newblock In \emph{Proceedings of the 2017 Conference on Empirical Methods in
+  Natural Language Processing}, pages 35--45. Association for Computational
+  Linguistics, 2017.
+\newblock \doi{10.18653/v1/D17-1004}.
+\newblock URL \url{http://aclweb.org/anthology/D17-1004}.
 
 \end{thebibliography}

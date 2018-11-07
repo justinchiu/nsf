@@ -119,17 +119,18 @@ information networks, knowledge bases, natural language processing, information 
 latent variable models
 
 \paragraph{Relevance to Army BAA}
-In order to provide decision makers with the information and context
-necessary to make informed choices, information networks must
+In order to provide decision makers with the information
+necessary to make informed choices as well as predict the effects of those choices,
+information networks must
 1) contain correct information in each node, as well as 
-2) represent the relationships between nodes efficiently in order to propagate changes dynamically,
+2) represent the causal relationships between nodes efficiently in order to propagate changes dynamically,
 where we define information networks to be graphical representations of data where each node contains
 a set of attributes and edges between nodes determine how information should propagate.
 We argue that 1) alone is difficult to satisfy at scale.
 Removing the capacity to propagate information between nodes in an 
 information network yields a ``knowledge base,'' which is a structured representation of data
 where tuples of entities, predicates, and values are stored.
-In order to satisfy condition 1) or correctness for knowledge bases,
+To populate knowledge bases with correct data,
 we must either train systems using explicit supervision or
 formulate models that are able to extract information from multiple and
 possibly unreliable sources.
@@ -138,11 +139,35 @@ of the knowledge base grows,
 we present a framework towards automating the
 training of information extraction systems for the purpose of 
 populating knowledge bases with minimal supervision.
-Additionally, we propose a possible path towards satisfying condition 2),
-the propagation of information.
+%Additionally, we propose a possible path towards satisfying condition 2),
+%the propagation of information.
+In this proposal we focus on slot-filling, the task of filling in the missing or incorrect values of a knowledge-base,
+while leaving other tasks as possible extensions to our proposed model.
 
 \paragraph{Introduction}
 % Define generative model?
+Since the addition of neural networks to the practitioner's toolbox,
+extracting information from text has been cast as a supervised classification problem.
+In fact, in many tasks where generative models were once used, such as coreference and slot-filling,
+recent approaches make progress by fitting large models large datasets \citep{lee2018coref,zhang2017slotfilling}.
+Although this does result in progress, this particular strategy is not scalable as acquiring supervision is expensive
+and time-consuming.
+An orthogonal strategy is to search for a class of models that is able to learn well under less supervision.
+Latent variable models (LVMs) in particular lend themselves well to sample efficiency and semi-supervised learning.
+A LVM is a model which includes both observed and unobserved (latent) random variables.
+Past work on coreference and slot-filling utilized LVMs in order to train with distant supervision.
+More specifically, \citet{haghighi2010coref} learn a semi-supervised generative model of mentions given mention
+segmentations and a relatively small set of labels,
+while \citet{surdeanu2012miml} learn to extract the relationships between two entities with noisy labels.
+
+Recent work has demonstrated that LVMs parameterized with neural networks can be trained efficiently,
+which indicates that the expressivity of neural networks can be combined with the LVM framework
+in order to train with less supervision.
+In machine translation, \citet{deng2018attn} demonstrate that formulating attention as
+a latent variable provides a boost in performance without increasing the computational complexity of training.
+
+
+\begin{comment}
 Natural language processing contains two separate but
 closely related subfields: natural language understanding (NLU) and natural language
 generation (NLG).
@@ -191,6 +216,7 @@ HSMMs have been applied to small scale datasets for text generation \citep{wisem
 as well as without integrating neural networks \citep{liang2009semalign}.
 We will scale sequential LVMs to large datasets through variational inference and use
 the signal from our generative model in order to train an information extraction system.
+\end{comment}
 
 %Modern neural systems have demonstrated state-of-the-art performance on short-form
 %text generation tasks, but the performance seemingly fails to generalize to long-form generation.
@@ -200,11 +226,10 @@ the signal from our generative model in order to train an information extraction
 We consider datasets consisting of aligned data and text
 $\set{(\br^{(1)}, \by^{(1)}),(\br^{(2)},\by^{(2)})\ldots}$.
 For brevity, we refer to a single datum and text as $\br,\by$, omitting the superscript.
-Each datum $\br = \set{r_1,\ldots,r_N}$ is a set of $N$ records, each of which has
-an entity, type, and value $r_i = (e_i, t_i, v_i)$.
-The datum $\br$ is a flattened representation of an information network.
-Whereas an information network may also be represented as a hypergraph,
-$\br$ is a list of relations or records.
+Each datum $\br = \set{r_1,\ldots,r_N}$ is a set of $N$ records, where each record $r_i = (e_i, t_i, v_i)$
+is a tuple containing an entity, type, and value.
+The datum $\br$ is a knowledge base, or equivalently an information network
+without a representation of the causal effects between records.
 We refer collectively to all the entities, types, and values in a given datum $\br$ as
 $\be,\bt,\bv$ respectively.
 Each text $\by = \set{y_1,\ldots,y_T}$ is a sequence of tokens.
@@ -229,7 +254,7 @@ the entity Jeremy Lin, the value 19, as well as the text $\by$.
 In this case, we would have $\bz = \set{t_1}$ and $\bx = \set{e_1,v_1}$.
 In an alternative task, we may want to infer the value $v_1$ 
 as well as the type $t_1$ given $\by$ and $e_1$, therefore $\bz = \set{t_1,v_1}$ and $\bx=\set{e_1}$.
-(Will switch to ACE dataset after I figure out what's going on with the data.)
+%(Will switch to ACE dataset after I figure out what's going on with the data.)
 
 Note that we are not constrained to setting $\bz$ to subsets of $\br$.
 We also consider the case where $\bz$ includes alignments from individual words $y_t$
@@ -280,8 +305,9 @@ For each record alignment $a_i$,
 we choose a sequence of words $\by_i = \set{y_{i1},\ldots,y_{iJ}}$ to describe the record.
 The words are modelled by an autoregressive emission model within each segment
 that is aligned to the same record:
-$y_{ij}\sim\Cat(f_\theta(\by_{i<j},v_{a_i},e_{a_i},t_{a_i}))$,
-where $f_\theta$ is another neural network.
+$y_{ij}\sim\Cat(f_\theta(\by_{i1:ij},v_{a_i},e_{a_i},t_{a_i}))$,
+where $f_\theta$ is another neural network and $\by_{i1:ij}$ is all tokens $y$ from indices
+$i1$ to $ij$.
 \end{enumerate}
 The value and record choices correspond to prior distributions over values $p(\bv\mid\be,\bt)$
 and alignments $p(\ba\mid\bv,\be,\bt)$ respectively,
@@ -328,7 +354,7 @@ the text and the underlying records in an unsupervised manner.
 We plan to introduce a new step to the generative process of \texttt{Values} that 
 allows the model to learn new records as boolean-valued functions of relations already defined in the data.
 By approximating these boolean functions with neural networks, we hope to find a model
-parameterization that admits a low variance monte carlo gradient estimator.
+parameterization that admits a low variance Monte Carlo gradient estimator.
 
 %TODO: Experiments, Evaluation, and Expectations? Also shortcomings? Short paragraph
 We will evaluate our initial approach on the Rotowire dataset, and
@@ -338,7 +364,7 @@ Streaming Multimedia Knowledge Base Population (SM-KBP) datasets.
 We expect the variance of the gradient estimator to be an issue, in particular its
 effect on sample complexity. In previous work, we observed that gradient estimators
 based on exact inference resulted in better sample complexity than
-monte carlo gradient estimators \citep{deng2018attn}, and we expect that controlling the variance 
+Monte Carlo gradient estimators \citep{deng2018attn}, and we expect that controlling the variance 
 of the gradient estimator with the inductive bias of neural architectures will be of paramount
 importance for the success of our proposed method.
 
@@ -553,13 +579,22 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
             (This might be a little difficult)
         \end{enumerate}
     \item Supervision in Information Extraction
+        \begin{enumerate}
         \item Recent neural approaches treat information extraction as a classification problem
             with little intermediate structure.
-        \item Older approaches utilized latent variable models to capitalize on intermediate structure.
-        \item We aim to unify these two approaches with recent techniques for training LVMs
+        \item Older approaches utilized latent variable models to capitalize on intermediate structure,
+            however this was before neural models were used in NLP.
+            \citep{surdeanu2012miml,liang2009semalign}
+        \item We aim to unify these two approaches through recently developed techniques for training LVMs
             parameterized with neural networks.
+        \end{enumerate}
     \item Recent advances in neural LVMs
-        \item  
+        \begin{enumerate}
+        \item Demonstrate that parameterization with a neural network does not affect computational
+            complexity of inference.
+        \item Also that although worse sample complexity, using an approximate posterior
+            with monte carlo sampling achieves comparable performance.
+        \end{enumerate}
     \item (delete) Decomposition of NLP into NLU and NLG
         (Keep this paragraph high-level, just an introduction to the thesis and proposal.)
         \begin{enumerate}
