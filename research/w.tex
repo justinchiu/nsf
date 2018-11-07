@@ -210,11 +210,11 @@ and a simple statement $\by = $``Jeremy Lin scored 19 points''.
 In its simplest incarnation, the process of information extraction may be to infer any
 subset of $\br$, which in this case will be our latent $\bz$, given the remaining elements in $\br$
 which corresponds to $\bx$, as well as the text $\by$.
-For example, we may want to infer the type of the relation $t$ given 
-the entity Jeremy Lin, the value 19, as well as the text $\by$.
-In this case, we would have $\bz = \set{t_1}$ and $\bx = \set{e_1,v_1}$.
+For example, we may want to infer the value $v$ given 
+the entity Jeremy Lin, the type POINTS, as well as the text $\by$.
+In this case, we would have $\bz = \set{v_1}$ and $\bx = \set{e_1,t_1}$.
 In an alternative task, we may want to infer the value $v_1$ 
-as well as the type $t_1$ given $\by$ and $e_1$, therefore $\bz = \set{t_1,v_1}$ and $\bx=\set{e_1}$.
+as well as the type $t_1$ given $\by$ and $e_1$, therefore $\bz = \set{v_1,t_1}$ and $\bx=\set{e_1}$.
 %(Will switch to ACE dataset after I figure out what's going on with the data.)
 
 Note that we are not constrained to setting $\bz$ to subsets of $\br$.
