@@ -115,34 +115,35 @@ structured attention for IE posterior?
 \end{comment}
 
 \paragraph{Keywords}
-information networks, knowledge base completion, slot-filling, natural language processing, information extraction,
-latent variable models
+information networks, natural language processing, information extraction, latent variable models
 
-\paragraph{Relevance to Army BAA}
+\paragraph{Relevance to Army BAA: II. A. c. iii. (3) Information Networks}
 In order to provide decision makers with the information
 necessary to make informed choices as well as predict the effects of those choices,
-information networks must
-1) contain correct information in each node, as well as 
-2) represent the causal relationships between nodes efficiently in order to propagate changes dynamically,
-where we define information networks to be graphical representations of data where each node contains
-a set of attributes and edges between nodes determine how information should propagate.
-We argue that 1) alone is difficult to satisfy at scale.
-Removing the capacity to propagate information between nodes in an 
-information network yields a ``knowledge base,'' which is a structured representation of data
-where tuples of entities, predicates, and values are stored.
-To populate knowledge bases with correct data,
-we must either train systems using explicit supervision or
-formulate models that are able to extract information from multiple and
-possibly unreliable sources.
-As acquiring explicit supervision becomes extremely expensive as the size
-of the knowledge base grows,
-we present a framework towards automating the
-training of information extraction systems for the purpose of 
-populating knowledge bases with minimal supervision.
-%Additionally, we propose a possible path towards satisfying condition 2),
-%the propagation of information.
-In this proposal we focus on slot-filling, the task of filling in the missing or incorrect values of a knowledge-base,
-while leaving other tasks as possible extensions to our proposed model.
+we must have an efficient representation of relevant information and a predictive model
+for the resultant state of the world given a choice.
+We define information networks as graphs where each node represents a set of facts
+and an edge describes how the facts in one node influence the facts in another.
+Information networks provide an intuitive and queryable representation of knowledge.
+A decision maker must simply query the relevant nodes to gain context, and
+when simulating a decision that alters the information in one node
+the graph can easily propagate those changes by virtue of its representation.
+Given that an information network must represent an extremely large number of facts and relationships,
+it is infeasible to specify these completely by hand.
+Many recent works have focused on learning to fill in the missing edges of an information network
+by recognizing patterns in fully-labeled subgraphs in order to predict whether there should
+be an edge between two nodes in an unlabeled subgraph \citep{chen2018diva}.
+By filling in missing edges, we are able to use the relationships specified by the edges
+in order to reason about the facts contained in a node conditioned on the facts of its
+neighbours.
+We propose an orthogonal approach which instead relies on jointly modeling
+text as well as the nodes of the information network.
+We aim to leverage copious amounts of unstructured data by
+learning an information extraction system that is able to 
+extract facts from text in order to fill in the nodes of an information network.
+In this proposal, we present a method towards automating the
+training of information extraction systems with unlabeled corpora
+by recasting the information extraction problem as a generative modeling problem.
 
 \paragraph{Introduction}
 % Define generative model?
@@ -523,20 +524,23 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
     \begin{enumerate}
     \item Relevance to BAA
         \begin{enumerate}
+        \item Importance of representation and correctness of knowledge in decision making,
+            as well as the power of prediction.
+        \item Information networks are one way of representing knowledge as a graph
+            as well as interactions?
         \item What are information networks?
             Graphical representation of objects, their characteristics of interest,
             and their relationship to objects.
-        \item Information networks are dynamic knowledge graphs?
-            They must also capture dynamic relationships, i.e. the influence
-            of changing an attribute of one node on another node.
+        \item Recent work focuses on learning structure between nodes
+            in order to fill parts of the graph that may be missing \cite{chen2018diva}.
+        \item We focus on the orthogonal approach of completing knowledge graphs using
+            large amounts of unstructured text rather than the relationships between nodes.
         \item Reduce information networks to knowledge bases by removing edges
             (kind of interesting as we can view knowledge bases as a mean field approximation
             to information networks where info networks must specify not only
             conditional distributions but also interventional distributions).
-        \item Obtaining supervision for large KBs and thus info networks is expensive,
-            especially if the underlying schema is subject to change.
         \item In this proposal we present a framework towards automating the
-            training of information extraction systems with minimal supervision.
+            training of text-centric information extraction systems with minimal supervision.
         \item Shine some hope on interventional distribution representations?
             (This might be a little difficult)
         \end{enumerate}
@@ -544,6 +548,7 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
         \begin{enumerate}
         \item Recent neural approaches treat information extraction as a classification problem
             with little intermediate structure.
+        \item 
         \item Older approaches utilized latent variable models to capitalize on intermediate structure,
             however this was before neural models were used in NLP.
             \citep{surdeanu2012miml,liang2009semalign}
