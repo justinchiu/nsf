@@ -154,7 +154,8 @@ given unstructured text.
 We use summaries of basketball games as a running example.
 In the context of a summary of a basketball game, an information extraction system
 would infer all the statistics associated with a player given the summary.
-A typical approach to an information extraction system would be pipelined:
+A typical approach to an information extraction system is the following pipeline,
+where each stage has a model that is independent from the other stages:
 first segment the text into entities and values,
 then extract named entities and possibly perform
 coreference resolution by predicting whether segments refer to the same entity, 
@@ -164,7 +165,7 @@ We can then use the extracted relationships along with the associated entities a
 to populate the nodes of a knowledge graph, where each node would
 correspond to a player and contain their associated statistics.
 See Figure 1 for an example of this process.
-This is orthogonal and complementary to using exists nodes in a knowledge graph
+This is orthogonal and complementary to using existing nodes in a knowledge graph
 to fill in missing ones.
 As we are interested in utilizing large amounts of unlabeled corpora for 
 the training of an information extraction system, we restrict our focus
