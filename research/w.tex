@@ -122,16 +122,18 @@ In order to provide decision makers with the information
 necessary to make informed choices as well as predict the effects of those choices,
 we must have an efficient representation of relevant information and a predictive model
 for the resultant state of the world given a choice.
-We define information networks as graphs where each node represents a set of facts
-and an edge describes how the facts in one node influence the facts in another.
-Information networks provide an intuitive and queryable representation of knowledge.
-A decision maker must simply query the relevant nodes to gain context, and
+Information networks provide a graphical representation of information and how it
+propagates through a network.
+We focus on \textit{knowledge graphs}, information networks where each node contains a set of facts
+about an entity and an edge describes how the facts in one node influence the facts in another.
+Knowledge graphs provide an intuitive and queryable representation of knowledge.
+A decision maker may query the relevant nodes to gain context, and
 when simulating a decision that alters the information in one node
 the graph can easily propagate those changes by virtue of its representation.
 
-Given that an information network must represent an extremely large number of facts and relationships,
+Given that a knowledge graph must represent an extremely large number of facts and relationships,
 it is infeasible to specify these completely by hand.
-Many recent works have focused on learning to fill in the missing edges of an information network
+Many recent works have focused on learning to fill in the missing edges of a knowledge graph
 by recognizing patterns in fully-labeled subgraphs in order to predict whether there should
 be an edge between two nodes in an unlabeled subgraph \citep{chen2018diva}.
 By filling in missing edges, we are able to use the relationships specified by the edges
@@ -142,10 +144,14 @@ We propose an orthogonal approach which instead relies on jointly modeling
 text as well as the nodes of the information network.
 We aim to leverage copious amounts of unstructured data by
 learning an information extraction system that is able to 
-extract facts from text in order to fill in the nodes of an information network.
+extract facts from text in order to fill in the nodes of a knowledge graph.
 In this proposal, we present a method towards automating the
 training of information extraction systems with unlabeled corpora
 by recasting the information extraction problem as a generative modeling problem.
+(Include exemplar knowledge graph diagram, and show that we focus on filling nodes paired with text)
+(Diagram highlighting the difference between modeling edges without text for KG completion
+vs only modeling nodes jointly with text. Highlight complementary nature and emphasize
+combination as future work)
 
 \paragraph{Introduction}
 % Define generative model?
@@ -548,9 +554,21 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
         \end{enumerate}
     \item Supervision in Information Extraction
         \begin{enumerate}
+        \item Define information extraction
+            \begin{enumerate}
+            \item The goal is to produce structured representations of information from a given unstructured text.
+            \item Ideally, but not necessarily computer-readable in addition to human-readable.
+            \item A typical pipeline for information extraction includes
+                text segmentation, named entity recognition, coreference resolution,
+                relation extraction, and finally producing structured representations of the unlabeled text.
+            \item This is knowledge-base completion.
+            \item We are primarily interested in knowledge-base completion,
+                as the other tasks such named entity recognition are typically
+                part of a pipeline aimed at knowledge-base completion.
+            \end{enumerate}
         \item Recent neural approaches treat information extraction as a classification problem
             with little intermediate structure.
-        \item 
+        \item ???
         \item Older approaches utilized latent variable models to capitalize on intermediate structure,
             however this was before neural models were used in NLP.
             \citep{surdeanu2012miml,liang2009semalign}
