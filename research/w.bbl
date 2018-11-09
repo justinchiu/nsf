@@ -5,6 +5,13 @@
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
+\bibitem[Bahdanau et~al.(2014)Bahdanau, Cho, and Bengio]{bahdanau2014mt}
+Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio.
+\newblock Neural machine translation by jointly learning to align and
+  translate.
+\newblock \emph{CoRR}, abs/1409.0473, 2014.
+\newblock URL \url{http://arxiv.org/abs/1409.0473}.
+
 \bibitem[Chen et~al.(2018)Chen, Xiong, Yan, and Wang]{chen2018diva}
 Wenhu Chen, Wenhan Xiong, Xifeng Yan, and William~Yang Wang.
 \newblock Variational knowledge graph reasoning.
@@ -45,12 +52,6 @@ Diederik~P. Kingma, Danilo~Jimenez Rezende, Shakir Mohamed, and Max Welling.
 \newblock \emph{CoRR}, abs/1406.5298, 2014.
 \newblock URL \url{http://arxiv.org/abs/1406.5298}.
 
-\bibitem[Lee et~al.(2018)Lee, He, and Zettlemoyer]{lee2018coref}
-Kenton Lee, Luheng He, and Luke Zettlemoyer.
-\newblock Higher-order coreference resolution with coarse-to-fine inference.
-\newblock \emph{CoRR}, abs/1804.05392, 2018.
-\newblock URL \url{http://arxiv.org/abs/1804.05392}.
-
 \bibitem[Liang et~al.(2009)Liang, Jordan, and Klein]{liang2009semalign}
 Percy Liang, Michael~I. Jordan, and Dan Klein.
 \newblock Learning semantic correspondences with less supervision.
@@ -61,6 +62,15 @@ Percy Liang, Michael~I. Jordan, and Dan Klein.
   Linguistics.
 \newblock ISBN 978-1-932432-45-9.
 \newblock URL \url{http://dl.acm.org/citation.cfm?id=1687878.1687893}.
+
+\bibitem[Ng and Jordan(2001)]{ng2001discgen}
+Andrew~Y. Ng and Michael~I. Jordan.
+\newblock On discriminative vs. generative classifiers: A comparison of
+  logistic regression and naive bayes.
+\newblock In \emph{Proceedings of the 14th International Conference on Neural
+  Information Processing Systems: Natural and Synthetic}, NIPS'01, pages
+  841--848, Cambridge, MA, USA, 2001. MIT Press.
+\newblock URL \url{http://dl.acm.org/citation.cfm?id=2980539.2980648}.
 
 \bibitem[Qu et~al.(2017)Qu, Ren, Zhang, and Han]{qu2017ssre}
 Meng Qu, Xiang Ren, Yu~Zhang, and Jiawei Han.
@@ -89,16 +99,5 @@ Sam Wiseman.
 Sam Wiseman, Stuart~M. Shieber, and Alexander~M. Rush.
 \newblock Challenges in data-to-document generation.
 \newblock \emph{CoRR}, abs/1707.08052, 2017.
-
-\bibitem[Zhang et~al.(2017)Zhang, Zhong, Chen, Angeli, and
-  Manning]{zhang2017slotfilling}
-Yuhao Zhang, Victor Zhong, Danqi Chen, Gabor Angeli, and Christopher~D.
-  Manning.
-\newblock Position-aware attention and supervised data improve slot filling.
-\newblock In \emph{Proceedings of the 2017 Conference on Empirical Methods in
-  Natural Language Processing}, pages 35--45. Association for Computational
-  Linguistics, 2017.
-\newblock \doi{10.18653/v1/D17-1004}.
-\newblock URL \url{http://aclweb.org/anthology/D17-1004}.
 
 \end{thebibliography}

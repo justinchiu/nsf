@@ -105,15 +105,6 @@
 \textbf{Information Extraction with Weak Supervision}
 \end{center}
 
-\begin{comment}
-Spectrum from hard attention => hard segmental => HSMM for generative model, coverage / recall
-Should we go into HSMM??? or is hard segmental attention enough
-
-composition function = categorical over two entries of x
-
-structured attention for IE posterior?
-\end{comment}
-
 \paragraph{Keywords}
 information networks, natural language processing, information extraction, latent variable models
 
@@ -142,51 +133,85 @@ neighbours.
 
 We propose an orthogonal approach which instead relies on jointly modeling
 text as well as the nodes of the information network.
-We aim to leverage copious amounts of unstructured data by
+We aim to leverage copious amounts of natural language text by
 learning an information extraction system that is able to 
-extract facts from text in order to fill in the nodes of a knowledge graph.
-In this proposal, we present a method towards automating the
+extract facts from text to fill in the nodes of a knowledge graph.
+In this proposal we present a method towards automating the
 training of information extraction systems with unlabeled corpora
 by recasting the information extraction problem as a generative modeling problem.
+Specifically, we plan to use the performance of a deep generative model of text 
+as signal for learning an extraction system.
+
 (Include exemplar knowledge graph diagram, and show that we focus on filling nodes paired with text)
 (Diagram highlighting the difference between modeling edges without text for KG completion
 vs only modeling nodes jointly with text. Highlight complementary nature and emphasize
 combination as future work)
 
 \paragraph{Introduction}
-% Define generative model?
-Since the addition of neural networks to the practitioner's toolbox,
-extracting information from text has been cast as a supervised classification problem.
-In fact, in many tasks where generative models were once used, such as coreference and slot-filling,
-recent approaches make progress by fitting large models to large, labelled datasets \citep{lee2018coref,zhang2017slotfilling}.
-Although this does result in progress, this particular strategy is not scalable as acquiring supervision is expensive
-and time-consuming.
-An orthogonal strategy is to search for a class of models that is able to learn well under less supervision.
-Latent variable models (LVMs) in particular lend themselves to label-efficient semi-supervised learning.
-A LVM is a model which includes both observed and unobserved (latent) random variables.
-Past work on coreference and slot-filling utilized LVMs in order to train with distant supervision.
-More specifically, \citet{haghighi2010coref} learn a semi-supervised generative model of mentions given mention
-segmentations and a relatively small set of labels,
-while \citet{surdeanu2012miml} learn to extract the relationships between two entities with noisy labels.
-We propose to unify past work on LVMs for information extraction with the powerful modeling capabilities
-of neural networks.
+% Information extraction
+The goal of information extraction is to produce structured representations of information
+given unstructured text.
+We use summaries of basketball games as a running example.
+In the context of a summary of a basketball game, an information extraction system
+would infer all the statistics associated with a player given the summary.
+A typical approach to an information extraction system would be pipelined:
+first segment the text into entities and values,
+then extract named entities and possibly perform
+coreference resolution by predicting whether segments refer to the same entity, 
+and finally relation extraction where we identify the relationships between the extracted
+entities and values.
+We can then use the extracted relationships along with the associated entities and values
+to populate the nodes of a knowledge graph, where each node would
+correspond to a player and contain their associated statistics.
+See Figure 1 for an example of this process.
+This is orthogonal and complementary to using exists nodes in a knowledge graph
+to fill in missing ones.
+As we are interested in utilizing large amounts of unlabeled corpora for 
+the training of an information extraction system, we restrict our focus
+to learning the values of each node independently given the text.
+Neural networks, in combination with latent variable models (LVMs),
+provide a method for training such an information extraction pipeline jointly
+and end-to-end.
 
-Recent work has demonstrated that LVMs parameterized with neural networks can be trained efficiently.
-In machine translation, we demonstrated in \citet{deng2018attn} that formulating attention as
-a latent variable provides a boost in performance without increasing the computational complexity of training.
-The specific model we used did not incorporate interactions between the latent variables,
-however the technique we used generalizes to classes of LVMs that do specify interactions.
+The progression from a pipelined system into one that is trained jointly
+has precedent in the field of natural language processing;
+it recently occurred in machine translation.
+Previously, statistical machine translation utilized a highly pipelined approach,
+where each stage utilized a model that was trained independently of the others.
+The approach was unified with an end-to-end neural model in \citet{bahdanau2014mt}.
+We recently recast \citet{bahdanau2014mt}'s model in the LVM framework in
+\citet{deng2018attn} which resulted in performance gains as well as improved
+sample complexity.
+This progression parallels our proposal: we wish to specify an information
+extraction system that is learned end-to-end rather than in a pipeline,
+and we use the LVM framework to do so.
+LVMs provide a principled way of specifying either semi-supervised or unsupervised models,
+and have been shown to have better sample complexity than discriminative models
+\citep{deng2018attn,ng2001discgen}.
+
+Although LVMs have recently been proposed in the context of knowledge graph
+completion \citep{chen2018diva,qu2017ssre}, they either do not utilize text
+or do not have a generative model of text.
+We argue that the generative model we specify should be as close to 
+the data generating process as possible.
+In particular, \citet{chen2018diva} does not utilize text at all
+and \citet{qu2017ssre} do not incorporate generative model of the text.
+We propose to explicitly model how a text is created given a knowledge graph
+using a generative model with latent variables, otherwise known as a LVM.
+
 In this proposal, we focus on the class of LVMs known as hidden semi-Markov models (HSMMs),
-used in \citet{liang2009semalign} as a generative model for the task of aligning segments of text to
-records in a knowledge base without supervision.
+used in \citet{liang2009semalign} as a generative model for the
+task of aligning segments of text to
+records in a knowledge graph without supervision.
 As in \citet{liang2009semalign}, we are interested in learning a generative model of text so that
 we can minimize the amount of supervision necessary for training an information extraction system.
 The performance of their generative model of text provides signal for learning the alignments:
-if the likelihood of a segment of text improves when moving from a past alignment choice to a new one,
+if the likelihood of a segment of text improves when moving from a
+past alignment choice to a new one,
 then the new alignment is more likely to be correct given a suitably strong likelihood model.
 We use that same intuition to formulate a related LVM for weakly supervised information extraction
-which aims to model not just the alignments from segments of text to records in a knowledge base
-but also the values in the knowledge base itself.
+which aims to model not just the alignments from segments of text to nodes in a knowledge graph
+but also the values in the nodes themselves.
 By parameterizing the generative HSMM with neural networks as in \citet{wiseman2018template},
 we hope to incorporate recent progress in parameterizing LVMs with neural networks
 so as to learn a more accurate information extraction system by using a more powerful
@@ -202,11 +227,14 @@ The datum $\br$ is a knowledge base, or equivalently an information network
 without a representation of the causal effects between records.
 We refer collectively to all the entities, types, and values in a given datum $\br$ as
 $\be,\bt,\bv$ respectively.
-Each text $\by = \set{y_1,\ldots,y_T}$ is a sequence of tokens each from a vocbulary $V$.
+Each text $\by = \set{y_1,\ldots,y_T}$ is a sequence of tokens each from a vocabulary $V$.
 
+We proceed to detail how to to specify a general abstract LVM,
+then provide a concrete example linking the above dataset description to our LVM formulation:
 Let variables $\bz$ be unobserved or latent, $\by$ observed, and $\bx$ taken as conditioning
 and thus not modelled.
-For information extraction we are interested in distributions that can be specified as $p(\bz\mid\by,\bx)$,
+For information extraction we are interested in distributions
+that can be specified as $p(\bz\mid\by,\bx)$,
 where $\bz$ and $\bx$ may correspond to various quantities depending on the task
 but $\by$ is always the text.
 
@@ -226,6 +254,7 @@ In an alternative task, we may want to infer the value $v_1$
 as well as the type $t_1$ given $\by$ and $e_1$, therefore $\bz = \set{v_1,t_1}$ and $\bx=\set{e_1}$.
 %(Will switch to ACE dataset after I figure out what's going on with the data.)
 
+(clarify)
 Note that we are not constrained to setting $\bz$ to subsets of $\br$.
 We also consider the case where $\bz$ includes alignments from individual words $y_t$
 to records $r_i$. We denote the alignments $\ba = \set{a_1,\ldots,a_T}$,
@@ -347,183 +376,6 @@ with minimal supervision is a necessity.
 I will push for scalable information extraction systems that require minimal supervision
 by recasting information extraction as a generative modeling problem.
 
-
-\begin{comment}
-We denote the distribution over alignments and values given the
-text, entities, and types by $p(\bz\mid\by,\bx)$,
-where $\bz = \set{\ba, \bv}$ and $\bx = \set{\be, \bt}$.
-This distribution $p(\bz\mid\by,\bx)$ is the IE system,
-which models the alignments and values given the text, entities, and types.
-
-JUNK PAST THIS POINT.
-
-\paragraph{Old Prop}
-Our goal is to maximize the \underline{coverage} of the information extraction system,
-which we define as the number of words contained within segments of text that are correctly aligned to data,
-while minimizing the amount of supervision needed.
-We propose to learn an information extraction (IE) system as the approximate posterior distribution over 
-alignments from segments of text to their generating data.
-We also propose to view the given data as incomplete
-and learn boolean-valued functions of the data as a step
-towards representation learning.
-
-\paragraph{Problem Definition}
-\begin{enumerate}
-\item Define notation
-\item Define generation, mention sam and puduppully work.
-\item Define extraction and its subtasks, mention regina and percy's work.
-\item TODO: maybe combine align and values? Although I prefer to keep them separate
-since values will probably turn into fill in the away team's values given home team's
-\end{enumerate}
-Rotowire consists of aligned box score data and basketball game summaries
-$\set{(\br^{(1)}, \by^{(1)}),(\br^{(2)},\by^{(2)})\ldots}$.
-For brevity, we refer to a single data and summary as $\br,\by$, omitting the superscript.
-Each data $\br = \set{r_1,\ldots,r_N}$ is a set of $N$ records, each of which has
-an entity, type, and value $r_i = (e_i, t_i, v_i)$.
-We refer collectively to all the entities, types, and values in a given data $\br$ as
-$\be,\bt,\bv$ respectively.
-Each summary $\by = \set{y_1,\ldots,y_T}$ is a sequence of tokens that makes up the
-text of the game description.
-
-For generation, the goal is to learn a conditional model $p(\by\mid\br)$ of the text given the data.
-This is simple to evaluate, as we can use the log-likelihood of a given summary under our model
-as a measure of performance.
-In \citet{wiseman2017d2t} the model takes the form of a conditional language model
-that can copy values directly from records in $\br$.
-Subsequent work in \citet{puduppully2018contentselection} decomposed the distribution 
-$p(\by\mid\br) = \sum_{\bc}p(\by\mid\bc)p(\bc\mid\br)$
-by introducing a content plan $\bc$, which is a sequence of records drawn from $\br$.
-This was also previously implemented in prior work \citep{liang2009semalign},
-which modelled the text generation process through a hierarchical hidden semi-Markov model.
-% Definitely need a figure here
-
-We divide the information extraction task into three subtasks.
-Before outlining the tasks, we propose two measures of performance through which
-to evaluate an unsupervised information extraction system.
-The first is how well the information extracted from a summary allows a 
-generative model to reconstruct the summary measured by the likelihood
-of the summary given the extracted information.
-We refer to this as \underline{reconstruction}.
-The second is \underline{coverage}, 
-which we define as the number of words contained in segments
-that are aligned to a record in $\br$.
-(Do I need to argue why these are useful?
-And also how the tasks aim at increasing them by weakening assumptions
-or constraining model flexibility compared to previous work)
-
-The first task (\textsc{align}) is to align segments of text to the records that generated them.
-This is similar to learning a content plan $\bc\mid\br$ as in \citet{puduppully2018contentselection},
-however we are interested in the \textbf{posterior} distribution $p(\bc\mid\br,\by)$ of
-the content plan $\bc$ after observing the text $\by$.
-\citet{liang2009semalign} utilize the fact that they define a model in which posterior inference is tractable,
-however tractability does not hold once the latent distribution becomes autoregressive.
-% Elaborate
-In \citet{wiseman2017d2t} and subsequently in \citet{puduppully2018contentselection} this was accomplished by 
-separately training a classifier to predict the type $t$ of an entity $e$ and value $v$ pair within a sentence.
-The entity and value are extracted heuristically by checking exact string matches within $\be$ and $\bv$,
-and the supervision over $t$ is obtained through the following function \citep{wiseman2017d2t}:
-$\text{findType}(\hat{e},\hat{v}) = \set{ r.t :x\in\br, r.e = \hat{e}, x.r = \hat{v}}$.
-However, this limits alignments exclusively to entities and values explicitly in $\br$.
-We would like to align whole segments of text in order to increase the coverage
-of our information extraction system.
-
-The second task (\textsc{values}) is to reconstruct values $v$ in the table $\br$.
-This is implemented on top of task (\textsc{align}).
-In particular, we want to learn $p(\bv \mid \by,\bc,\be,\bt)$,
-the distribution over all values given the summary, the content plan, all entities, and all types.
-
-The third task (\textsc{functions}) is the most ambitious.
-In order to demonstrate the flexibility of the framework,
-we propose a method to further learn functions of $\br$ in an unsupervised manner.
-(TODO)
-
-\paragraph{Model}
-We begin by defining a model for (\textsc{align})
-and proceed to (\textsc{values}) and (\textsc{functions}).
-
-% Generative model
-Our generative model factors into the
-likelihood and prior: $p(\by,\bc\mid\br)=p(\by\mid\bc)p(\bc\mid\br)$.
-Our likelihood $p(\by\mid\bc)$ is given by a conditional neural language model
-with a copy mechanism as in \citet{gulcehre2016cc,wiseman2017d2t}
-in addition to monotonic attention \citep{yu2016ssnt,wiseman2018template}.
-The prior $p(\bc\mid\br)$ is an autoregressive model over records
-parameterized with an LSTM.
-As we are primarily interested in posterior inference, the performance of the prior is
-not the most important aspect of the model.
-In fact, we will see in the next section that the prior serves to regularize
-our approximate posterior.
-(This is the simplest baseline aside from HSMM, can include 
-$p(\by,\bc\mid\br)=\prod_tp(y_t\mid\by_{<t},c_t)p(c_t\mid\bc_{<t},\by_{<t},\br)$
-if necessary)
-
-% IE model
-Our initial IE model for (\textsc{align}) is given by $q(\bc\mid\by,\br)$,
-which includes both a segmentation of the summary as well as the alignments.
-Note that we denote the distribution using $q$ since under the generative model
-$p(\bc\mid\by,\br)$ is well-defined as the posterior distribution of alignments
-given a summary and records.
-Initially we parameterize the approximate posterior
-$q(\bc\mid\by,\br)=\prod_tq(c_i\mid\by,\br)$
-as a fully factored distribution over alignments.
-(Structured attention for pairwise potentials later,
-since only has node potentials for now.
-This is motivated by \underline{coverage})
-Each $q(c_i\mid\by,\br)$ is parameterized by the output
-of a BLSTM run at the sentence level.
-(TODO: values, functions)
-
-\paragraph{Learning and Inference}
-\begin{enumerate}
-\item Question: Do I need to motivate approximate inference?
-I could also argue that rather than computing the posterior exactly,
-at test time using the approximation directly can be more efficient,
-especially if it is fully factored
-\item Need to figure out if this is the right place for this
-\item Describe how to incorporate the weak supervision through posterior constraints
-\end{enumerate}
-A latent variable model $p(\by,\bz\mid\bx)$ models an
-observed $\by$ as well as an unobserved $\bz$ conditioned on $\bx$.
-When fitting such a model, we would like to maximize the evidence
-$p(\by\mid\bx)=\sum_\bz p(\by,\bz\mid\bx)$ which marginalizes over
-the latent $\bz$.
-Depending on the structure of $p(\by,\bz\mid\bx)$,
-the marginalization procedure may be intractable to perform exactly.
-For example, this is the case with an autoregressive model for the latent
-variable $p(z_t\mid \bz_{<t})$, where variable elimination's runtime would be
-exponential in the length $|\bz|$.
-This also precludes tractable posterior inference, i.e. $p(\bz\mid\by,\bx)$,
-since by Bayes' Rule we have $p(\bz\mid\by,\bx)=p(\by,\bz\mid\bx)/p(\by\mid\bx)$
-which requires evaluating the intractable sum in the evidence $p(\by\mid\bx)$.
-Therefore we resort to learning an approximation of the posterior through the variational principle:
-the best approximation within a family of distributions is the one with minimal KL-divergence
-to the model's posterior.
-The KL between the approximate posterior and true posterior is still intractable to minimize exactly,
-so we instead maximize the evidence lower bound ($\mathcal{L}_q$), which is the evidence minus the posterior KL:
-\begin{linenomath*}
-\begin{align}
-\mathcal{L}_q
-&= \underbrace{\log p(\by\mid\bx)}_{\textrm{Evidence}}
-- \underbrace{D_{KL}[q(\bz\mid\by,\bx)||p(\bz\mid\by,\bx)]}_{\textrm{Posterior KL}}\\
-&= \underbrace{\Es{\bz\sim q(\bz\mid\by,\bx)}{\log p(\by\mid\bz,\bx)}}_{\textrm{Reconstruction}}
-- \underbrace{D_{KL}[q(\bz\mid\by,\bx) || p(\bz\mid\bx)]}_{\textrm{Prior KL}}.
-\end{align}
-\end{linenomath*}
-Were it not for local extrema,
-maximizing this quantity would maximize the evidence and minimize the posterior KL jointly.
-Notice that in (2), the objective we use for training both the generative model and IE system,
-all expectations are taken with respect to the IE system or approximate posterior $q(\by\mid\bz,\bx)$.
-(TODO: training procedure via REINFORCE + control variate, posterior constraints for incorporating 
-information from findType function)
-
-For task (\textsc{align}), we have the fully observed summary $\by$,
-the unobserved content plan $\bz=\bc$, and all records as conditioning $\bx=\br$.
-For task (\textsc{values}), we again have the observed summary $\by$,
-but we pretend the values are unobserved $\bz=\set{\bc,\bv}$, and
-use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
-(TODO: functions)
-\end{comment}
-
 \newpage
 
 \section*{Outline}
@@ -556,7 +408,8 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
         \begin{enumerate}
         \item Define information extraction
             \begin{enumerate}
-            \item The goal is to produce structured representations of information from a given unstructured text.
+            \item The goal is to produce structured representations of information from
+                a given unstructured text.
             \item Ideally, but not necessarily computer-readable in addition to human-readable.
             \item A typical pipeline for information extraction includes
                 text segmentation, named entity recognition, coreference resolution,
@@ -586,7 +439,7 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
         \end{enumerate}
     \item End-to-end trends and LVMs
         \begin{enumerate}
-        \item Draw parallels to progress in translation
+        \item Draw parallels to progress in translation, mainly in terms of structure?
             \begin{enumerate}
             \item Statistical machine translation: pipelines
             \item End-to-end with Sutskever
@@ -706,6 +559,7 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
     \end{enumerate}
 \end{enumerate}
 
+\newpage
 \bibliographystyle{plainnat}
 \bibliography{w}
 
