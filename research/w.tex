@@ -185,7 +185,8 @@ sample complexity.
 This progression parallels our proposal: we wish to specify an information
 extraction system that is learned end-to-end rather than in a pipeline,
 and we use the LVM framework to do so.
-LVMs provide a principled way of specifying either semi-supervised or unsupervised models,
+LVMs provide a principled way of specifying either semi-supervised or unsupervised models
+\citep{kingma2014ssvae},
 and have been shown to have better sample complexity than discriminative models
 \citep{deng2018attn,ng2001discgen}.
 
@@ -197,12 +198,12 @@ the data generating process as possible.
 In particular, \citet{chen2018diva} does not utilize text at all
 and \citet{qu2017ssre} do not incorporate generative model of the text.
 We propose to explicitly model how a text is created given a knowledge graph
-using a generative model with latent variables, otherwise known as a LVM.
+using a conditional generative model with latent variables.
 
 In this proposal, we focus on the class of LVMs known as hidden semi-Markov models (HSMMs),
 used in \citet{liang2009semalign} as a generative model for the
 task of aligning segments of text to
-records in a knowledge graph without supervision.
+nodes in a knowledge graph without supervision.
 As in \citet{liang2009semalign}, we are interested in learning a generative model of text so that
 we can minimize the amount of supervision necessary for training an information extraction system.
 The performance of their generative model of text provides signal for learning the alignments:
@@ -216,6 +217,7 @@ By parameterizing the generative HSMM with neural networks as in \citet{wiseman2
 we hope to incorporate recent progress in parameterizing LVMs with neural networks
 so as to learn a more accurate information extraction system by using a more powerful
 generative model -- taking care to ensure that the model can be trained with minimal supervision.
+(cite \citet{deng2018attn} for training strategies)
 
 \paragraph{Background}
 We consider datasets consisting of aligned data and text
@@ -421,19 +423,6 @@ by recasting information extraction as a generative modeling problem.
             \end{enumerate}
         \item Argue for LVM approach to unify all parts of the pipeline and train
             end-to-end with minimal supervision.
-            \begin{enumerate}
-            \item Parts of the information extraction pipeline have been attempted in an
-                unsupervised, semi-, or weakly supervised setting, but there has not yet
-                been an end-to-end unified system trained with minimal supervision
-                that leverages unlabeled corpora at scale.
-            \item Examples: segmentation and alignment \citet{liang2009semalign}, 
-                coreference resolution \citet{haghighi2010coref}
-            \end{enumerate}
-        \item (old) Recent neural approaches treat information extraction as a classification problem
-            with little intermediate structure.
-        \item (old) Older approaches utilized latent variable models to capitalize on intermediate structure,
-            however this was before neural models were used in NLP.
-            \citep{surdeanu2012miml,liang2009semalign}
         \item We aim to unify these two approaches through recently developed techniques for training LVMs
             parameterized with neural networks.
         \end{enumerate}

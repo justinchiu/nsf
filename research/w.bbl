@@ -1,4 +1,4 @@
-\begin{thebibliography}{12}
+\begin{thebibliography}{10}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -35,16 +35,6 @@ T.~George~Doddington, C.~Alexis~Mitchell, T.~Mark~Przybocki, N.~Lance~Ramshaw,
 \newblock URL
   \url{http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.78.8442\&\#38;rep=rep1\&\#38;type=pdf}.
 
-\bibitem[Haghighi and Klein(2010)]{haghighi2010coref}
-Aria Haghighi and Dan Klein.
-\newblock Coreference resolution in a modular, entity-centered model.
-\newblock In \emph{Human Language Technologies: The 2010 Annual Conference of
-  the North American Chapter of the Association for Computational Linguistics},
-  HLT '10, pages 385--393, Stroudsburg, PA, USA, 2010. Association for
-  Computational Linguistics.
-\newblock ISBN 1-932432-65-5.
-\newblock URL \url{http://dl.acm.org/citation.cfm?id=1857999.1858060}.
-
 \bibitem[Kingma et~al.(2014)Kingma, Rezende, Mohamed, and
   Welling]{kingma2014ssvae}
 Diederik~P. Kingma, Danilo~Jimenez Rezende, Shakir Mohamed, and Max Welling.
@@ -78,16 +68,6 @@ Meng Qu, Xiang Ren, Yu~Zhang, and Jiawei Han.
   pattern-enhanced distributional representation approach.
 \newblock \emph{CoRR}, abs/1711.03226, 2017.
 \newblock URL \url{http://arxiv.org/abs/1711.03226}.
-
-\bibitem[Surdeanu et~al.(2012)Surdeanu, Tibshirani, Nallapati, and
-  Manning]{surdeanu2012miml}
-Mihai Surdeanu, Julie Tibshirani, Ramesh Nallapati, and Christopher~D. Manning.
-\newblock Multi-instance multi-label learning for relation extraction.
-\newblock In \emph{Proceedings of the 2012 Joint Conference on Empirical
-  Methods in Natural Language Processing and Computational Natural Language
-  Learning}, EMNLP-CoNLL '12, pages 455--465, Stroudsburg, PA, USA, 2012.
-  Association for Computational Linguistics.
-\newblock URL \url{http://dl.acm.org/citation.cfm?id=2390948.2391003}.
 
 \bibitem[Wiseman(2018)]{wiseman2018template}
 Sam Wiseman.
