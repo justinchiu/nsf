@@ -1,4 +1,4 @@
-\begin{thebibliography}{10}
+\begin{thebibliography}{12}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -38,6 +38,13 @@ Aria Haghighi and Dan Klein.
 \newblock ISBN 1-932432-65-5.
 \newblock URL \url{http://dl.acm.org/citation.cfm?id=1857999.1858060}.
 
+\bibitem[Kingma et~al.(2014)Kingma, Rezende, Mohamed, and
+  Welling]{kingma2014ssvae}
+Diederik~P. Kingma, Danilo~Jimenez Rezende, Shakir Mohamed, and Max Welling.
+\newblock Semi-supervised learning with deep generative models.
+\newblock \emph{CoRR}, abs/1406.5298, 2014.
+\newblock URL \url{http://arxiv.org/abs/1406.5298}.
+
 \bibitem[Lee et~al.(2018)Lee, He, and Zettlemoyer]{lee2018coref}
 Kenton Lee, Luheng He, and Luke Zettlemoyer.
 \newblock Higher-order coreference resolution with coarse-to-fine inference.
@@ -54,6 +61,13 @@ Percy Liang, Michael~I. Jordan, and Dan Klein.
   Linguistics.
 \newblock ISBN 978-1-932432-45-9.
 \newblock URL \url{http://dl.acm.org/citation.cfm?id=1687878.1687893}.
+
+\bibitem[Qu et~al.(2017)Qu, Ren, Zhang, and Han]{qu2017ssre}
+Meng Qu, Xiang Ren, Yu~Zhang, and Jiawei Han.
+\newblock Overcoming limited supervision in relation extraction: {A}
+  pattern-enhanced distributional representation approach.
+\newblock \emph{CoRR}, abs/1711.03226, 2017.
+\newblock URL \url{http://arxiv.org/abs/1711.03226}.
 
 \bibitem[Surdeanu et~al.(2012)Surdeanu, Tibshirani, Nallapati, and
   Manning]{surdeanu2012miml}

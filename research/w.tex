@@ -127,7 +127,7 @@ propagates through a network.
 We focus on \textit{knowledge graphs}, information networks where each node contains a set of facts
 about an entity and an edge describes how the facts in one node influence the facts in another.
 Knowledge graphs provide an intuitive and queryable representation of knowledge.
-A decision maker may query the relevant nodes to gain context, and
+A decision maker may query the relevant nodes to gain situational awareness, and
 when simulating a decision that alters the information in one node
 the graph can easily propagate those changes by virtue of its representation.
 
@@ -566,17 +566,41 @@ use the rest of the records as conditioning $\bx=\set{\be,\bt}$.
                 as the other tasks such named entity recognition are typically
                 part of a pipeline aimed at knowledge-base completion.
             \end{enumerate}
-        \item Recent neural approaches treat information extraction as a classification problem
+        \item Argue for LVM approach to unify all parts of the pipeline and train
+            end-to-end with minimal supervision.
+            \begin{enumerate}
+            \item Parts of the information extraction pipeline have been attempted in an
+                unsupervised, semi-, or weakly supervised setting, but there has not yet
+                been an end-to-end unified system trained with minimal supervision
+                that leverages unlabeled corpora at scale.
+            \item Examples: segmentation and alignment \citet{liang2009semalign}, 
+                coreference resolution \citet{haghighi2010coref}
+            \end{enumerate}
+        \item (old) Recent neural approaches treat information extraction as a classification problem
             with little intermediate structure.
-        \item ???
-        \item Older approaches utilized latent variable models to capitalize on intermediate structure,
+        \item (old) Older approaches utilized latent variable models to capitalize on intermediate structure,
             however this was before neural models were used in NLP.
             \citep{surdeanu2012miml,liang2009semalign}
         \item We aim to unify these two approaches through recently developed techniques for training LVMs
             parameterized with neural networks.
         \end{enumerate}
+    \item End-to-end trends and LVMs
+        \begin{enumerate}
+        \item Draw parallels to progress in translation
+            \begin{enumerate}
+            \item Statistical machine translation: pipelines
+            \item End-to-end with Sutskever
+            \item Deterministic structure via attention Bahdanau
+            \item Latent attention \citet{deng2018attn}
+            \end{enumerate}
+        \item \citet{qu2017ssre} Semi-supervised relation extraction (which is pretty much similar)
+            How is what I want different? Capitalize on the progress of powerful generative models,
+            can argue that their model is much weaker in terms of generative power,
+            but the framework is similar (they perform coordinate ascent in a LVM).
+        \end{enumerate}
     \item Recent advances in neural LVMs
         \begin{enumerate}
+        \item Semi-supervised LVMs \citet{kingma2014ssvae}?
         \item Demonstrate that parameterization with a neural network does not affect computational
             complexity of inference.
         \item Then the same technique can be applied to model with more structure,
