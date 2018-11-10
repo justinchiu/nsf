@@ -165,14 +165,13 @@ We can then use the extracted relationships along with the associated entities a
 to populate the nodes of a knowledge graph, where each node would
 correspond to a player and contain their associated statistics.
 See Figure 1 for an example of this process.
-This is orthogonal and complementary to using existing nodes in a knowledge graph
+This process is orthogonal and complementary to using existing nodes in a knowledge graph
 to fill in missing ones.
 As we are interested in utilizing large amounts of unlabeled corpora for 
 the training of an information extraction system, we restrict our focus
 to learning the values of each node independently given the text.
 Neural networks, in combination with latent variable models (LVMs),
-provide a method for training such an information extraction pipeline jointly
-and end-to-end.
+provide a method for training such an information extraction pipeline end-to-end.
 
 The progression from a pipelined system into one that is trained jointly
 has precedent in the field of natural language processing;
@@ -379,8 +378,8 @@ with minimal supervision is a necessity.
 I will push for scalable information extraction systems that require minimal supervision
 by recasting information extraction as a generative modeling problem.
 
+\begin{comment}
 \newpage
-
 \section*{Outline}
 \begin{enumerate}
 \item Introduction
@@ -548,6 +547,7 @@ by recasting information extraction as a generative modeling problem.
         \end{enumerate}
     \end{enumerate}
 \end{enumerate}
+\end{comment}
 
 \newpage
 \bibliographystyle{plainnat}
