@@ -155,7 +155,7 @@ the two approaches can be combined in future work.
 
 In this proposal we present a method towards automating the
 training of information extraction systems with unlabeled corpora
-by recasting the information extraction problem as a generative modeling problem.
+by recasting the information extraction problem as a conditional generative modeling problem.
 Specifically, we plan to use the performance of a deep generative model of text 
 as signal for learning an extraction system.
 
@@ -211,7 +211,7 @@ and have been shown to have better sample complexity than discriminative models
 
 Although LVMs have recently been proposed in the context of knowledge graph
 completion \citep{chen2018diva,qu2017ssre}, they either do not utilize text
-or do not have a generative model of text.
+or do not have a (conditional) generative model of text.
 We argue that the generative model we specify should be as close to 
 the data generating process as possible.
 In particular, \citet{chen2018diva} formalize predicting the relationship between two nodes
@@ -224,19 +224,19 @@ We propose to explicitly model how a text is created given a knowledge graph
 using a conditional generative model with latent variables.
 
 In this proposal, we focus on the class of LVMs known as hidden semi-Markov models (HSMMs),
-used in \citet{liang2009semalign} as a generative model for the
+used in \citet{liang2009semalign} as a conditional generative model for the
 task of aligning segments of text to
 nodes in a knowledge graph without supervision.
-As in \citet{liang2009semalign}, we are interested in learning a generative model of text so that
+As in \citet{liang2009semalign}, we are interested in learning a conditional generative model of text so that
 we can minimize the amount of supervision necessary for training an information extraction system.
-The performance of their generative model of text provides signal for learning the alignments:
+The performance of their conditional generative model of text provides signal for learning the alignments:
 if the likelihood of a segment of text improves when moving from a
 past alignment choice to a new one,
 then the new alignment is more likely to be correct given a suitably strong likelihood model.
 We use that same intuition to formulate a related LVM for a semi-supervised information extraction
 which aims to model not just the alignments from segments of text to nodes in a knowledge graph
 but also the values in the nodes themselves.
-By parameterizing the generative HSMM with neural networks as in \citet{wiseman2018template},
+By parameterizing the HSMM with neural networks as in \citet{wiseman2018template},
 we hope to incorporate recent progress in parameterizing LVMs with neural networks
 so as to learn a more accurate information extraction system by using a more powerful
 generative model.
@@ -278,21 +278,23 @@ In an alternative task, we may want to infer the value $v_1$
 as well as the type $t_1$ given $\by$ and $e_1$, therefore $\bz = \set{v_1,t_1}$ and $\bx=\set{e_1}$.
 %(Will switch to ACE dataset after I figure out what's going on with the data.)
 
+\begin{comment}
 %(clarify)
 Note that we are not constrained to setting $\bz$ to subsets of $\br$.
 We also consider the case where $\bz$ includes alignments from individual words $y_t$
 to records $r_i$. We denote the alignments $\ba = \set{a_1,\ldots,a_T}$,
 where each $a_t$ is associated with $y_t$ and selects a record $r_i$ such that $a_t = i$.
 %(NEED TO FIX ALIGNMENTS AND T vs t, HMM vs HSMM)
+\end{comment}
 
 \paragraph{Proposal}
 We propose to verify the efficacy of the LVM framework in the
-weakly supervised information extraction setting,
+semi-supervised information extraction setting,
 with the goal of demonstrating strong extractive performance with minimal labels.
 We present one instance of a LVM and outline how it can be used to obtain
 an information extraction model without direct supervision,
 then argue that the same approach can be applied in even more ambitious settings.
-Our first LVM is a conditional model that specifies
+Our proposed LVM is a conditional generative model that specifies
 the relationship between data, specifically the entities and types, and text.
 We denote this model \texttt{Values}.
 %Let $\by$ be the text, $\ba$ be a latent variable that represents the
@@ -303,40 +305,28 @@ Similar to the models defined in \citet{wiseman2018template} and \citet{liang200
 our model takes the form of a hidden semi-Markov model (HSMM).
 The primary difference is that the other models simply assumed the records
 were complete and conditioned on them, whereas ours learns to generate the values.
+For our model, we have observed $\bx = \set{\be,\bt}$ and latent $\bz = \set{\bv,\ba}$, 
+where $\be$ are the entities, $\bt$ are the types, $\bv$ are the values, and $\ba$ are
+record indices.
 \texttt{Values} is given by the following generative process:
 \begin{enumerate}
-\item Value Choice:
-For each pair of entities and types in our datum of records, we predict a value.
-We assume that each record type constrains the values to be members of a finite set.
-Thus each record type is assigned a categorical distribution over its respective values,
-and the values are drawn independently from that respective distribution.
-Each $v_i\sim\Cat(f_{t_i}(e_i))$ is drawn from a Categorical distribution,
-whose parameters $f_{t_i}(e_i)$ are output by a neural network $f_{t_i}$ that is shared across record types
-and takes as input the entity $e_i$.
-%The distribution is represented as
-%#$$p(\bv\mid\be,\bt) = \prod_{i=1}^N p(v_i\mid e_i,t_i)$$
-\item Record Choice:
+\item Prior Value Choice: $p(\bv\mid\be,\bt)=p(\bv\mid\bx)$.
+For each entity and type pair in our datum of records, we predict a value.
+For example, given `Jeremy\_Lin' and POINTS, we predict 19.
+Each value is predicted independently.
+As both the entites and types are observed, we have $\bx=\set{\be,\bt}$.
+\item Prior Record Choice: $p(\ba\mid\bv,\bx) = \prod_i p(a_i\mid a_{i-1},\bv,\bx)$.
 Conditioned on our choices of values as well as the given entities and records,
-we choose a sequence of records $\ba = \set{a_1,\ldots,a_I}$ to describe,
-given by their index $a_i$.
-Note that each record choice is described by at least one token, hence we have $I \le T$.
-The record choices are parameterized as a Markov model where each
-$a_t\sim\Cat(f_\theta(a_{t-1},\bv,\be,\bt))$,
-where $f_\theta$ is a neural network.
-%(NEED TO FIX ALIGNMENTS AND T vs t, HSMM vs HMM)
-\item Word Choice:
-For each record alignment $a_i$,
+in other words a completed data with no missing values,
+we choose a sequence of records $\ba = \set{a_1,\ldots,a_I}$ to describe.
+\item Word Choice: $p(\by\mid\ba,\bv,\bx) = p(\by\mid\bz,\bx)$.
+For each chosen record $a_i$,
 we choose a sequence of words $\by_i = \set{y_{i1},\ldots,y_{iJ}}$ to describe the record.
-The words are modelled by an autoregressive emission model within each segment
-that is aligned to the same record:
-$y_{ij}\sim\Cat(f_\theta(\by_{i1:ij},v_{a_i},e_{a_i},t_{a_i}))$,
-where $f_\theta$ is another neural network and $\by_{i1:ij}$ is all tokens $y$ from indices
-$i1$ to $ij$.
+With the HSMM formulation, we have that within each segment aligned to a record,
+the words are modeled autoregressively.
+This distribution is the likelihood of the text given the latent variables $\bz$,
+the record choices and value choices.
 \end{enumerate}
-The value and record choices correspond to prior distributions over values $p(\bv\mid\be,\bt)$
-and alignments $p(\ba\mid\bv,\be,\bt)$ respectively,
-while the word choice model gives us the likelihood of some text given our value and alignment choices $p(\by\mid\ba,\bv,\be,\bt)$.
-In this case, we have latent $\bz = \set{\bv,\ba}$ and observed $\bx = \set{\be,\bt}$.
 We obtain an information extraction by using the 
 \textbf{posterior} distribution over alignments and values:
 \begin{linenomath*}
@@ -350,32 +340,34 @@ We instead resort to variational inference as in \citet{deng2018attn},
 where we learn an approximation of the posterior distribution $q(\bz\mid\by,\bx)$
 with a separate model.
 % Can marginalize over alignments, so only a partial variational approximation is needed
-We can train the generative model and the approximate posterior jointly 
+We can train the conditional generative model and the approximate posterior jointly 
 by maximizing a lower bound on the log marginal likelihood or evidence of $\by$,
-called the evidence lower bound (ELBO) which is given formally by the expression
-$\textrm{ELBO}_q \triangleq \Es{q(\bz\mid\by,\bz)}{\log p(\by\mid\bz,\bx)}\leq \log \Es{p(\bz\mid\bx)} {p(\by\mid\bz,\bx)}$.
-This objective can be maximized with gradient-based methods.
+called the evidence lower bound (ELBO) with gradient-based methods.
 The resulting approximate posterior $q(\bz\mid\by,\bx)$ can be used independently of the 
 generative model as an information extraction system that gives a distribution over
 values in a table of records and alignments from text to records.
 
-We proceed to motivate and outline an extension to \texttt{Values}.
-In addition to inferring values, ideally an information extraction system 
-would also be able to infer new entities and relation types.
-We propose a possible route towards defining model that can
-learn to parameterize new relation types in an
-unsupervised manner using the same LVM framework as \texttt{Values},
-which we denote \texttt{Types}.
-The motivation behind \texttt{Types} is that a segment of text may refer to multiple records at the same time.
-For example, in basketball games a `triple-double' refers to more a player achieving a value of more than 10
-in any three of the five categories: points, steals, rebounds, blocks, or assists.
-The goal of \texttt{Types} is to attempt to capture the latent relationship behind utterances
-such as `triple-double' appearing in the text and the underlying records in an unsupervised manner.
-We plan to introduce a new step to the generative process of \texttt{Values} that 
-allows the model to learn new records as boolean-valued functions of relations already defined in the data.
-By approximating these boolean functions with neural networks, we hope to find a model
-parameterization that admits an efficient approach to learning.
+We will evaluate our approach on the 
+TAC KBP 2015 slot filling, TACRED \citep{zhang2017slotfilling},
+and ROTOWIRE \citep{wiseman2017d2t} datasets in order to compare to previous work.
+The goal will be to demonstrate competitive performance on
+extraction metrics such as precision, recall, and F1, while using as little supervision
+as possible by ignoring subsets of the given information.
+For example, with the model \texttt{Values}, we can allow the model to only learn from
+subsets of the given values (or none at all) in ROTOWIRE, such as only
+the home team's statistics, at training time.
+Given success in that goal, the next step would be to extend the model
+with more structure with the aim of boosting sample and label efficiency.
+Possible extensions in this direction include parameterizing entities including
+entity tracking and coreference resolution \citep{haghighi2010coref};
+learning the types of relations in a semi-supervised manner;
+leveraging discourse structure to improve the conditional generative model
+\citep{sauper2009wiki}; explicitly modeling nuisance variables such as
+author style \citep{hsu2017speech}; and incorporating multi-hop
+reasoning in order to leverage relationships between entities
+\citep{chen2018diva,rock17prove}.
 
+\begin{comment}
 %TODO: Experiments, Evaluation, and Expectations? Also shortcomings? Short paragraph
 We will evaluate our initial approach on the Rotowire dataset, and
 extensions to our model that will include entity tracking and event resolution on the 
@@ -386,6 +378,7 @@ effect on sample complexity. In previous work, we observed that gradient estimat
 based on exact inference resulted in better sample complexity than
 approximate inference \citep{deng2018attn}, and we expect that controlling the variance 
 of the gradient estimator will be of paramount importance for the success of our proposed method.
+\end{comment}
 
 Given admittance to the NDSEG Fellowship Program, I will evaluate the application of
 LVMs to the problem of information extraction.
@@ -395,7 +388,7 @@ with minimal supervision is a necessity.
 I will push for scalable information extraction systems that require minimal supervision
 by recasting information extraction as a generative modeling problem.
 
-\begin{comment}
+%\begin{comment}
 \newpage
 \section*{Outline}
 \begin{enumerate}
@@ -496,8 +489,8 @@ by recasting information extraction as a generative modeling problem.
         \end{enumerate}
     \item Link back to motivation. We want to scale information extraction
         by requiring less supervision.
-    \item We present one model as an example, then later demonstrate how the framework
-        can handle extensions of the model.
+    \item We present one model as an example, which we will serve as
+        a starting point for the proposed research.
     \item Define generative model: HSMM as in \citep{liang2009semalign},
         and \citep{wiseman2018template}.
         The generative story (a picture would be helpful):
@@ -514,10 +507,6 @@ by recasting information extraction as a generative modeling problem.
         \end{enumerate}
     \item We either use the posterior distribution of the conditional model
         or learn an approximation of it.
-    \item Argue that the segmental model encourages more coverage
-        by adding pairwise dependencies between labelings \citep{liang2009semalign}.
-        We will check how much structure in the generative model
-        aids information extraction.
     \item Training and Inference
         \begin{enumerate}
         \item As we are dealing with documents of significant length,
@@ -528,33 +517,30 @@ by recasting information extraction as a generative modeling problem.
         \item We maximize a lower bound on the log marginal likelihood,
             called the evidence lower bound.
         \end{enumerate}
-    \item Extension, \texttt{Types}
-        \begin{enumerate}
-        \item Introduce new step in generative process
-        \item Learn a boolean function that composes predicates applied to existing
-            records
-        \item The search space is very large, so we must either constrain our model 
-            in a very clever way or obtain 
-            large amounts of data as any stochastic gradient estimator will have very high variance
-        \end{enumerate}
-    \item Extensions
-        \begin{enumerate}
-        \item learn new types as functions of existing ones
-        \item learn a randomly initialized embedding of the type
-            and a neural network directly to predict the value
-        \item let the input distribution be 
-        \end{enumerate}
     \item Experiments, evaluation, and expectation
         \begin{enumerate}
-        \item Evaluate on Rotowire? Highlight long-form text
-        \item Also on ACE
-        \item As corpora may be too large, we might need more hierarchy in the generative model
-        \item and also since memory is linear in the length of the sequence, we may have
-            to resort to approximate inference. We can optimize a lower bound
-            on the marginal likelihood with an approximation of the
-            posterior distribution \citep{deng2018attn}.
-        \item Evaluation metrics: for slot-filling, we evaluate 
-            the 
+        \item Evaluate on Rotowire. Highlight long-form text?
+        \item We evaluate \texttt{Values} using the precision, recall, and F1 score on the task
+            of predicting the values associated with entities, otherwise known as slot-filling.
+        \item What would success look like?
+            \begin{enumerate}
+            \item Competitive to supervised methods when supervision is available
+            \item But able to be applied when supervision is not available
+            \item Able to leverage lots of unlabeled data during training,
+                and success would see a marked improvement over purely supervised methods
+                as well as the purely supervised version of this model.
+            \item Would provide explanations for the answers (ie segmentations).
+            \end{enumerate}
+        \item Also on ACE?
+        \end{enumerate}
+    \item Future work
+        \begin{enumerate}
+        \item Incorporate more structure into the generative model,
+            for example entity tracking or coreference resolution \citet{haghighi2010coref}.
+        \item Model more structure in the data, for example the edges between nodes
+            in the knowledge graph \citet{chen2018diva}.
+        \item `Multi-hop' reasoning, where we try to compose relationships to infer new ones,
+            i.e. through unification \citet{chen2018diva,rock17prove}.
         \end{enumerate}
     \item Conclusion
         \begin{enumerate}
@@ -564,7 +550,7 @@ by recasting information extraction as a generative modeling problem.
         \end{enumerate}
     \end{enumerate}
 \end{enumerate}
-\end{comment}
+%\end{comment}
 
 \newpage
 \bibliographystyle{plainnat}
