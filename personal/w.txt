@@ -34,6 +34,6 @@ However, the problem of learning a dynamic representation representation is allu
 of generative modeling.
 
 The NDSEG fellowship would afford me the freedom to devote my research to the application of
-generatie models to the problem of information extraction, with the hope of moving towards
+generative models to the problem of information extraction, with the hope of moving towards
 techniques for learning knowledge representations that allows for easy
 extraction and population of facts from natural language text.
