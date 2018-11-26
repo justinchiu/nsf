@@ -12,7 +12,7 @@ greatly contrasted my subsequent experience with neural networks, where an abund
 As a research engineer at Facebook AI Research, I continued to work on machine translation, but with the view that
 translation was simply conditional language modeling. After two years at Facebook, I resumed my studies when
 I joined Prof. Rush's NLP lab at Harvard University as a graduate student. The motivation behind furthering my education
-was due to a desire to incorporate a more principled approach to modeling than only neural networks afforded.
+was a desire to incorporate a more principled approach to modeling than just neural networks afforded.
 By integrating neural networks with graphical models, we are unable to easily query the model:
 why does a translation model make certain mistakes?
 Discrete graphical models provide a principled method for interpreting models through posterior inference,
