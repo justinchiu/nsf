@@ -18,7 +18,7 @@ and the computational complexity of inference also places a simplicity prior ove
 models which again benefits sample complexity. 
 Given that both neural networks ad graphical models both have a graphical formalism,
 combining the two is straightforward and has been shown to yield performance improvements
-as we demonstrate in our recent paper "Latent Alignment and Variational Attention,"
+as we demonstrate in our paper "Latent Alignment and Variational Attention,"
 which was accepted at NeurIPS 2018.
 
 Recently, my focus has shifted from translation to information extraction.
