@@ -13,11 +13,13 @@ As a research engineer at Facebook AI Research, I continued to work on machine t
 translation was simply conditional language modeling. After two years at Facebook, I resumed my studies when
 I joined Prof. Rush's NLP lab at Harvard University as a graduate student. The motivation behind furthering my education
 was a desire to incorporate a more principled approach to modeling than just neural networks afforded.
-By integrating neural networks with graphical models, we are unable to easily query the model:
-why does a translation model make certain mistakes?
 Discrete graphical models provide a principled method for interpreting models through posterior inference,
 and the computational complexity of inference also places a simplicity prior over the family of efficient
 models which again benefits sample complexity. 
+Given that both neural networks ad graphical models both have a graphical formalism,
+combining the two is straightforward and has been shown to yield performance improvements
+as we demonstrate in our recent paper "Latent Alignment and Variational Attention,"
+which was accepted at NeurIPS 2018.
 
 Recently, my focus has shifted from translation to information extraction.
 Given the strong performance of neural methods in language modeling and representation learning,
