@@ -1,37 +1,36 @@
 In the past five years, the field of natural language processing (NLP) has been dominated by neural network based methods.
 While flexible, neural network models are generally overparamaterized and take many examples to train.
-One method to reduce label complexity, or the number of labeled examples needed, is through transfer learning.
-In NLP, transfer learning has been used to boost performance by pretraining textual representations
-using large amounts of unlabeled text, then using those representations in downstream tasks.
-Although this may alleviate the amortized cost of obtaining labeled data for downstream tasks,
-this form of transfer still suffers from high sample complexity when learning the initial representations.
-My long-term goal is to explore approaches orthogonal to transfer for obtaining models with
-better sample complexity without sacrificing performance, and my short-term focus is on neural latent variable models
-for reducing label complexity.
+One method to reduce sample complexity is to constrain the hypothesis class.
+My long-term goal is to explore approaches to reducing sample complexity without sacrificing performance,
+and my short-term focus is on neural latent variable models for reducing label complexity.
 
 I became interested in low-resource NLP during my undergraduate studies at the University of Pennsylvania,
-where I took and subsequently served as a teaching assistant for the Machine Translation class taught by
+where I took and subsequently served as a teaching assistant for the machine translation class taught by
 Prof. Chris Callison-Burch. The class had an emphasis on statistical machine translation, which was predominantly
 based on the noisy-channel approach, a generative model. The usage of generative models for low-resource translation
-mentioned in the class greatly contrasted my subsequent experience with neural networks, where an abundance of data was a necessity. 
+greatly contrasted my subsequent experience with neural networks, where an abundance of data was a necessity. 
 As a research engineer at Facebook AI Research, I continued to work on machine translation, but with the view that
 translation was simply conditional language modeling. After two years at Facebook, I resumed my studies when
 I joined Prof. Rush's NLP lab at Harvard University as a graduate student. The motivation behind furthering my education
-was due to a dissatisfaction with the lack of intepretability in recent approaches to translation.
-Without interpretability, we are unable to easily query the model: why does a translation model make certain mistakes?
+was due to a desire to incorporate a more principled approach to modeling than only neural networks afforded.
+By integrating neural networks with graphical models, we are unable to easily query the model:
+why does a translation model make certain mistakes?
 Discrete graphical models provide a principled method for interpreting models through posterior inference,
 and the computational complexity of inference also places a simplicity prior over the family of efficient
-models which again benefits interpretability. 
+models which again benefits sample complexity. 
 
-Recently, my focus has shifted from translation onto information extraction.
+Recently, my focus has shifted from translation to information extraction.
 Given the strong performance of neural methods in language modeling and representation learning,
 the next challenge in translation is to represent more indirect knowledge such as context or common-sense.
 Information extraction, the task of automatically
 obtaining facts from text, is more directly affected by knowledge representation than translation.
 Information extraction usually deals with already-specified representations of knowledge:
 graphs where the nodes and edges are predefined by hand and only need to be populated.
-However, the problem of learning a dynamic representation representation is alluring from the perspective
-of generative modeling.
+However, the problem of learning a representation, or the structure of that representation,
+is interesting from the perspective of generative modeling.
+Structure learning problems typically suffer from very high sample complexity,
+and thus introducing constraints by specifying a simple generative story will be
+important for efficient learning.
 
 The NDSEG fellowship would afford me the freedom to devote my research to the application of
 generative models to the problem of information extraction, with the hope of moving towards
