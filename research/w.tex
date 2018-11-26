@@ -120,6 +120,7 @@ Information networks provide a graphical representation of information and how i
 propagates through a network.
 We focus on \textit{knowledge graphs}, information networks where each node contains a set of facts
 about an entity and an edge describes how the facts in one node influence the facts in another.
+% We allow self-loops
 Knowledge graphs provide an intuitive and queryable representation of knowledge.
 A decision maker may query the relevant nodes to gain situational awareness, and
 when simulating a decision that alters the information in one node
@@ -130,9 +131,9 @@ it is infeasible to specify these completely by hand.
 Many recent works have focused on learning to fill in the missing edges of a knowledge graph
 by recognizing patterns in fully-labeled subgraphs in order to predict whether there should
 be an edge between two nodes in an unlabeled subgraph \citep{chen2018diva}.
-By filling in missing edges, we are able to use the relationships specified by the edges
-in order to reason about the facts contained in a node conditioned on the facts of its
-neighbours.
+By filling in missing edges through link prediction, we are able to use the relationships
+specified by the edges in order to reason about the facts contained in a node conditioned on
+the facts of its neighbours.
 For example, given two nodes corresponding to two different entities,
 we can leverage the relationships between the two nodes to infer the
 values of one given the other.
@@ -397,25 +398,22 @@ by recasting information extraction as a generative modeling problem.
     \begin{enumerate}
     \item Relevance to BAA
         \begin{enumerate}
-        \item Importance of representation and correctness of knowledge in decision making,
-            as well as the power of prediction.
-        \item Information networks are one way of representing knowledge as a graph
-            as well as interactions?
-        \item What are information networks?
-            Graphical representation of objects, their characteristics of interest,
-            and their relationship to objects.
-        \item Recent work focuses on learning structure between nodes
-            in order to fill parts of the graph that may be missing \cite{chen2018diva}.
-        \item We focus on the orthogonal approach of completing knowledge graphs using
-            large amounts of unstructured text rather than the relationships between nodes.
-        \item Reduce information networks to knowledge bases by removing edges
-            (kind of interesting as we can view knowledge bases as a mean field approximation
-            to information networks where info networks must specify not only
-            conditional distributions but also interventional distributions).
-        \item In this proposal we present a framework towards automating the
-            training of text-centric information extraction systems with minimal supervision.
-        \item Shine some hope on interventional distribution representations?
-            (This might be a little difficult)
+        \item Intro to information networks and KG
+            \begin{enumerate}
+            \item Information networks and decision making
+            \item Specify knowledge graphs as the information networks we are interested in
+            \item Brief outline of knowledge graphs, ie nodes are entities, contain sets of facts,
+                edges specify relationships between facts (can include self-loops)
+            \end{enumerate}
+        \item Argument that KGs cannot be populated by hand. (Brief outline of methods for populating,
+            no in-depth descriptions provided in this proposal)
+            \begin{enumerate}
+            \item Link prediction
+            \item Multi-hop link prediction
+            \item Corpora-based
+            \end{enumerate}
+        \item Proposal: train information extraction systems by recasting as a
+            generative modeling problem.
         \end{enumerate}
     \item Supervision in Information Extraction
         \begin{enumerate}
@@ -510,7 +508,7 @@ by recasting information extraction as a generative modeling problem.
         or learn an approximation of it.
     \item Training and Inference
         \begin{enumerate}
-        \item As we are dealing with documents of significant length,
+        \item As we are dealing with large state spaces,
             we train with an approximate posterior in order to satisfy memory constraints.
         \item Highlight that the approx posterior is a SEPARATE model
             that can be used completely independently from generative model,
@@ -520,7 +518,7 @@ by recasting information extraction as a generative modeling problem.
         \end{enumerate}
     \item Experiments, evaluation, and expectation
         \begin{enumerate}
-        \item Evaluate on Rotowire. Highlight long-form text?
+        \item Evaluate on Rotowire.
         \item We evaluate \texttt{Values} using the precision, recall, and F1 score on the task
             of predicting the values associated with entities, otherwise known as slot-filling.
         \item What would success look like?
