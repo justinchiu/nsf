@@ -22,6 +22,14 @@
 \usepackage{tikz}
 \usetikzlibrary{bayesnet}
 \usetikzlibrary{arrows}
+\usepackage{tikz}
+\usepackage{tikz-dependency}
+\usetikzlibrary{shapes.arrows, positioning, fit, bayesnet,
+    arrows,backgrounds,patterns,matrix,calc,shadows,plotmarks,
+    shapes,positioning,automata,positioning,spy,scopes,chains,decorations,decorations.pathreplacing}
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
 
 \usepackage{wrapfig}
 \usepackage{comment}
@@ -91,6 +99,21 @@
 \titlespacing{\paragraph}{0pt}{*0}{*0}
 %\setlength{\parskip}{-5mm plus1mm minus1mm}
 
+\makeatletter
+\newcommand{\subalign}[1]{%
+  \vcenter{%
+    \Let@ \restore@math@cr \default@tag
+    \baselineskip\fontdimen10 \scriptfont\tw@
+    \advance\baselineskip\fontdimen12 \scriptfont\tw@
+    \lineskip\thr@@\fontdimen8 \scriptfont\thr@@
+    \lineskiplimit\lineskip
+    \ialign{\hfil$\m@th\scriptstyle##$&$\m@th\scriptstyle{}##$\crcr
+      #1\crcr
+    }%
+  }
+}
+\makeatother
+
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 
@@ -104,7 +127,7 @@
 
 \begin{center}
 %\textbf{Exploiting the Duality of Natural Language Generation and Understanding}
-\textbf{Information Extraction with Weak Supervision}
+\textbf{Information Extraction with Distant Supervision}
 \end{center}
 
 \paragraph{Keywords}
@@ -128,45 +151,28 @@ the graph can easily propagate those changes by virtue of its representation.
 
 Given that a knowledge graph must represent an extremely large number of facts and relationships,
 it is infeasible to specify these completely by hand.
-Many recent works have focused on learning to fill in the missing edges of a knowledge graph
-by recognizing patterns in fully-labeled subgraphs in order to predict whether there should
-be an edge between two nodes in an unlabeled subgraph \citep{chen2018diva}.
-By filling in missing edges through link prediction, we are able to use the relationships
-specified by the edges in order to reason about the facts contained in a node conditioned on
+We propose to fill in the nodes of a knowledge graph by leveraging a \textbf{generative model}
+of corpora.
+Many recent works have taken an orthogonal direction known as link prediction,
+which fills in the missing \textit{edges} of a knowledge graph \citep{chen2018diva}.
+Through link prediction one uses the relationships
+specified by the edges to reason about the facts contained in a node conditioned on
 the facts of its neighbours.
-For example, given two nodes corresponding to two different entities,
-we can leverage the relationships between the two nodes to infer the
-values of one given the other.
-
-However, in addition to supervision over subgraphs, 
-we generally also have access to large amounts of unlabeled and unstructured data
-in the form of natural language text.
-We propose an approach that is orthogonal to edge completion,
-which instead relies on jointly modeling
-text and the nodes of the information network.
-We aim to leverage natural language text by
+However, we generally also have access to large amounts of unlabeled and unstructured data
+in the form of natural language corpora.
+We aim to leverage natural language corpora by
 learning an information extraction system that is able to 
 extract facts from text to fill in the nodes of a knowledge graph
 given \textbf{only} the assumption that the text was generated from the information
 represented in the knowledge graph.
 Although this is a strong assumption, we believe it is a reasonable starting point.
-We note that information extraction is complementary to edge completion as a method
-for inferring missing values in the nodes of a knowledge graph,
-and although we focus on information extraction due to its ability to leverage text, 
-the two approaches can be combined in future work.
 
 In this proposal we present a method towards automating the
 training of information extraction systems with unlabeled corpora
 by recasting the information extraction problem as a conditional generative modeling problem.
 Specifically, we plan to use the performance of a deep generative model of text 
 as signal for learning an extraction system.
-
-\begin{comment}
-(Include exemplar knowledge graph diagram, and show that we focus on filling nodes paired with text)
-(Diagram highlighting the difference between modeling edges without text for KG completion
-vs only modeling nodes jointly with text. Highlight complementary nature and emphasize
-combination as future work)
-\end{comment}
+Once the generative model is trained, the extractive system is obtained through posterior inference.
 
 \paragraph{Introduction}
 % Information extraction
@@ -176,6 +182,8 @@ We use summaries of basketball games as an example to ground the concept of an
 information extraction system.
 In the context of a basketball game summary, an information extraction system
 would infer all the statistics associated with a player given the summary.
+% More on information extraction process
+
 A typical approach to an information extraction system is the following pipeline,
 where each stage has a model that is trained independently from the other stages:
 first segment the text into entities and values,
@@ -255,44 +263,79 @@ We refer collectively to all the entities, types, and values in a given datum $\
 $\be,\bt,\bv$ respectively.
 Each text $\by = \set{y_1,\ldots,y_T}$ is a sequence of tokens each from a vocabulary $V$.
 
-We proceed to detail how to specify a LVM,
-then provide a concrete example linking the above dataset description to our LVM formulation:
-Let variables $\bz$ be unobserved or latent, $\by$ observed, and $\bx$ taken as conditioning
-and thus not modelled.
-For information extraction we are interested in distributions
-that can be specified as $p(\bz\mid\by,\bx)$,
-where $\bz$ and $\bx$ may correspond to various quantities depending on the task
-but $\by$ is always the text.
+\begin{figure}[h]
+\centering
+
+ \begin{tikzpicture}[every node/.style={anchor=base,minimum size=8mm}]
+    \matrix  (graph) [matrix of nodes, row sep=0.5em,column sep=-0.3em,
+    minimum width=0.2em, minimum height=1em, font=\small,ampersand replacement=\&] {
+      \&$\subalign{e_1:& \textrm{ michael jordan}\\ t_1:& \textrm{ POINTS}\\ v_1:& ?}$\&
+      \&$\subalign{e_2:& \textrm{ michael jordan}\\ t_2:& \textrm{ REBOUNDS}\\ v_2:& ?}$\&
+      \&$\subalign{e_3:& \textrm{ michael jordan}\\ t_3:& \textrm{ BLOCKS}\\ v_3:& ?}$ \\
+      $\ba$ \\
+      michael \& jordan had \& % 2
+      22 points \& % 3
+      and \& % 4
+      12 rebounds \& % 5
+      as well as \& % 6
+      four blocks \\ % 7
+   };
+
+    \begin{scope}[on background layer]
+
+    \draw[draw=blue!30, line width=0.2mm] ($(graph-1-2) + (0.1, 0)$) -- ($(graph-3-3) + (0.1, 0)$);
+    \draw[draw=blue!30, line width=0.2mm] ($(graph-1-4) + (0.1, 0)$) -- ($(graph-3-5) + (0.1, 0)$);
+    \draw[draw=blue!30, line width=0.2mm] ($(graph-1-6) + (0.1, 0)$) -- ($(graph-3-7) + (0.1, 0)$);
+
+
+    \draw[rounded corners,fill=red!10] ($ (graph-3-1.north west) +(-0.1,0.1)$) rectangle 
+    node[yshift=-1cm]{} ($(graph-3-7.south east) +(0.1,-0.1)$ );
+    \draw[rounded corners,fill=red!10] ($ (graph-1-2.north west) +(-0.1,0.1)$) rectangle  
+    node[yshift=0.8cm]{} ($(graph-1-6.south east) +(0.1,-0.1)$ );
+
+    \draw[rounded corners,fill=green!10] (graph-1-2.north west) rectangle  node[ yshift =0.9cm] {$r_1$} (graph-1-2.south east);
+    \draw[rounded corners,fill=green!10] (graph-1-4.north west) rectangle  node[ yshift =0.9cm] {$r_2$} (graph-1-4.south east);
+    \draw[rounded corners,fill=green!10] (graph-1-6.north west) rectangle  node[ yshift =0.9cm] {$r_3$} (graph-1-6.south east);
+
+    \draw[rounded corners, fill=blue!10] (graph-3-3.north west) rectangle 
+    node[yshift=-0.9cm]{$\by_{4:5}$}  ($(graph-3-3.south east) + (-0.1, 0)$);
+    \draw[rounded corners, fill=blue!10] (graph-3-5.north west) rectangle 
+    node[yshift=-0.9cm]{$\by_{7:8}$}  ($(graph-3-5.south east) + (-0.1, 0)$);
+    \draw[rounded corners, fill=blue!10] (graph-3-7.north west) rectangle 
+    node[yshift=-0.9cm]{$\by_{12:13}$}  ($(graph-3-7.south east) + (-0.1, 0)$);
+    \end{scope}
+  \end{tikzpicture}
+
+\caption{Stuff!}
+\label{fig:d2t}
+\end{figure}
 
 As a concrete example, we use the Rotowire dataset \citep{wiseman2017d2t}.
 Rotowire contains summaries of basketball games $\by$ aligned with the respective
 box scores $\br$ of those games.
-Consider a datum that consists of a single record,
-$\br = \set{(e_1 = \textrm{Jeremy\_Lin}, t_1 = \textrm{POINTS}, v_1 = 19)}$,
-and a simple statement $\by = $``Jeremy Lin scored 19 points''.
-In its simplest incarnation, the process of information extraction may be to infer any
-subset of $\br$, which in this case will be our latent $\bz$, given the remaining elements in $\br$
-which corresponds to $\bx$, as well as the text $\by$.
-For example, we may want to infer the value $v_1$ given 
-the entity Jeremy Lin, the type POINTS, as well as the text $\by$.
-In this case, we would have $\bz = \set{v_1}$ and $\bx = \set{e_1,t_1}$.
-In an alternative task, we may want to infer the value $v_1$ 
-as well as the type $t_1$ given $\by$ and $e_1$, therefore $\bz = \set{v_1,t_1}$ and $\bx=\set{e_1}$.
-%(Will switch to ACE dataset after I figure out what's going on with the data.)
-
-\begin{comment}
-%(clarify)
-Note that we are not constrained to setting $\bz$ to subsets of $\br$.
-We also consider the case where $\bz$ includes alignments from individual words $y_t$
-to records $r_i$. We denote the alignments $\ba = \set{a_1,\ldots,a_T}$,
-where each $a_t$ is associated with $y_t$ and selects a record $r_i$ such that $a_t = i$.
-%(NEED TO FIX ALIGNMENTS AND T vs t, HMM vs HSMM)
-\end{comment}
+Consider the datum in Figure~\ref{fig:d2t} that consists of three records
+and the statement $\by = $``michael jordan had 22 points and 12 rebounds as well as four blocks''.
+For this example, the process of information extraction is to infer 
+the values $\bv$ of the records given the entities $\be$, types $\bt$, and the text $\by$.
+Considering the first record $r_1$, we want to infer the value $v_1$ given 
+the entity ``michael jordan'', the type POINTS, as well as the text $\by$.
+Conditioning on the whole $\by$ is wasteful as different segments of text
+may be referring to different records, so we instead posit that there is a 
+latent alignment $\ba$ from words to records.
+In this case we have $\by_{4:5}$ are both aligned to $r_1$, and thus
+$a_4 = 1$ and $a_5 = 1$ indicating that the fourth and fifth
+words are aligned to the first record.
 
 \paragraph{Proposal}
 We propose to verify the efficacy of the LVM framework in the
 semi-supervised information extraction setting,
-with the goal of demonstrating strong extractive performance with minimal labels.
+with the following goals:
+\begin{enumerate}
+\item By formulating a LVM for generating text conditioned on data,
+    obtain an information extraction system through posterior inference.
+\item Demonstrate strong extractive performance with minimal labels.
+\item Move towards an end-to-end system for knowledge graph completion.
+\end{enumerate}
 We present one instance of a LVM and outline how it can be used to obtain
 an information extraction model without direct supervision,
 then argue that the same approach can be applied in even more ambitious settings.
@@ -307,33 +350,32 @@ Similar to the models defined in \citet{wiseman2018template} and \citet{liang200
 our model takes the form of a hidden semi-Markov model (HSMM).
 The primary difference is that the other models simply assumed the records
 were complete and conditioned on them, whereas ours learns to generate the values.
-For our model, we have observed $\bx = \set{\be,\bt}$ and latent $\bz = \set{\bv,\ba}$, 
+For our model, we have observed $\set{\be,\bt}$ and latent $\set{\bv,\ba}$, 
 where $\be$ are the entities, $\bt$ are the types, $\bv$ are the values, and $\ba$ are
 record indices.
 \texttt{Values} is given by the following generative process:
 \begin{enumerate}
-\item Prior Value Choice: $p(\bv\mid\be,\bt)=p(\bv\mid\bx)$.
+\item Prior Value Choice: $p(\bv\mid\be,\bt)$.
 For each entity and type pair in our datum of records, we predict a value.
 For example, given `Jeremy\_Lin' and POINTS, we predict 19.
 Each value is predicted independently.
-As both the entites and types are observed, we have $\bx=\set{\be,\bt}$.
-\item Prior Record Choice: $p(\ba\mid\bv,\bx) = \prod_i p(a_i\mid a_{i-1},\bv,\bx)$.
+\item Prior Record Choice: $p(\ba\mid\bv,\be,\bt) = \prod_i p(a_i\mid a_{i-1},\bv,\be,\bt)$.
 Conditioned on our choices of values as well as the given entities and records,
 in other words a completed data with no missing values,
-we choose a sequence of records $\ba = \set{a_1,\ldots,a_I}$ to describe.
-\item Word Choice: $p(\by\mid\ba,\bv,\bx) = p(\by\mid\bz,\bx)$.
+we choose a sequence of records $\ba = \set{a_1,\ldots,a_T}$ to describe.
+(Need to redo example for HSMM?)
+\item Word Choice: $p(\by\mid\ba,\bv,\be,\bt)$.
 For each chosen record $a_i$,
 we choose a sequence of words $\by_i = \set{y_{i1},\ldots,y_{iJ}}$ to describe the record.
 With the HSMM formulation, we have that within each segment aligned to a record,
 the words are modeled autoregressively.
-This distribution is the likelihood of the text given the latent variables $\bz$,
-the record choices and value choices.
 \end{enumerate}
 We obtain an information extraction by using the 
 \textbf{posterior} distribution over alignments and values:
 \begin{linenomath*}
 $$
-p(\bz\mid\by,\bx)=\frac{p(\by,\bz\mid\bx)}{p(\by\mid\bx)}=\frac{p(\by,\bz\mid\bx)}{\sum_\bz p(\by,\bz\mid\bx)}.
+p(\ba,\bv\mid\by,\be,\bt)=\frac{p(\by,\ba,\bv\mid\be,\bt)}{p(\by\mid\be,\bt)}
+=\frac{p(\by,\ba,\bv\mid\be,\bt)}{\sum_{\ba,\bv} p(\by,\ba,\bv\mid\be,\bt)}.
 $$
 \end{linenomath*}
 Although the HSMM formulation allows the summation (marginalization) over alignments to be carried out efficiently,
@@ -349,8 +391,6 @@ The resulting approximate posterior $q(\bz\mid\by,\bx)$ can be used independentl
 generative model as an information extraction system that gives a distribution over
 values in a table of records and alignments from text to records.
 
-
-Include: SRIE 2018 in TAC, IE for chemical compounds! oops, but cannot access data...
 We will evaluate our approach on the 
 TAC KBP 2015 slot filling, TACRED \citep{zhang2017slotfilling},
 and ROTOWIRE \citep{wiseman2017d2t} datasets in order to compare to previous work.

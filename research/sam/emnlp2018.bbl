@@ -1,0 +1,348 @@
+\begin{thebibliography}{54}
+\expandafter\ifx\csname natexlab\endcsname\relax\def\natexlab#1{#1}\fi
+
+\bibitem[{Angeli et~al.(2010)Angeli, Liang, and Klein}]{angeli2010simple}
+Gabor Angeli, Percy Liang, and Dan Klein. 2010.
+\newblock A simple domain-independent probabilistic approach to generation.
+\newblock In \emph{Proceedings of the 2010 Conference on Empirical Methods in
+  Natural Language Processing}, pages 502--512. Association for Computational
+  Linguistics.
+
+\bibitem[{Bahdanau et~al.(2015)Bahdanau, Cho, and Bengio}]{bahdanau2015neural}
+Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio. 2015.
+\newblock Neural machine translation by jointly learning to align and
+  translate.
+\newblock In \emph{ICLR}.
+
+\bibitem[{Banerjee and Lavie(2005)}]{banerjee2005meteor}
+Satanjeev Banerjee and Alon Lavie. 2005.
+\newblock Meteor: An automatic metric for mt evaluation with improved
+  correlation with human judgments.
+\newblock In \emph{Proceedings of the acl workshop on intrinsic and extrinsic
+  evaluation measures for machine translation and/or summarization}, pages
+  65--72.
+
+\bibitem[{Belz(2008)}]{belz2008automatic}
+Anja Belz. 2008.
+\newblock Automatic generation of weather forecast texts using comprehensive
+  probabilistic generation-space models.
+\newblock \emph{Natural Language Engineering}, 14(04):431--455.
+
+\bibitem[{Belz and Reiter(2006)}]{belz2006comparing}
+Anja Belz and Ehud Reiter. 2006.
+\newblock Comparing automatic and human evaluation of nlg systems.
+\newblock In \emph{11th Conference of the European Chapter of the Association
+  for Computational Linguistics}.
+
+\bibitem[{Chisholm et~al.(2017)Chisholm, Radford, and
+  Hachey}]{chisholm2017learning}
+Andrew Chisholm, Will Radford, and Ben Hachey. 2017.
+\newblock Learning to generate one-sentence biographies from wikidata.
+\newblock \emph{CoRR}, abs/1702.06235.
+
+\bibitem[{Cho et~al.(2014)Cho, van Merrienboer, Bahdanau, and
+  Bengio}]{cho2014on}
+KyungHyun Cho, Bart van Merrienboer, Dzmitry Bahdanau, and Yoshua Bengio. 2014.
+\newblock On the properties of neural machine translation: Encoder-decoder
+  approaches.
+\newblock \emph{Eighth Workshop on Syntax, Semantics and Structure in
+  Statistical Translation}.
+
+\bibitem[{Dai et~al.(2017)Dai, Dai, Zhang, Li, and Song}]{dai2017recurrent}
+Hanjun Dai, Bo~Dai, Yan-Ming Zhang, Shuang Li, and Le~Song. 2017.
+\newblock Recurrent hidden semi-markov model.
+\newblock In \emph{International Conference on Learning Representations}.
+
+\bibitem[{Du{\v{s}}ek and Jurc{\i}cek(2016)}]{duvsek2016sequence}
+Ondrej Du{\v{s}}ek and Filip Jurc{\i}cek. 2016.
+\newblock Sequence-to-sequence generation for spoken dialogue via deep syntax
+  trees and strings.
+\newblock In \emph{The 54th Annual Meeting of the Association for Computational
+  Linguistics}, page~45.
+
+\bibitem[{Gales and Young(1993)}]{gales1993theory}
+Mark~JF Gales and Steve~J Young. 1993.
+\newblock \emph{The theory of segmental hidden Markov models}.
+\newblock University of Cambridge, Department of Engineering.
+
+\bibitem[{Gatt and Reiter(2009)}]{gatt2009simplenlg}
+Albert Gatt and Ehud Reiter. 2009.
+\newblock Simplenlg: A realisation engine for practical applications.
+\newblock In \emph{Proceedings of the 12th European Workshop on Natural
+  Language Generation}, pages 90--93. Association for Computational
+  Linguistics.
+
+\bibitem[{Gu et~al.(2016)Gu, Lu, Li, and Li}]{gu2016incorporating}
+Jiatao Gu, Zhengdong Lu, Hang Li, and Victor O.~K. Li. 2016.
+\newblock Incorporating copying mechanism in sequence-to-sequence learning.
+\newblock In \emph{{ACL}}.
+
+\bibitem[{G{\"{u}}l{\c{c}}ehre et~al.(2016)G{\"{u}}l{\c{c}}ehre, Ahn,
+  Nallapati, Zhou, and Bengio}]{gulcehre2016pointing}
+{\c{C}}aglar G{\"{u}}l{\c{c}}ehre, Sungjin Ahn, Ramesh Nallapati, Bowen Zhou,
+  and Yoshua Bengio. 2016.
+\newblock Pointing the unknown words.
+\newblock In \emph{{ACL}}.
+
+\bibitem[{Hochreiter and Schmidhuber(1997)}]{hochreiter1997lstm}
+Sepp Hochreiter and J\"{u}rgen Schmidhuber. 1997.
+\newblock Long short-term memory.
+\newblock \emph{Neural Comput.}, 9:1735--1780.
+
+\bibitem[{Howald et~al.(2013)Howald, Kondadadi, and
+  Schilder}]{howald2013domain}
+Blake Howald, Ravikumar Kondadadi, and Frank Schilder. 2013.
+\newblock Domain adaptable semantic clustering in statistical nlg.
+\newblock In \emph{Proceedings of the 10th International Conference on
+  Computational Semantics (IWCS 2013)--Long Papers}, pages 143--154.
+
+\bibitem[{Hu et~al.(2017)Hu, Yang, Liang, Salakhutdinov, and
+  Xing}]{hu2017controllable}
+Zhiting Hu, Zichao Yang, Xiaodan Liang, Ruslan Salakhutdinov, and Eric~P Xing.
+  2017.
+\newblock Toward controlled generation of text.
+\newblock In \emph{International Conference on Machine Learning}, pages
+  1587--1596.
+
+\bibitem[{Huang et~al.(2018)Huang, Wang, Huang, Zhou, and
+  Deng}]{huang2018towards}
+Po-Sen Huang, Chong Wang, Sitao Huang, Dengyong Zhou, and Li~Deng. 2018.
+\newblock Towards neural phrase-based machine translation.
+\newblock In \emph{International Conference on Learning Representations}.
+
+\bibitem[{Jurafsky and Martin(2014)}]{jurafsky2014speech}
+Dan Jurafsky and James~H Martin. 2014.
+\newblock \emph{Speech and language processing}.
+\newblock Pearson London.
+
+\bibitem[{Kondadadi et~al.(2013)Kondadadi, Howald, and
+  Schilder}]{kondadadi2013statistical}
+Ravi Kondadadi, Blake Howald, and Frank Schilder. 2013.
+\newblock A statistical nlg framework for aggregated planning and realization.
+\newblock In \emph{Proceedings of the 51st Annual Meeting of the Association
+  for Computational Linguistics (Volume 1: Long Papers)}, volume~1, pages
+  1406--1415.
+
+\bibitem[{Kong et~al.(2016)Kong, Dyer, and Smith}]{kong2016segmental}
+Lingpeng Kong, Chris Dyer, and Noah~A Smith. 2016.
+\newblock Segmental recurrent neural networks.
+\newblock In \emph{International Conference on Learning Representations}.
+
+\bibitem[{Konstas and Lapata(2013)}]{konstas2013global}
+Ioannis Konstas and Mirella Lapata. 2013.
+\newblock A global model for concept-to-text generation.
+\newblock \emph{J. Artif. Intell. Res.(JAIR)}, 48:305--346.
+
+\bibitem[{Kukich(1983)}]{kukich1983design}
+Karen Kukich. 1983.
+\newblock Design of a knowledge-based report generator.
+\newblock In \emph{{ACL}}, pages 145--150.
+
+\bibitem[{Lebret et~al.(2016)Lebret, Grangier, and Auli}]{lebret2016neural}
+R{\'{e}}mi Lebret, David Grangier, and Michael Auli. 2016.
+\newblock Neural text generation from structured data with application to the
+  biography domain.
+\newblock In \emph{{EMNLP}}, pages 1203--1213.
+
+\bibitem[{Li et~al.(2018)Li, Jia, He, and Liang}]{li2018style}
+J.~Li, R.~Jia, H.~He, and P.~Liang. 2018.
+\newblock Delete, retrieve, generate: A simple approach to sentiment and style
+  transfer.
+\newblock In \emph{North American Association for Computational Linguistics
+  (NAACL)}.
+
+\bibitem[{Liang et~al.(2009)Liang, Jordan, and Klein}]{liang2009learning}
+Percy Liang, Michael~I Jordan, and Dan Klein. 2009.
+\newblock Learning semantic correspondences with less supervision.
+\newblock In \emph{{ACL}}, pages 91--99. Association for Computational
+  Linguistics.
+
+\bibitem[{Lin(2004)}]{lin2004rouge}
+Chin-Yew Lin. 2004.
+\newblock Rouge: A package for automatic evaluation of summaries.
+\newblock \emph{Text Summarization Branches Out}.
+
+\bibitem[{Liu et~al.(2018)Liu, Wang, Sha, Chang, and Sui}]{liu2018table}
+Tianyu Liu, Kexiang Wang, Lei Sha, Baobao Chang, and Zhifang Sui. 2018.
+\newblock Table-to-text generation by structure-aware seq2seq learning.
+\newblock In \emph{Proceedings of the Thirty-Second {AAAI} Conference on
+  Artificial Intelligence}.
+
+\bibitem[{Lu et~al.(2016)Lu, Kong, Dyer, Smith, and Renals}]{lu2016segmental}
+Liang Lu, Lingpeng Kong, Chris Dyer, Noah~A Smith, and Steve Renals. 2016.
+\newblock Segmental recurrent neural networks for end-to-end speech
+  recognition.
+\newblock \emph{Interspeech 2016}, pages 385--389.
+
+\bibitem[{Luong et~al.(2015)Luong, Pham, and Manning}]{luong2015effective}
+Thang Luong, Hieu Pham, and Christopher~D. Manning. 2015.
+\newblock Effective approaches to attention-based neural machine translation.
+\newblock In \emph{Proceedings of the 2015 Conference on Empirical Methods in
+  Natural Language Processing, {EMNLP} 2015}, pages 1412--1421.
+
+\bibitem[{McKeown(1992)}]{mckeown1992text}
+Kathleen McKeown. 1992.
+\newblock \emph{Text generation - using discourse strategies and focus
+  constraints to generate natural language text}.
+\newblock Studies in natural language processing. Cambridge University Press.
+
+\bibitem[{McRoy et~al.(2000)McRoy, Channarukul, and Ali}]{mcroy2000yag}
+Susan~W McRoy, Songsak Channarukul, and Syed~S Ali. 2000.
+\newblock Yag: A template-based generator for real-time systems.
+\newblock In \emph{Proceedings of the first international conference on Natural
+  language generation-Volume 14}, pages 264--267. Association for Computational
+  Linguistics.
+
+\bibitem[{Mei et~al.(2016)Mei, Bansal, and Walter}]{mei2016what}
+Hongyuan Mei, Mohit Bansal, and Matthew~R. Walter. 2016.
+\newblock What to talk about and how? selective generation using lstms with
+  coarse-to-fine alignment.
+\newblock In \emph{{NAACL} {HLT}}, pages 720--730.
+
+\bibitem[{Murphy(2002)}]{murphy2002hidden}
+Kevin~P Murphy. 2002.
+\newblock Hidden semi-markov models (hsmms).
+\newblock \emph{unpublished notes}, 2.
+
+\bibitem[{Nair and Hinton(2010)}]{nair2010rectified}
+Vinod Nair and Geoffrey~E Hinton. 2010.
+\newblock Rectified linear units improve restricted boltzmann machines.
+\newblock In \emph{Proceedings of the 27th international conference on machine
+  learning (ICML-10)}, pages 807--814.
+
+\bibitem[{Novikova et~al.(2017)Novikova, Du{\v{s}}ek, and
+  Rieser}]{novikova2017e2e}
+Jekaterina Novikova, Ondrej Du{\v{s}}ek, and Verena Rieser. 2017.
+\newblock The {E2E} dataset: New challenges for end-to-end generation.
+\newblock In \emph{Proceedings of the 18th Annual Meeting of the Special
+  Interest Group on Discourse and Dialogue}, Saarbr\"ucken, Germany.
+
+\bibitem[{Ostendorf et~al.(1996)Ostendorf, Digalakis, and
+  Kimball}]{ostendorf1996hmm}
+Mari Ostendorf, Vassilios~V Digalakis, and Owen~A Kimball. 1996.
+\newblock From hmm's to segment models: A unified view of stochastic modeling
+  for speech recognition.
+\newblock \emph{IEEE Transactions on speech and audio processing},
+  4(5):360--378.
+
+\bibitem[{Papineni et~al.(2002)Papineni, Roukos, Ward, and
+  Zhu}]{papineni02bleu}
+Kishore Papineni, Salim Roukos, Todd Ward, and Wei-Jing Zhu. 2002.
+\newblock Bleu: a method for automatic evaluation of machine translation.
+\newblock In \emph{Proceedings of the 40th annual meeting on association for
+  computational linguistics}, pages 311--318. Association for Computational
+  Linguistics.
+
+\bibitem[{Paszke et~al.(2017)Paszke, Gross, Chintala, Chanan, Yang, DeVito,
+  Lin, Desmaison, Antiga, and Lerer}]{paszke2017automatic}
+Adam Paszke, Sam Gross, Soumith Chintala, Gregory Chanan, Edward Yang, Zachary
+  DeVito, Zeming Lin, Alban Desmaison, Luca Antiga, and Adam Lerer. 2017.
+\newblock Automatic differentiation in pytorch.
+\newblock \emph{NIPS 2017 Autodiff Workshop}.
+
+\bibitem[{Rabiner(1989)}]{rabiner1989tutorial}
+Lawrence~R Rabiner. 1989.
+\newblock A tutorial on hidden markov models and selected applications in
+  speech recognition.
+\newblock \emph{Proceedings of the IEEE}, 77(2):257--286.
+
+\bibitem[{Reiter and Dale(1997)}]{reiter1997building}
+Ehud Reiter and Robert Dale. 1997.
+\newblock Building applied natural language generation systems.
+\newblock \emph{Natural Language Engineering}, 3(1):57--87.
+
+\bibitem[{Shen et~al.(2017)Shen, Lei, Barzilay, and Jaakkola}]{shen2017style}
+Tianxiao Shen, Tao Lei, Regina Barzilay, and Tommi Jaakkola. 2017.
+\newblock Style transfer from non-parallel text by cross-alignment.
+\newblock In \emph{Advances in Neural Information Processing Systems}, pages
+  6833--6844.
+
+\bibitem[{Shen et~al.(2018)Shen, Lin, wei Huang, and
+  Courville}]{shen2018neural}
+Yikang Shen, Zhouhan Lin, Chin wei Huang, and Aaron Courville. 2018.
+\newblock Neural language modeling by jointly learning syntax and lexicon.
+\newblock In \emph{International Conference on Learning Representations}.
+
+\bibitem[{Srivastava et~al.(2014)Srivastava, Hinton, Krizhevsky, Sutskever, and
+  Salakhutdinov}]{srivastava2014dropout}
+Nitish Srivastava, Geoffrey Hinton, Alex Krizhevsky, Ilya Sutskever, and Ruslan
+  Salakhutdinov. 2014.
+\newblock Dropout: A simple way to prevent neural networks from overfitting.
+\newblock \emph{The Journal of Machine Learning Research}, 15(1):1929--1958.
+
+\bibitem[{Sutskever et~al.(2014)Sutskever, Vinyals, and
+  Le}]{sutskever2014sequence}
+Ilya Sutskever, Oriol Vinyals, and Quoc~VV Le. 2014.
+\newblock Sequence to sequence learning with neural networks.
+\newblock In \emph{Advances in Neural Information Processing Systems (NIPS)},
+  pages 3104--3112.
+
+\bibitem[{Tang et~al.(2016)Tang, Wang, Gimpel, and Livescu}]{tang2016end}
+Hao Tang, Weiran Wang, Kevin Gimpel, and Karen Livescu. 2016.
+\newblock End-to-end training approaches for discriminative segmental models.
+\newblock In \emph{Spoken Language Technology Workshop (SLT), 2016 IEEE}, pages
+  496--502. IEEE.
+
+\bibitem[{Tran et~al.(2016)Tran, Bisk, Vaswani, Marcu, and
+  Knight}]{tran2016unsupervised}
+Ke~M Tran, Yonatan Bisk, Ashish Vaswani, Daniel Marcu, and Kevin Knight. 2016.
+\newblock Unsupervised neural hidden markov models.
+\newblock In \emph{Proceedings of the Workshop on Structured Prediction for
+  NLP}, pages 63--71.
+
+\bibitem[{Vedantam et~al.(2015)Vedantam, Lawrence~Zitnick, and
+  Parikh}]{vedantam2015cider}
+Ramakrishna Vedantam, C~Lawrence~Zitnick, and Devi Parikh. 2015.
+\newblock Cider: Consensus-based image description evaluation.
+\newblock In \emph{Proceedings of the IEEE conference on computer vision and
+  pattern recognition}, pages 4566--4575.
+
+\bibitem[{Wang et~al.(2017)Wang, Wang, Huang, Mohamed, Zhou, and
+  Deng}]{wang2017sequence}
+Chong Wang, Yining Wang, Po-Sen Huang, Abdelrahman Mohamed, Dengyong Zhou, and
+  Li~Deng. 2017.
+\newblock Sequence modeling via segmentations.
+\newblock In \emph{International Conference on Machine Learning}, pages
+  3674--3683.
+
+\bibitem[{Wang and Cardie(2013)}]{wang2013domain}
+Lu~Wang and Claire Cardie. 2013.
+\newblock Domain-independent abstract generation for focused meeting
+  summarization.
+\newblock In \emph{Proceedings of the 51st Annual Meeting of the Association
+  for Computational Linguistics (Volume 1: Long Papers)}, volume~1, pages
+  1395--1405.
+
+\bibitem[{Wiseman et~al.(2017)Wiseman, Shieber, and
+  Rush}]{wiseman2017challenges}
+Sam Wiseman, Stuart Shieber, and Alexander Rush. 2017.
+\newblock Challenges in data-to-document generation.
+\newblock In \emph{Proceedings of the 2017 Conference on Empirical Methods in
+  Natural Language Processing}, pages 2253--2263.
+
+\bibitem[{Yang et~al.(2018)Yang, Dai, Salakhutdinov, and
+  Cohen}]{yang2018breaking}
+Zhilin Yang, Zihang Dai, Ruslan Salakhutdinov, and William~W. Cohen. 2018.
+\newblock Breaking the softmax bottleneck: A high-rank {RNN} language model.
+\newblock In \emph{International Conference on Learning Representations}.
+
+\bibitem[{Yang et~al.(2016)Yang, Blunsom, Dyer, and Ling}]{yang2016reference}
+Zichao Yang, Phil Blunsom, Chris Dyer, and Wang Ling. 2016.
+\newblock Reference-aware language models.
+\newblock \emph{CoRR}, abs/1611.01628.
+
+\bibitem[{Yu et~al.(2016)Yu, Buys, and Blunsom}]{yu2016online}
+Lei Yu, Jan Buys, and Phil Blunsom. 2016.
+\newblock Online segment to segment neural transduction.
+\newblock In \emph{Proceedings of the 2016 Conference on Empirical Methods in
+  Natural Language Processing}, pages 1307--1316.
+
+\bibitem[{Zhao et~al.(2018)Zhao, Kim, Zhang, Rush, and
+  LeCun}]{zhao2017adversarially}
+Junbo~Jake Zhao, Yoon Kim, Kelly Zhang, Alexander~M. Rush, and Yann LeCun.
+  2018.
+\newblock Adversarially regularized autoencoders.
+\newblock In \emph{Proceedings of the 35th International Conference on Machine
+  Learning, {ICML} 2018}, pages 5897--5906.
+
+\end{thebibliography}
