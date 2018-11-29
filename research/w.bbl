@@ -5,18 +5,17 @@
   \providecommand{\doi}[1]{doi: #1}\else
   \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[Bahdanau et~al.(2014)Bahdanau, Cho, and Bengio]{bahdanau2014mt}
-Dzmitry Bahdanau, Kyunghyun Cho, and Yoshua Bengio.
-\newblock Neural machine translation by jointly learning to align and
-  translate.
-\newblock \emph{CoRR}, abs/1409.0473, 2014.
-\newblock URL \url{http://arxiv.org/abs/1409.0473}.
-
 \bibitem[Chen et~al.(2018)Chen, Xiong, Yan, and Wang]{chen2018diva}
 Wenhu Chen, Wenhan Xiong, Xifeng Yan, and William~Yang Wang.
 \newblock Variational knowledge graph reasoning.
 \newblock \emph{CoRR}, abs/1803.06581, 2018.
 \newblock URL \url{http://arxiv.org/abs/1803.06581}.
+
+\bibitem[Cui et~al.(2018)Cui, Wei, and Zhou]{cui2018neuralopenie}
+Lei Cui, Furu Wei, and Ming Zhou.
+\newblock Neural open information extraction.
+\newblock \emph{CoRR}, abs/1805.04270, 2018.
+\newblock URL \url{http://arxiv.org/abs/1805.04270}.
 
 \bibitem[Deng et~al.(2018)Deng, Kim, Chiu, Guo, and Rush]{deng2018attn}
 Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, and Alexander~M. Rush.
@@ -59,14 +58,12 @@ Percy Liang, Michael~I. Jordan, and Dan Klein.
 \newblock ISBN 978-1-932432-45-9.
 \newblock URL \url{http://dl.acm.org/citation.cfm?id=1687878.1687893}.
 
-\bibitem[Ng and Jordan(2001)]{ng2001discgen}
-Andrew~Y. Ng and Michael~I. Jordan.
-\newblock On discriminative vs. generative classifiers: A comparison of
-  logistic regression and naive bayes.
-\newblock In \emph{Proceedings of the 14th International Conference on Neural
-  Information Processing Systems: Natural and Synthetic}, NIPS'01, pages
-  841--848, Cambridge, MA, USA, 2001. MIT Press.
-\newblock URL \url{http://dl.acm.org/citation.cfm?id=2980539.2980648}.
+\bibitem[Miwa and Bansal(2016)]{miwa2016e2ere}
+Makoto Miwa and Mohit Bansal.
+\newblock End-to-end relation extraction using lstms on sequences and tree
+  structures.
+\newblock \emph{CoRR}, abs/1601.00770, 2016.
+\newblock URL \url{http://arxiv.org/abs/1601.00770}.
 
 \bibitem[Qu et~al.(2017)Qu, Ren, Zhang, and Han]{qu2017ssre}
 Meng Qu, Xiang Ren, Yu~Zhang, and Jiawei Han.
