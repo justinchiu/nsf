@@ -5,6 +5,14 @@
 \usepackage{newtxtext}
 \usepackage{lipsum}
 
+% Figure stuff
+\usepackage{floatrow}
+\usepackage{multirow}
+\usepackage{booktabs}
+\setlength{\heavyrulewidth}{1.5pt}
+\setlength{\abovetopsep}{4pt}
+
+
 % ToC
 \usepackage{blindtext} 
 \usepackage[linktocpage]{hyperref}
@@ -182,17 +190,41 @@ The goal of information extraction is to produce structured representations of i
 given unstructured text.
 A typical approach to an information extraction system is the following pipeline,
 where each stage has a model that is trained independently from the other stages:
-first segment the text into entities and values,
-then extract named entities and possibly perform
+\begin{enumerate}
+\item First segment the text into entities and values,
+\item then extract named entities and possibly perform
 coreference resolution by predicting whether segments refer to the same entity, 
-and finally relation extraction where we identify the relationships between the extracted
+\item and finally relation extraction where we identify the relationships between the extracted
 entities and values.
+\end{enumerate}
+(Too much jargon here, need to clarify)
 Even if each stage is modeled end-to-end with a neural network \citep{miwa2016e2ere},
 an approach without a generative model still fails to propoagate beliefs
 in a principled probabilistic manner.
-Incorporating a generative model of text will allow the model to better capture
+Modeling the relationships between variables of interest and the text explicitly in a probabilistic framework
+will allow the model to better capture
 the relationship between the text and underlying knowledge graph,
 resulting in a stronger information extraction system.
+
+\begin{figure}[t]
+\centering
+\floatbox[{\capbeside\thisfloatsetup{capbesideposition={left,top},capbesidewidth=4cm}}]{figure}[\FBwidth]
+{\caption{A simplified example of a summary generated from a set of facts about an entity.}
+\label{fig:boxscore}}
+{\small\begin{tabular}{ccc|c}
+\toprule
+Entity & Type & Value & Summary\\
+\midrule
+michael jordan & NAME & michael jordan &
+\multirow{4}{*}{\parbox{4cm}{michael jordan had 22 points and 12 rebounds as well as four blocks}}\\
+michael jordan & POINTS & 22 &\\
+michael jordan & REBOUNDS & 12 & \\
+michael jordan & BLOCKS & 4 &\\
+\bottomrule
+\end{tabular}}
+%\caption{An example of a set of facts from a basketball game paired with a statement generated from them.}
+%\label{fig:boxscore}
+\end{figure}
 
 A generative model specifies the relationship between all variables of interest in
 the form of a joint distribution; we also consider conditional variants
@@ -247,9 +279,10 @@ The Rotowire dataset \citep{wiseman2017d2t} is a concrete example of such a data
 Rotowire contains summaries of basketball games $\by$ aligned with the respective
 box scores $\br$ of those games.
 Consider the datum in Figure~\ref{fig:d2t} that consists of three records
-and the statement $\by = $``michael jordan had 22 points and 12 rebounds as well as four blocks''.
+and the statement $\by = $ ``michael jordan had 22 points and 12 rebounds as well as four blocks''.
 For this example, the process of information extraction is to infer 
 the values $\bv$ of the records given the entities $\be$, types $\bt$, and the text $\by$.
+(Clarify)
 We want to infer the value $v_2$ of the second record $r_2$ given 
 the entity ``michael jordan'', the type POINTS, as well as the text $\by$.
 
@@ -280,7 +313,12 @@ The primary difference is that the other models simply assumed the records
 were complete and conditioned on them, whereas ours learns to generate the values.
 \begin{figure}[t]
 \centering
-\begin{tikzpicture}[every node/.style={anchor=base,minimum size=8mm}]
+\floatbox[{\capbeside\thisfloatsetup{capbesideposition={left,top},capbesidewidth=4cm}}]{figure}[\FBwidth]
+{\caption{An example of our proposed information extraction procedure
+with an inferred segmentation and missing values, which the model infers
+from the text.}
+\label{fig:d2t}}
+{\begin{tikzpicture}[every node/.style={anchor=base,minimum size=8mm}]
    \matrix (kb) [matrix of nodes, row sep=0.5em,column sep=1.5em,
     minimum width=0.5em, minimum height=1em, font=\small,ampersand replacement=\&] {
       $\subalign{e_1:& \textrm{ michael jordan}\\ t_1:& \textrm{ NAME}\\ v_1:& \textrm{ michael jordan}}$\&
@@ -288,8 +326,8 @@ were complete and conditioned on them, whereas ours learns to generate the value
       $\subalign{e_3:& \textrm{ michael jordan}\\ t_2:& \textrm{ REBOUNDS}\\ v_2:& ?}$\&
       $\subalign{e_4:& \textrm{ michael jordan}\\ t_3:& \textrm{ BLOCKS}\\ v_3:& ?}$\\
     };
-    \matrix (txt) [below=of kb,matrix of nodes, row sep=0.5em,column sep=0.2em,
-    minimum width=0em, minimum height=1em, font=\small,ampersand replacement=\&,
+    \matrix (txt) [below=of kb,matrix of nodes, row sep=0.5em,column sep=0.05em,
+    minimum width=0em, minimum height=1em, font=\footnotesize,ampersand replacement=\&,
     text height=.6em,text depth=.05em] {
       michael\& jordan \& % 1-2
       had \& % 3
@@ -317,24 +355,16 @@ were complete and conditioned on them, whereas ours learns to generate the value
     \draw[rounded corners,fill=green!10] (kb-1-3.north west) rectangle  node[ yshift =0.9cm] {$r_3$} (kb-1-3.south east);
     \draw[rounded corners,fill=green!10] (kb-1-4.north west) rectangle  node[ yshift =0.9cm] {$r_4$} (kb-1-4.south east);
 
-    \draw[rounded corners, fill=blue!10] (txt-1-1.north west)+(0,0) rectangle 
-    node[yshift=-0.9cm]{$\by_{1:3}$}  ($(txt-1-3.south east) + (0, 0)$);
-    \draw[rounded corners, fill=blue!10] (txt-1-4.north west)+(0,0) rectangle 
-    node[yshift=-0.9cm]{$\by_{4:5}$}  ($(txt-1-5.south east) + (0, 0)$);
-    \draw[rounded corners, fill=blue!10] (txt-1-6.north west)+(0,0) rectangle 
-    node[yshift=-0.9cm]{$\by_{6:8}$}  ($(txt-1-8.south east) + (0, 0)$);
-    \draw[rounded corners, fill=blue!10] (txt-1-9.north west)+(0,0) rectangle 
-    node[yshift=-0.9cm]{$\by_{9:13}$}  ($(txt-1-13.south east) + (0, 0)$);
+    \draw[rounded corners, fill=blue!10] (txt-1-1.north west)+(.05,0) rectangle 
+    node[yshift=-0.9cm]{$\by_{1:3}$}  ($(txt-1-3.south east) + (-.05, 0)$);
+    \draw[rounded corners, fill=blue!10] (txt-1-4.north west)+(.05,0) rectangle 
+    node[yshift=-0.9cm]{$\by_{4:5}$}  ($(txt-1-5.south east) + (-.05, 0)$);
+    \draw[rounded corners, fill=blue!10] (txt-1-6.north west)+(.05,0) rectangle 
+    node[yshift=-0.9cm]{$\by_{6:8}$}  ($(txt-1-8.south east) + (-.05, 0)$);
+    \draw[rounded corners, fill=blue!10] (txt-1-9.north west)+(.05,0) rectangle 
+    node[yshift=-0.9cm]{$\by_{9:13}$}  ($(txt-1-13.south east) + (-.05, 0)$);
     \end{scope}
-\end{tikzpicture}
-
-\caption{An example of our proposed information extraction procedure
-with an inferred segmentation.
-In addition to the segmentation, we aim to infer the missing values in records.
-The missing values $v_j$ are predicted independently.
-Records $r_i$ are then chosen, and their ordering is given by $\ba_{1:4}$.
-Each $a_i$ then generates a sequence of words to describe its record $r_i$.}
-\label{fig:d2t}
+\end{tikzpicture}}
 \end{figure}
 
 Our model assumes observed $\set{\be,\bt}$ and latent $\set{\bv,\ba}$, 
@@ -346,7 +376,7 @@ record indices.
 For each entity and type pair in our datum of records, predict a value.
 For example, given `michael jordan' and POINTS, we predict 19.
 Each value is predicted independently.
-\item Prior Record Choice: $p(\ba\mid\bv,\be,\bt) = \prod_i p(a_i\mid a_{i-1},\bv,\be,\bt)$.
+\item Prior Record Choice: $p(\ba\mid\bv,\be,\bt)$.
 Conditioned on our choices of values as well as the given entities and records,
 in other words a completed data with no missing values,
 choose a sequence of records $\ba = \set{a_1,\ldots,a_T}$ to describe with a Markov model.
@@ -357,7 +387,12 @@ indicated by the alignment.
 With the HSMM formulation, we have that within each segment aligned to a record,
 the words are modeled autoregressively.
 \end{enumerate}
+(FROM FIGURE)
+The missing values $v_j$ are predicted independently.
+Records $r_i$ are then chosen, and their ordering is given by $\ba_{1:4}$.
+Each $a_i$ then generates a sequence of words to describe its record $r_i$.
 An information extraction system is obtained by using the 
+(/FROM FIGURE)
 \textbf{posterior} distribution over alignments and values:
 \begin{linenomath*}
 $$
