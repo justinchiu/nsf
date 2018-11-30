@@ -319,14 +319,7 @@ with an inferred segmentation and missing values, which the model infers
 from the text.}
 \label{fig:d2t}}
 {\begin{tikzpicture}[every node/.style={anchor=base,minimum size=8mm}]
-   \matrix (kb) [matrix of nodes, row sep=0.5em,column sep=1.5em,
-    minimum width=0.5em, minimum height=1em, font=\small,ampersand replacement=\&] {
-      $\subalign{e_1:& \textrm{ michael jordan}\\ t_1:& \textrm{ NAME}\\ v_1:& \textrm{ michael jordan}}$\&
-      $\subalign{e_2:& \textrm{ michael jordan}\\ t_2:& \textrm{ POINTS}\\ v_2:& ?}$\&
-      $\subalign{e_3:& \textrm{ michael jordan}\\ t_2:& \textrm{ REBOUNDS}\\ v_2:& ?}$\&
-      $\subalign{e_4:& \textrm{ michael jordan}\\ t_3:& \textrm{ BLOCKS}\\ v_3:& ?}$\\
-    };
-    \matrix (txt) [below=of kb,matrix of nodes, row sep=0.5em,column sep=0.05em,
+\matrix (txt) [matrix of nodes, row sep=0.5em,column sep=0.05em,
     minimum width=0em, minimum height=1em, font=\footnotesize,ampersand replacement=\&,
     text height=.6em,text depth=.05em] {
       michael\& jordan \& % 1-2
@@ -338,31 +331,38 @@ from the text.}
       four\& blocks % 12-13
     \\
    };
+   \matrix (kb) [below=of txt,matrix of nodes, row sep=0.5em,column sep=1.5em,
+    minimum width=0.5em, minimum height=1em, font=\small,ampersand replacement=\&] {
+      $\subalign{e_1:& \textrm{ michael jordan}\\ t_1:& \textrm{ NAME}\\ v_1:& \textrm{ michael jordan}}$\&
+      $\subalign{e_2:& \textrm{ michael jordan}\\ t_2:& \textrm{ POINTS}\\ v_2:& ?}$\&
+      $\subalign{e_3:& \textrm{ michael jordan}\\ t_2:& \textrm{ REBOUNDS}\\ v_2:& ?}$\&
+      $\subalign{e_4:& \textrm{ michael jordan}\\ t_3:& \textrm{ BLOCKS}\\ v_3:& ?}$\\
+    };
     \begin{scope}[on background layer]
 
-    \draw[draw=blue!30, line width=0.5mm] ($(kb-1-1) + (0.1, 0)$) -- node[left] {$a_1$} ($(txt-1-2) + (0.1, 0)$);
-    \draw[draw=blue!30, line width=0.5mm] ($(kb-1-2) + (0.1, 0)$) -- node[left] {$a_2$} ($(txt-1-4) + (0.1, 0)$);
-    \draw[draw=blue!30, line width=0.5mm] ($(kb-1-3) + (0.1, 0)$) -- node[left] {$a_3$} ($(txt-1-7) + (0.1, 0)$);
-    \draw[draw=blue!30, line width=0.5mm] ($(kb-1-4) + (0.1, 0)$) -- node[left] {$a_4$} ($(txt-1-11) + (0.1, 0)$);
+    \draw[line width=0.5mm] ($(kb-1-1) + (0.1, 0)$) -- node[left] {$a_1$} ($(txt-1-2) + (0.1, 0)$);
+    \draw[line width=0.5mm] ($(kb-1-2) + (0.1, 0)$) -- node[left] {$a_2$} ($(txt-1-4) + (0.1, 0)$);
+    \draw[line width=0.5mm] ($(kb-1-3) + (0.1, 0)$) -- node[left] {$a_3$} ($(txt-1-7) + (0.1, 0)$);
+    \draw[line width=0.5mm] ($(kb-1-4) + (0.1, 0)$) -- node[left] {$a_4$} ($(txt-1-11) + (0.1, 0)$);
 
-    \draw[rounded corners,fill=red!10] ($(kb-1-1.north west) +(-0.1,0.1)$) rectangle 
+    \draw[rounded corners,fill=white] ($(kb-1-1.north west) +(-0.1,0.1)$) rectangle 
     node[yshift=-1cm]{} ($(kb-1-4.south east) +(0.1,-0.1)$);
-    \draw[rounded corners,fill=red!10] ($(txt-1-1.north west) +(-0.1,0.1)$) rectangle  
+    \draw[rounded corners,fill=white] ($(txt-1-1.north west) +(-0.1,0.1)$) rectangle  
     node[yshift=0.8cm]{} ($(txt-1-13.south east) +(0.1,-0.1)$);
 
-    \draw[rounded corners,fill=green!10] (kb-1-1.north west) rectangle  node[ yshift =0.9cm] {$r_1$} (kb-1-1.south east);
-    \draw[rounded corners,fill=green!10] (kb-1-2.north west) rectangle  node[ yshift =0.9cm] {$r_2$} (kb-1-2.south east);
-    \draw[rounded corners,fill=green!10] (kb-1-3.north west) rectangle  node[ yshift =0.9cm] {$r_3$} (kb-1-3.south east);
-    \draw[rounded corners,fill=green!10] (kb-1-4.north west) rectangle  node[ yshift =0.9cm] {$r_4$} (kb-1-4.south east);
+    \draw[rounded corners,fill=white] (kb-1-1.north west) rectangle  node[ yshift =-1.1cm] {$r_1$} (kb-1-1.south east);
+    \draw[rounded corners,fill=white] (kb-1-2.north west) rectangle  node[ yshift =-1.1cm] {$r_2$} (kb-1-2.south east);
+    \draw[rounded corners,fill=white] (kb-1-3.north west) rectangle  node[ yshift =-1.1cm] {$r_3$} (kb-1-3.south east);
+    \draw[rounded corners,fill=white] (kb-1-4.north west) rectangle  node[ yshift =-1.1cm] {$r_4$} (kb-1-4.south east);
 
-    \draw[rounded corners, fill=blue!10] (txt-1-1.north west)+(.05,0) rectangle 
-    node[yshift=-0.9cm]{$\by_{1:3}$}  ($(txt-1-3.south east) + (-.05, 0)$);
-    \draw[rounded corners, fill=blue!10] (txt-1-4.north west)+(.05,0) rectangle 
-    node[yshift=-0.9cm]{$\by_{4:5}$}  ($(txt-1-5.south east) + (-.05, 0)$);
-    \draw[rounded corners, fill=blue!10] (txt-1-6.north west)+(.05,0) rectangle 
-    node[yshift=-0.9cm]{$\by_{6:8}$}  ($(txt-1-8.south east) + (-.05, 0)$);
-    \draw[rounded corners, fill=blue!10] (txt-1-9.north west)+(.05,0) rectangle 
-    node[yshift=-0.9cm]{$\by_{9:13}$}  ($(txt-1-13.south east) + (-.05, 0)$);
+    \draw[rounded corners, fill=white] (txt-1-1.north west)+(.05,0) rectangle 
+    node[yshift=0.8cm]{$\by_{1:3}$}  ($(txt-1-3.south east) + (-.05, 0)$);
+    \draw[rounded corners, fill=white] (txt-1-4.north west)+(.05,0) rectangle 
+    node[yshift=0.8cm]{$\by_{4:5}$}  ($(txt-1-5.south east) + (-.05, 0)$);
+    \draw[rounded corners, fill=white] (txt-1-6.north west)+(.05,0) rectangle 
+    node[yshift=0.8cm]{$\by_{6:8}$}  ($(txt-1-8.south east) + (-.05, 0)$);
+    \draw[rounded corners, fill=white] (txt-1-9.north west)+(.05,0) rectangle 
+    node[yshift=0.8cm]{$\by_{9:13}$}  ($(txt-1-13.south east) + (-.05, 0)$);
     \end{scope}
 \end{tikzpicture}}
 \end{figure}
