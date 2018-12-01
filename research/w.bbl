@@ -1,4 +1,4 @@
-\begin{thebibliography}{14}
+\begin{thebibliography}{13}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -57,13 +57,6 @@ Percy Liang, Michael~I. Jordan, and Dan Klein.
   Linguistics.
 \newblock ISBN 978-1-932432-45-9.
 \newblock URL \url{http://dl.acm.org/citation.cfm?id=1687878.1687893}.
-
-\bibitem[Miwa and Bansal(2016)]{miwa2016e2ere}
-Makoto Miwa and Mohit Bansal.
-\newblock End-to-end relation extraction using lstms on sequences and tree
-  structures.
-\newblock \emph{CoRR}, abs/1601.00770, 2016.
-\newblock URL \url{http://arxiv.org/abs/1601.00770}.
 
 \bibitem[Qu et~al.(2017)Qu, Ren, Zhang, and Han]{qu2017ssre}
 Meng Qu, Xiang Ren, Yu~Zhang, and Jiawei Han.
