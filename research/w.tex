@@ -1,6 +1,6 @@
 \documentclass[12pt]{article}
 
-\usepackage[letterpaper,margin=0.75in]{geometry}
+\usepackage[letterpaper,margin=0.7in]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{newtxtext}
 \usepackage{lipsum}
@@ -11,6 +11,10 @@
 \usepackage{booktabs}
 \setlength{\heavyrulewidth}{1.5pt}
 \setlength{\abovetopsep}{4pt}
+
+\usepackage{enumitem}
+\setlist[enumerate]{itemsep=0mm}
+%\usepackage{paralist}
 
 
 % ToC
@@ -176,67 +180,51 @@ extract facts from text to fill in the nodes of a knowledge graph
 given only the assumption that the text was generated from the information
 represented in the knowledge graph.
 
-In this proposal we present a method towards automating the
+In this proposal I present a method towards automating the
 training of information extraction systems with unlabeled corpora
 by recasting the information extraction problem as a conditional generative modeling problem.
 We propose to perform information extraction by first modeling the 
 generative process of writing the text given the data,
 then inverting that process in a probabilistically principled manner
-known as posterior inference.
+through posterior inference.
 
 \paragraph{Background}
 % Information extraction
 The goal of information extraction is to produce structured representations of information
 given unstructured text.
+Figure~\ref{fig:boxscore} is an example of a datum and text pair which may be used to
+train an information extraction system, inspired by the Rotowire dataset \citep{wiseman2017d2t}.
 A typical approach to an information extraction system is the following pipeline:
 \begin{enumerate}
-\item First segment the text into mentions and values.
+\item First segment the text into mentions and values, i.e. michael jordan and all numerical values.
 \item Then align the mentions to a entity, a node in a knowledge graph.
-\item Finally identify the relationships between segments, for example
-whether two entities are on the same sports team.
-The relationships between these segments entail facts.
+The node of interest is labelled `michael jordan'.
+\item Finally identify the relationships between segments.
+The relationships between these segments entail facts, which
+are to the left of the summary in Figure~\ref{fig:boxscore}.
 \end{enumerate}
-Figure~\ref{fig:boxscore} is an example of a datum which may be used to
-train an information extraction system.
-The example is inspired by the Rotowire dataset \citep{wiseman2017d2t},
-which contains summaries of basketball games paired with player and team statistics,
-which we refer to as data.
-In this example, an information extraction system would segment the summary;
-identify all players, teams, and numerical or geographic values;
-predict the relationships between those segments;
-and finally perform extraction by filling in the table of statistics
-with tuples of entities, relation types, and values.
 
 Given the large cost of obtaining labels to train an extraction system,
-which would entail manually labeling entities, values, and their relationships with one another,
 a model that can perform well with less supervision is appealing.
 For example, consider the case where Figure~\ref{fig:boxscore} is missing all values except for 
 Michael Jordan's name.
 In this scenario, where there is an availability of text but a lack of facts,
-learning to recreate the text is much easier than using the no
-given facts to train an extraction system.
-Such a model of text is called a generative model, which in the information extraction setting
-learns to generate the facts and then the text conditioned on the facts. 
+learning to write the text is much easier than training an extraction system
+since the lack of facts results in a lack of labels for the extraction system.
+A model that creates text as well as facts is called a generative model.
 A generative model is defined by its generative process, which 
-is a recipe that describes how all quantities of interested are created.
-
-The benefit of using a generative model rather than directly modeling facts given text is three-fold:
-A generative model can learn in the semi-supervised or unsupervised setting,
+is a recipe for how the dataset is created.
+A generative model that includes latent or unobserved variables in its generative process
+is a latent variable model (LVM).
+The benefit of using a LVM rather than directly modeling facts given text is two-fold:
+\begin{enumerate}
+\item A LVM can learn in the semi-supervised or unsupervised setting,
 where only a few labels or no labels are provided respectively.
-This implies we can train a model without observing all facts, or even with noisy facts.
-Secondly, the ability to learn without observing extends not only to the 
-final quantities of interest, but also intermediate ones.
-A generative process may include latent or unobserved variables
-that can serve to add intepretable structure the model,
-for example by learning to the relationship between segments of text and
-the records that generate them.
-A generative model that includes latent variables is known as a latent variable model (LVM),
-which will be the main focus of this proposal.
-Finally, generative models provide a principled approach to inverting their generative process,
+This implies we can train a model with missing or noisy facts.
+\item LVMs provide a principled approach to inverting their generative process,
 allowing one to reason about unobserved quantities earlier in the process given
 observations later in the process. 
-This is accomplished through belief propagation, an algorithm for
-using the structure of the model to infer missing values.
+\end{enumerate}
 
 \begin{figure}[t]
 \centering
@@ -272,11 +260,6 @@ which aims to model not just the alignments from segments of text to nodes in a 
 but also the values in the nodes themselves.
 We build on the formulation in \citet{liang2009semalign} by parameterizing our LVM
 with neural networks, drastically increasing the generative model's capacity.
-By parameterizing the HSMM with neural networks as in \citet{wiseman2018template},
-where a neural network-based HSMM was used to induce templates in a data-to-text generation task,
-I hope to incorporate recent progress in parameterizing LVMs with neural networks
-so as to learn a more accurate information extraction system by using a more powerful
-generative model.
 
 \paragraph{Problem Setup}
 We consider datasets consisting of aligned data and text
@@ -290,16 +273,13 @@ We refer collectively to all the entities, types, and values in a given datum $\
 $\be,\bt,\bv$ respectively.
 Each text $\by = \set{y_1,\ldots,y_T}$ is a sequence of tokens each from a vocabulary $V$.
 
-The Rotowire dataset \citep{wiseman2017d2t} is a concrete example of such a dataset.
+The Rotowire dataset \citep{wiseman2017d2t} is an example of such a dataset.
 Rotowire contains summaries of basketball games $\by$ aligned with the respective
 box scores $\br$ of those games.
 Consider the datum in Figure~\ref{fig:d2t} that consists of three records
 and the statement $\by = $ ``michael jordan had 22 points and 12 rebounds as well as four blocks''.
 For this example, the process of information extraction is to infer 
 the values $\bv$ of the records given the entities $\be$, types $\bt$, and the text $\by$.
-(Clarify)
-We want to infer the value $v_2$ of the second record $r_2$ given 
-the entity ``michael jordan'', the type POINTS, as well as the text $\by$.
 
 \paragraph{Proposal}
 We propose to verify the efficacy of the LVM framework in the
@@ -322,10 +302,8 @@ We denote this model \texttt{Values}.
 %alignments from words to records,
 %$\bv$ all the values in a datum of records,
 %and $\be,\bt$ the entities and types respectively.
-Similar to the models defined in \citet{wiseman2018template} and \citet{liang2009semalign},
-our model takes the form of a hidden semi-Markov model (HSMM).
-The primary difference is that the other models simply assumed the records
-were complete and conditioned on them, whereas ours learns to generate the values.
+Our model takes the form of a hidden semi-Markov model (HSMM),
+where the model learns to generate the values, record alignments, and finally the text.
 \begin{figure}[t]
 \centering
 \floatbox[{\capbeside\thisfloatsetup{capbesideposition={left,top},capbesidewidth=4cm}}]{figure}[\FBwidth]
@@ -402,12 +380,10 @@ indicated by the alignment.
 With the HSMM formulation, we have that within each segment aligned to a record,
 the words are modeled autoregressively.
 \end{enumerate}
-(FROM FIGURE)
-The missing values $v_j$ are predicted independently.
-Records $r_i$ are then chosen, and their ordering is given by $\ba_{1:4}$.
-Each $a_i$ then generates a sequence of words to describe its record $r_i$.
-An information extraction system is obtained by using the 
-(/FROM FIGURE)
+An information extraction system is obtained by inverting this process.
+Typically this involves applying Bayes' rule and total probability, then marginalizing
+over latent quantities.
+using the 
 \textbf{posterior} distribution over alignments and values:
 \begin{linenomath*}
 $$
@@ -479,22 +455,10 @@ by recasting information extraction as a generative modeling problem.
         \item Proposal: train information extraction systems by recasting as a
             generative modeling problem.
         \end{enumerate}
-    \item Real Introduction
+    \item Background
         \begin{enumerate}
         \item We focus on information extraction, which is the task of producing structured
             representations of text.
-        \item We believe a generative model of text will allow the model to better capture
-            the relationship between the text and underlying knowledge graph,
-            resulting in a stronger information extraction system.
-        \item A latent variable model is simply a generative model that incorporates 
-            latent or unobserved variables alongside the observed variables
-            in the joint distribution.
-        \item By formalizing the generative process of text given data as a LVM,
-            we are afforded a principled approach to information extraction
-            through posterior inference.
-        \end{enumerate}
-    \item Information Extraction at a high level
-        \begin{enumerate}
         \item Define information extraction
             \begin{enumerate}
             \item The goal is to produce or fill in structured representations of information from
@@ -503,28 +467,16 @@ by recasting information extraction as a generative modeling problem.
                 text segmentation, named entity recognition, coreference resolution,
                 relation extraction, and finally producing structured representations of the unlabeled text.
             \end{enumerate}
-        \item LVM for sample complexity and semi-supervised training.
-            Sample complexity comes from having a generative model that we can invert.
-            Given a scarcity of labels in the semi-supervised regime,
-            specifically where thereis more signal in generating the text,
-            having a generative model that we can invert through posterior inference
-            provides a principled approach to information extraction.
-        \item Argue for LVM approach to unify all parts of the pipeline in a single joint distribution
-            in order to utilize the interaction between parts during inference.
-        \item We aim to correct this through recently developed techniques for training LVMs
-            parameterized with neural networks.
-        \item Previous work utilize phrases as
-            additional relations but do not model the underlying generative process
-            \citep{cui2018neuralopenie,qu2017ssre}.
-        \end{enumerate}
-    \item LVMs for joint modeling
-        \begin{enumerate}
-        \item What is a LVM?
-        \item What is the benefit? Propagate uncertainty through belief propagation.
-        \item Draw parallels to progress in translation, mainly in terms of modeling the joint
+    \item Generative model
+        \item If we have more text than labels, or at best noisy incomplete labels from heuristic methods...
+        \item In this case, it is easier to do the inverse problem: learn to generate
+            text from facts.
+        \item We learn to generate text, which is the inverse of information extraction, with a generative model.
+            We then use an algorithm called belief propagation to invert the
+            generative process of the model to obtain an information extraction system.
+        \item Benefits
             \begin{enumerate}
-            \item Deterministic structure via attention Bahdanau
-            \item Latent attention \citet{deng2018attn}
+            \item stuff
             \end{enumerate}
         \end{enumerate}
     \item Recent advances in neural LVMs

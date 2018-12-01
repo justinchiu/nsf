@@ -1,4 +1,4 @@
-\begin{thebibliography}{13}
+\begin{thebibliography}{11}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \expandafter\ifx\csname urlstyle\endcsname\relax
@@ -10,12 +10,6 @@ Wenhu Chen, Wenhan Xiong, Xifeng Yan, and William~Yang Wang.
 \newblock Variational knowledge graph reasoning.
 \newblock \emph{CoRR}, abs/1803.06581, 2018.
 \newblock URL \url{http://arxiv.org/abs/1803.06581}.
-
-\bibitem[Cui et~al.(2018)Cui, Wei, and Zhou]{cui2018neuralopenie}
-Lei Cui, Furu Wei, and Ming Zhou.
-\newblock Neural open information extraction.
-\newblock \emph{CoRR}, abs/1805.04270, 2018.
-\newblock URL \url{http://arxiv.org/abs/1805.04270}.
 
 \bibitem[Deng et~al.(2018)Deng, Kim, Chiu, Guo, and Rush]{deng2018attn}
 Yuntian Deng, Yoon Kim, Justin Chiu, Demi Guo, and Alexander~M. Rush.
@@ -58,13 +52,6 @@ Percy Liang, Michael~I. Jordan, and Dan Klein.
 \newblock ISBN 978-1-932432-45-9.
 \newblock URL \url{http://dl.acm.org/citation.cfm?id=1687878.1687893}.
 
-\bibitem[Qu et~al.(2017)Qu, Ren, Zhang, and Han]{qu2017ssre}
-Meng Qu, Xiang Ren, Yu~Zhang, and Jiawei Han.
-\newblock Overcoming limited supervision in relation extraction: {A}
-  pattern-enhanced distributional representation approach.
-\newblock \emph{CoRR}, abs/1711.03226, 2017.
-\newblock URL \url{http://arxiv.org/abs/1711.03226}.
-
 \bibitem[Rockt{\"{a}}schel and Riedel(2017)]{rock17prove}
 Tim Rockt{\"{a}}schel and Sebastian Riedel.
 \newblock End-to-end differentiable proving.
@@ -83,16 +70,18 @@ Christina Sauper and Regina Barzilay.
 \newblock ISBN 978-1-932432-45-9.
 \newblock URL \url{http://dl.acm.org/citation.cfm?id=1687878.1687909}.
 
-\bibitem[Wiseman(2018)]{wiseman2018template}
-Sam Wiseman.
-\newblock Learning neural templates for text generation.
-\newblock \emph{CoRR}, abs/lol, 2018.
-\newblock URL \url{http://arxiv.org/abs/lol}.
-
 \bibitem[Wiseman et~al.(2017)Wiseman, Shieber, and Rush]{wiseman2017d2t}
 Sam Wiseman, Stuart~M. Shieber, and Alexander~M. Rush.
 \newblock Challenges in data-to-document generation.
 \newblock \emph{CoRR}, abs/1707.08052, 2017.
+
+\bibitem[Wiseman et~al.(2018)Wiseman, Shieber, and Rush]{wiseman2018template}
+Sam Wiseman, Stuart Shieber, and Alexander Rush.
+\newblock Learning neural templates for text generation.
+\newblock In \emph{Proceedings of the 2018 Conference on Empirical Methods in
+  Natural Language Processing}, pages 3174--3187. Association for Computational
+  Linguistics, 2018.
+\newblock URL \url{http://aclweb.org/anthology/D18-1356}.
 
 \bibitem[Zhang et~al.(2017)Zhang, Zhong, Chen, Angeli, and
   Manning]{zhang2017slotfilling}
