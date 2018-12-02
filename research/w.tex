@@ -249,13 +249,12 @@ michael jordan & BLOCKS & 4 &\\
 In this proposal, I focus on the class of LVMs known as hidden semi-Markov models (HSMMs),
 used in \citet{liang2009semalign} as a conditional generative model for the
 task of aligning segments of text to nodes in a knowledge graph without supervision.
-As in \citet{liang2009semalign}, I am interested in using a conditional generative model of text so that
-the amount of supervision necessary for training an information extraction system can be minimized.
-The performance of their conditional generative model of text provides signal for learning the alignments:
-if the likelihood of a segment of text improves when moving from a
-past alignment choice to a new one,
+\citet{liang2009semalign} rely on the insight that a conditional generative model of text
+provides signal for learning the alignments:
+if the likelihood of a segment of text improves when moving from
+one alignment choice to a another,
 then the new alignment is more likely to be correct given a suitably strong likelihood model.
-The same intuition can be used to formulate a related LVM for a semi-supervised information extraction
+The same intuition can be used to formulate a LVM for a semi-supervised information extraction system
 which aims to model not just the alignments from segments of text to nodes in a knowledge graph
 but also the values in the nodes themselves.
 We build on the formulation in \citet{liang2009semalign} by parameterizing our LVM
