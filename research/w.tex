@@ -192,7 +192,7 @@ through posterior inference.
 % Information extraction
 The goal of information extraction is to produce structured representations of information
 given unstructured text.
-Figure~\ref{fig:boxscore} is an example of a datum and text pair which may be used to
+Figure~\ref{fig:d2t} is an example of a datum and text pair which may be used to
 train an information extraction system, inspired by the Rotowire dataset \citep{wiseman2017d2t}.
 A typical approach to an information extraction system is the following pipeline:
 \begin{enumerate}
@@ -201,7 +201,7 @@ A typical approach to an information extraction system is the following pipeline
 The node of interest is labelled `michael jordan'.
 \item Finally identify the relationships between segments.
 The relationships between these segments entail facts, which
-are to the left of the summary in Figure~\ref{fig:boxscore}.
+are below the summary in Figure~\ref{fig:d2t}.
 \end{enumerate}
 
 Given the large cost of obtaining labels to train an extraction system,
@@ -229,7 +229,8 @@ observations later in the process.
 \begin{figure}[t]
 \centering
 \floatbox[{\capbeside\thisfloatsetup{capbesideposition={left,top},capbesidewidth=4cm}}]{figure}[\FBwidth]
-{\caption{A simplified example of a summary generated from a set of facts about an entity.}
+{\caption{A simplified example of a summary generated from a set of facts about an entity.
+A full dataset consists of many unaligned sets of facts and sentences.}
 \label{fig:boxscore}}
 {\small\begin{tabular}{ccc|c}
 \toprule
@@ -308,7 +309,7 @@ where the model learns to generate the values, record alignments, and finally th
 \floatbox[{\capbeside\thisfloatsetup{capbesideposition={left,top},capbesidewidth=4cm}}]{figure}[\FBwidth]
 {\caption{An example of our proposed information extraction procedure
 with an inferred segmentation and values, which the model gathers evidence for
-from the text. The inferred values are in curly braces.}
+from the text. The values that must be inferred are in curly braces.}
 \label{fig:d2t}}
 {\begin{tikzpicture}[every node/.style={anchor=base,minimum size=8mm}]
 \matrix (txt) [matrix of nodes, row sep=0.5em,column sep=0.05em,
@@ -359,9 +360,8 @@ from the text. The inferred values are in curly braces.}
 \end{tikzpicture}}
 \end{figure}
 
-Our model assumes observed $\set{\be,\bt}$ and latent $\set{\bv,\ba}$, 
-where $\be$ are the entities, $\bt$ are the types, $\bv$ are the values, and $\ba$ are
-record indices.
+Our model assumes observed entities and relation types $\set{\be,\bt}$, as well as latent 
+values and alignments $\set{\bv,\ba}$. 
 \texttt{Values} is given by the following generative process:
 \begin{enumerate}
 \item Prior Value Choice: $p(\bv\mid\be,\bt)$.
@@ -379,24 +379,21 @@ indicated by the alignment.
 With the HSMM formulation, we have that within each segment aligned to a record,
 the words are modeled autoregressively.
 \end{enumerate}
-An information extraction system is obtained by inverting this process.
-Typically this involves applying Bayes' rule and total probability, then marginalizing
-over latent quantities.
-using the 
-\textbf{posterior} distribution over alignments and values:
+An information extraction system is obtained by inverting this process
+to obtain the \textbf{posterior} distribution over alignments and values:
 \begin{linenomath*}
 $$
 p(\ba,\bv\mid\by,\be,\bt)=\frac{p(\by,\ba,\bv\mid\be,\bt)}{p(\by\mid\be,\bt)}
 =\frac{p(\by,\ba,\bv\mid\be,\bt)}{\sum_{\ba,\bv} p(\by,\ba,\bv\mid\be,\bt)}.
 $$
 \end{linenomath*}
-Although the HSMM formulation allows the summation (marginalization) over alignments to be carried out efficiently,
-one cannot marginalize over value assignments.
-Instead one must resort to variational inference as in \citet{deng2018attn},
+Although the HSMM formulation allows the summation over alignments to be carried out efficiently,
+the sum over value assignments is intractable.
+Instead one must resort to variational inference,
 where an approximation of the posterior distribution $q(\ba,\bv\mid\by,\be,\bt)$
 is learned with a separate model.
 % Can marginalize over alignments, so only a partial variational approximation is needed
-The conditional generative model and the approximate posterior is trained jointly 
+The conditional generative model and the approximate posterior are trained jointly 
 by maximizing a lower bound on the log marginal likelihood of $\by$ with gradient-based methods.
 The resulting approximate posterior $q(\ba,\bv\mid\by,\be,\bt)$ can be used independently of the 
 generative model as an information extraction system that gives a distribution over
