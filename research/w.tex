@@ -204,8 +204,8 @@ The relationships between these segments entail facts, which
 are below the summary in Figure~\ref{fig:d2t}.
 \end{enumerate}
 
-Given the large cost of obtaining labels to train an extraction system,
-a model that can perform well with less supervision is appealing.
+Given the large cost of obtaining facts to train an extraction system,
+a model that can perform well with fewer facts is appealing.
 For example, consider the case where Figure~\ref{fig:boxscore} is missing all values except for 
 Michael Jordan's name.
 In this scenario, where there is an availability of text but a lack of facts,
@@ -225,6 +225,9 @@ This implies we can train a model with missing facts.
 allowing one to reason about unobserved quantities earlier in the process given
 observations later in the process. 
 \end{enumerate}
+These two properties allow us to use the text as supervision,
+where there is an abundance of data, but still recover a model for predicting facts
+given text.
 
 \begin{figure}[t]
 \centering
