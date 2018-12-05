@@ -267,13 +267,12 @@ with neural networks, drastically increasing the generative model's capacity.
 \paragraph{Problem Setup}
 We consider datasets consisting of aligned data and text
 $\set{(\br^{(1)}, \by^{(1)}),(\br^{(2)},\by^{(2)})\ldots}$.
-For brevity, I refer to a single datum and text as $\br,\by$, omitting the superscript.
+For brevity, a single datum and text pair is $\br,\by$, where the superscript is omitted.
 Each datum $\br = \set{r_1,\ldots,r_N}$ is a set of $N$ records, where each record $r_i = (e_i, t_i, v_i)$
 is a tuple containing an entity, type, and value.
 The datum $\br$ is a knowledge base, or equivalently an information network
 without a representation of the causal effects between records.
-We refer collectively to all the entities, types, and values in a given datum $\br$ as
-$\be,\bt,\bv$ respectively.
+The entities, types, and values in a given datum $\br$ are $\be,\bt,\bv$ respectively.
 Each text $\by = \set{y_1,\ldots,y_T}$ is a sequence of tokens each from a vocabulary $V$.
 
 The Rotowire dataset \citep{wiseman2017d2t} is an example of such a dataset.
@@ -295,9 +294,9 @@ with the following goals:
 \item Move towards a model for knowledge graph completion that captures
     the full joint distribution.
 \end{enumerate}
-We present one instance of a LVM and outline how it can be used to obtain
+We present one instance of an LVM, outline how it can be used to obtain
 an information extraction model without direct supervision,
-then argue that the same approach can be applied in even more ambitious settings.
+and argue that the same approach can be applied in even more ambitious settings.
 Our proposed LVM is a conditional generative model that specifies
 the relationship between data, specifically the entities and types, and text.
 We denote this model \texttt{Values}.
@@ -306,7 +305,8 @@ We denote this model \texttt{Values}.
 %$\bv$ all the values in a datum of records,
 %and $\be,\bt$ the entities and types respectively.
 Our model takes the form of a hidden semi-Markov model (HSMM),
-where the model learns to generate the values, record alignments, and finally the text.
+where the model learns to generate the values, record alignments, and finally the text
+conditioned on the given entities and types.
 \begin{figure}[t]
 \centering
 \floatbox[{\capbeside\thisfloatsetup{capbesideposition={left,top},capbesidewidth=4cm}}]{figure}[\FBwidth]
