@@ -1,6 +1,6 @@
 \documentclass[12pt]{article}
 
-\usepackage[letterpaper,margin=0.7in]{geometry}
+\usepackage[letterpaper,margin=0.75in]{geometry}
 \usepackage[T1]{fontenc}
 \usepackage{newtxtext}
 \usepackage{lipsum}
@@ -168,7 +168,7 @@ the graph can easily propagate those changes by virtue of its representation.
 Information extraction is the task of producing structured representations given unstructured text.
 In the context of knowledge graphs,
 information extraction is used to populate the nodes of
-knowledge graph conditioned on text.
+a knowledge graph conditioned on text.
 %Figure~\ref{fig:d2t} is an example of a datum and text pair which may be used to
 %train an information extraction system, inspired by the Rotowire dataset \citep{wiseman2017d2t}.
 A typical approach to an information extraction system is the following pipeline:
@@ -181,7 +181,7 @@ My proposal focuses on scenarios where there is a surplus of text but a lack of 
 making it difficult to train an extraction system.
 
 \subsection*{Proposal}
-In order to circumvent the issue of obtaining annotations, my proposal is to explore the use of text as the main source of learning signal for extracting knowledge graphs from textual sources rather than the facts. This can be accomplished through the use of \textit{latent variable models} (LVMs), which are defined
+In order to circumvent the cost of obtaining annotations, I propose to explore the use of text as the main source of learning signal for extracting knowledge graphs from textual sources rather than the facts. This can be accomplished through the use of \textit{latent variable models} (LVMs), which are defined
 by a generative process or recipe for how a dataset is generated.
 The benefit of using an LVM is two-fold:
 i) An LVM can learn in the semi-supervised or unsupervised setting,
@@ -293,7 +293,7 @@ Each datum $\br = \set{r_1,\ldots,r_N}$ is a set of $N$ records or facts, where 
 is a tuple containing an entity, type, and value.
 We denote the aggregated collection of any elements as a bold variable.
 The datum $\br$ is a simple knowledge graph or information network. 
-Each text $\by = y_1,y_2,\ldots$ is a sequence of tokens each from a vocabulary $V$. As an example consider a dataset of assigned summaries of basketball games $\by$ aligned with the respective statistics $\br$ of those games in Figure~\ref{fig:d2t}. 
+Each text $\by = y_1,y_2,\ldots$ is a sequence of tokens each from a vocabulary $V$. As an example consider a dataset consisting of summaries of basketball games $\by$ aligned with the respective statistics $\br$ of those games in Figure~\ref{fig:d2t}. 
 Here there are three records and the statement $\by = $ ``michael jordan had 22 points and 12 rebounds as well as four blocks''. For this example, the process of information extraction is to infer 
 the values $\bv$ of the records given the entities $\be$, types $\bt$, and the text $\by$.
 
@@ -355,7 +355,7 @@ the values $\bv$ of the records given the entities $\be$, types $\bt$, and the t
 My proposed model is a conditional LVM that specifies the relationship between data, specifically how the entities and types generate the text. Assume that the entities and relation types $\set{\be,\bt}$ of the knowledge graph are known. The model requires a generative process for
 $\set{\by,\ba,\bv}$, i.e. the values, the text, and the alignment between the text and the facts. This requires specifying: 
 \[ p(\by, \ba, \bv \mid \be, \bt) = p(\bv \mid \be, \bt) \times p( \ba \mid \bv, \be, \bt) \times p(\by \mid \ba, \bv, \be, \bt).\]
-The full generative process is the following:
+The full generative process is the following
 \begin{enumerate}
 \item Generate Prior Values: $p(\bv\mid\be,\bt)$.
 For each entity and type pair in our datum of records, predict a prior value.
@@ -394,10 +394,10 @@ values in a table of records and alignments from text to records.
 
 \subsection*{Plan}
 
-I plan to develop a system based on these ideas for information extraction with distant supervision. I will evaluate the approach on reduced annotation version of standard knowledge graph extraction benchmarks including, TAC KBP 2015 slot filling and  TACRED \citep{zhang2017slotfilling}.
+I plan to develop a system based on these ideas for information extraction with distant supervision. I will evaluate the approach on reduced annotation versions of standard information extraction benchmarks including, TAC KBP 2015 slot filling and  TACRED \citep{zhang2017slotfilling}.
 The goal will be to demonstrate competitive performance on
 extraction metrics such as precision, recall, and F1, while using as little supervision
-as possible by ignoring subsets of the given information.
+as possible by ignoring subsets of the given data.
 For example, we can allow the model to only learn from
 subsets of the given values (or none at all).
 Given success in that goal, the next step would be to extend the model
@@ -410,16 +410,15 @@ author style \citep{hsu2017speech}, and incorporating multi-hop
 reasoning in order to leverage relationships between entities
 \citep{chen2018diva,rock17prove}.
 
-
 Given admittance to the NDSEG Fellowship Program, I will evaluate the application of
 LVMs to the problem of information extraction.
 As a result of the digital age, the ubiquity of information networks as well as their 
 enormous growth makes it clear that a method for training information extraction systems
 with minimal supervision is a necessity.
 I will push for scalable information extraction systems that require minimal supervision
-by recasting information extraction as a generative modeling problem.
+by recasting information extraction as a text modeling problem.
 
-%\begin{comment}
+\begin{comment}
 \newpage
 \section*{Outline}
 \begin{enumerate}
@@ -566,7 +565,7 @@ by recasting information extraction as a generative modeling problem.
         \end{enumerate}
     \end{enumerate}
 \end{enumerate}
-%\end{comment}
+\end{comment}
 
 \newpage
 \bibliographystyle{plainnat}
