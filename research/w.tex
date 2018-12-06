@@ -220,7 +220,7 @@ The benefit of using a LVM rather than directly modeling facts given text is two
 \begin{enumerate}
 \item An LVM can learn in the semi-supervised or unsupervised setting,
 where only a few labels or no labels are provided respectively.
-This implies we can train a model with missing facts.
+This implies a model can be trained with missing facts.
 \item LVMs provide a principled approach to inverting their generative process,
 allowing one to reason about unobserved quantities earlier in the process given
 observations later in the process. 
@@ -261,11 +261,11 @@ then the new alignment is more likely to be correct given a suitably strong like
 The same intuition can be used to formulate a LVM for a semi-supervised information extraction system
 which aims to model not just the alignments from segments of text to nodes in a knowledge graph
 but also the values in the nodes themselves.
-We build on the formulation in \citet{liang2009semalign} by parameterizing our LVM
+I build on the formulation in \citet{liang2009semalign} by parameterizing our LVM
 with neural networks, drastically increasing the generative model's capacity.
 
 \paragraph{Problem Setup}
-We consider datasets consisting of aligned data and text
+I consider datasets consisting of aligned data and text
 $\set{(\br^{(1)}, \by^{(1)}),(\br^{(2)},\by^{(2)})\ldots}$.
 For brevity, a single datum and text pair is $\br,\by$, where the superscript is omitted.
 Each datum $\br = \set{r_1,\ldots,r_N}$ is a set of $N$ records, where each record $r_i = (e_i, t_i, v_i)$
@@ -284,7 +284,7 @@ For this example, the process of information extraction is to infer
 the values $\bv$ of the records given the entities $\be$, types $\bt$, and the text $\by$.
 
 \paragraph{Proposal}
-We propose to verify the efficacy of the LVM framework in the
+I propose to verify the efficacy of the LVM framework in the
 semi-supervised information extraction setting,
 with the following goals:
 \begin{enumerate}
