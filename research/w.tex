@@ -132,7 +132,7 @@
 \pagestyle{fancy}
 
 \usepackage[displaymath,mathlines]{lineno}
-\linenumbers
+%\linenumbers
 
 \title{Latent Information Extraction from Text}
 \date{}
@@ -311,7 +311,7 @@ My proposed model is a conditional LVM that specifies the relationship between t
 Let $\ba = a_1,\ldots,a_T$ be a sequence of record indices,
 such that each $a_t\in\set{1,\ldots,N}$. Each $a_t$ serves as an alignment from a specific record to a segment of text, as in Figure~\ref{fig:d2t}.
 The model requires a generative process for
-$\set{\by,\ba,\bv}$, i.e. the values, the text, and the alignment between the text and the facts. This requires specifying: 
+$\set{\by,\ba,\bv}$, i.e. the values, the text, and the alignments between the facts and text. This requires specifying: 
 \[ p(\by, \ba, \bv \mid \be, \bt) = p(\bv \mid \be, \bt) \times p( \ba \mid \bv, \be, \bt) \times p(\by \mid \ba, \bv, \be, \bt).\]
 The full generative process is the following:
 \begin{enumerate}
