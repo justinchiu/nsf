@@ -18,3 +18,6 @@ clean:
 
 copy:
 	cp w.pdf temp5.pdf
+
+submit:
+	cp w.pdf Chiu,Justin_Proposal.pdf
