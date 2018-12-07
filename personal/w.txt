@@ -1,40 +1,9 @@
-In the past five years, the field of natural language processing (NLP) has been dominated by neural network based methods.
-While flexible, neural network models are generally overparamaterized and take many examples to train.
-One method to reduce sample complexity is to constrain the hypothesis class.
-My long-term goal is to explore approaches to reducing sample complexity without sacrificing performance,
-and my short-term focus is on neural latent variable models for reducing label complexity.
+I have always recognized effective writing as an extremely difficult ordeal. My long-term research goal is to create tools for understanding and generating text, in order to facilitate the teaching of communication skills. My dream is to build a system that can extract an argument outline from an essay, verify the argumentative structure, then propose improvements to the written text. To that end, my short-term focus is on neural latent variable models for information extraction. Professionally, my long term goal is to remain in academia and develop technology that helps inform and empower our country's citizens through natural language processing (NLP).
 
-I became interested in low-resource NLP during my undergraduate studies at the University of Pennsylvania,
-where I took and subsequently served as a teaching assistant for the machine translation class taught by
-Prof. Chris Callison-Burch. The class had an emphasis on statistical machine translation, which was predominantly
-based on the noisy-channel approach, a generative model. The usage of generative models for low-resource translation
-greatly contrasted my subsequent experience with neural networks, where an abundance of data was a necessity. 
-As a research engineer at Facebook AI Research, I continued to work on machine translation, but with the view that
-translation was simply conditional language modeling. After two years at Facebook, I resumed my studies when
-I joined Prof. Rush's NLP lab at Harvard University as a graduate student. The motivation behind furthering my education
-was a desire to incorporate a more principled approach to modeling than just neural networks afforded.
-Discrete graphical models provide a principled method for interpreting models through posterior inference,
-and the computational complexity of inference also places a simplicity prior over the family of efficient
-models which again benefits sample complexity. 
-Given that both neural networks ad graphical models both have a graphical formalism,
-combining the two is straightforward and has been shown to yield performance improvements
-as we demonstrate in our paper "Latent Alignment and Variational Attention,"
-which was accepted at NeurIPS 2018.
+I became interested in NLP during my undergraduate studies at the University of Pennsylvania, where I took and subsequently served as a teaching assistant for the machine translation class taught by Prof. Chris Callison-Burch. The class had an emphasis on statistical machine translation, which immediately captivated my interest. As a research engineer at Facebook AI Research, I continued to work on machine translation and developed a strong familiarity with neural networks. After two years at Facebook, I resumed my studies when I joined Prof. Rush's NLP lab at Harvard University as a graduate student. The motivation behind furthering my education was a desire to incorporate a more principled approach to modeling than only neural networks afforded. Graphical models provide a principled method for answering probabilistic queries, which is necessary for reasoning about the unobserved elements of language. My labmates and I recently demonstrated that combining both graphical models and neural networks for the task of translation yields performance improvements, and also allows us to inspect the model's internal beliefs. Our paper, "Latent Alignment and Variational Attention," was accepted at NeurIPS 2018.
 
-Recently, my focus has shifted from translation to information extraction.
-Given the strong performance of neural methods in language modeling and representation learning,
-the next challenge in translation is to represent more indirect knowledge such as context or common-sense.
-Information extraction, the task of automatically
-obtaining facts from text, is more directly affected by knowledge representation than translation.
-Information extraction usually deals with already-specified representations of knowledge:
-graphs where the nodes and edges are predefined by hand and only need to be populated.
-However, the problem of learning a representation, or the structure of that representation,
-is interesting from the perspective of generative modeling.
-Structure learning problems typically suffer from very high sample complexity,
-and thus introducing constraints by specifying a simple generative story will be
-important for efficient learning.
+Recently, my focus has shifted from translation to information extraction. After working on latent variable models for translation, I realized the potential a similar model would have for information extraction. A model similar to the one we proposed for translation could be used to pull information out of text. Given a powerful information extraction model that is able to understand text, the remaining step towards a writing aid would be the creation of a verifiable argumentation structure. Such a structure would allow a verifier to determine whether the argument logically entails the desired conclusion. The final product would aid developing writers in forming and structuring their arguments, an important part of developing effective communication skills.
 
-The NDSEG fellowship would afford me the freedom to devote my research to the application of
-generative models to the problem of information extraction, with the hope of moving towards
-techniques for learning knowledge representations that allows for easy
-extraction and population of facts from natural language text.
+The NDSEG fellowship would afford me the freedom to devote my research to the application of generative models to the problem of information extraction, with the hope of moving towards models that can understand and improve upon our own writing.
+
+
