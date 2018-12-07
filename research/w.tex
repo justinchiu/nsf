@@ -181,79 +181,34 @@ My proposal focuses on scenarios where there is a surplus of text but a lack of 
 making it difficult to train an extraction system.
 
 \subsection*{Proposal}
-In order to circumvent the cost of obtaining annotations, I propose to explore the use of text as the main source of learning signal for extracting knowledge graphs from textual sources rather than the facts. This can be accomplished through the use of \textit{latent variable models} (LVMs), which are defined
+In order to circumvent the cost of obtaining annotations, I propose to explore the use of text, rather than the facts, as the main source of learning signal for extracting knowledge graphs from textual sources. This can be accomplished through the use of \textit{latent variable models} (LVMs), which are defined
 by a generative process or recipe for how a dataset is generated.
-The benefit of using an LVM is two-fold:
-i) An LVM can learn in the semi-supervised or unsupervised setting,
-where only a few labels or no labels are provided respectively.
-This implies a model can be trained with missing facts.
-ii) LVMs provide a principled approach for propagating uncertainty throughout the model. 
-
-For information extraction, an LVM specifies the probabilistic relationship between a knowledge graph and the text while taking into account uncertainty. LVMs permit probabilistic queries such as both what the distribution over facts is given a text, as well as how likely a sentence is given a set of facts. \textbf{My proposal is to develop a latent variable model that describes the process of generating text, where there is an abundance of data, based on information from a knowledge graph.} This can then be used as an information extraction system that predicts facts given text.
-
-%Many recent works have taken an orthogonal direction known as link prediction,
-%which fills in the missing \textit{edges} of a knowledge graph \citep{chen2018diva}.
-%Through link prediction one uses the relationships
-%specified by the edges to reason about the facts contained in a node conditioned on
-%the facts of its neighbours.
-%However, we generally also have access to large amounts of unlabeled and unstructured data
-%in the form of natural language corpora.
-
-%In this proposal I present a method towards automating the
-%training of information extraction systems with unlabeled corpora
-%by recasting the information extraction problem as a conditional generative modeling problem.
-%I propose to perform information extraction by first modeling the 
-%generative process of writing the text given the data,
-%then inverting that process in a probabilistically principled manner
-%through posterior inference.
-
-%\subsection*{Background}
-% Information extraction
-
-
-
-%\begin{figure}[t]
-%\centering
-%\floatbox[{\capbeside\thisfloatsetup{capbesideposition={left,top},capbesidewidth=4cm}}]{figure}[\FBwidth]
-%{\caption{A simplified example of a summary generated from a set of facts about an entity.
-%A full dataset consists of many unaligned sets of facts and sentences.}
-%\label{fig:boxscore}}
-%{\small\begin{tabular}{ccc|c}
-%\toprule
-%Entity & Type & Value & Summary\\
-%\midrule
-%michael jordan & NAME & michael jordan &
-%\multirow{4}{*}{\parbox{4cm}{michael jordan had 22 points and 12 rebounds as well as four %blocks}}\\
-%michael jordan & POINTS & 22 &\\
-%michael jordan & REBOUNDS & 12 & \\
-%michael jordan & BLOCKS & 4 &\\
-%\bottomrule
-%\end{tabular}}
-%\caption{An example of a set of facts from a basketball game paired with a statement generated from them.}
-%\label{fig:boxscore}
-%\end{figure}
+%The benefit of using an LVM is two-fold:
+%i) An LVM can learn in the semi-supervised or unsupervised setting,
+%where only a few labels or no labels are provided respectively.
+%This implies a model can be trained with missing facts.
+%ii) LVMs provide a principled approach for propagating uncertainty %throughout the model.
+An LVM for information extraction specifies the probabilistic relationship between a knowledge graph and the text. Such a model permits probabilistic queries such as (i) how likely a sentence is given a set of facts, as well as (ii) what the distribution over facts is given a text. Training an LVM relies on queries of type (i), while using the LVM for information extraction requires queries of type (ii). \textbf{My proposal is to develop a latent variable model that describes the process of generating text, where there is an abundance of data, based on information from a knowledge graph.} 
 
 I will apply this model in the
-semi-supervised information extraction setting,
+semi-supervised information extraction setting
 with the following goals:
 \begin{enumerate}
-\item Demonstrate that using a conditional model of text can provide signal for training an information extraction model.
+\item Demonstrate that a conditional model of text can provide signal for training an information extraction model.
 \item Show that we can achieve competitive performance on knowledge graph extraction with fewer annotations. 
 \item Incorporate more linguistic signals and latent structure into the LVM to improve modeling performance.
 \end{enumerate}
-
-I propose an LVM for a semi-supervised information extraction system that models a simple sequence-wise generation of text from a knowledge graph. This approach is inspired by the work of \citet{liang2009semalign}, who
-learn to align facts to text without supervision.
-Their work relies on the insight that a conditional generative model of text
+The model will perform sequence-wise generation of text using facts from the nodes of a knowledge graph.
+This approach is inspired by the work of \citet{liang2009semalign}, who learn to align facts to text without supervision.
+Their work relies on the insight that a model of text
 provides signal for learning the alignments:
 if the likelihood of a segment of text improves when moving from one alignment choice to a another,
-then the new alignment is more likely to be correct given a suitably strong likelihood model. We will extend this approach to a deep learning based model that incorporates state-of-the-art extraction and generation techniques into a LVM setting.  
+then the new alignment is more likely to be correct given a suitably strong likelihood model. In my proposed LVM, I will extend this approach to a deep learning based model that incorporates state-of-the-art extraction and generation techniques.
 
 %which aims to model not just the alignments from segments of text to nodes in a knowledge graph
 %but also the values in the nodes themselves.
 %I build on the formulation in \citet{liang2009semalign} by parameterizing our LVM
 %with neural networks, drastically increasing the generative model's capacity.
-
 
 %where the model learns to generate the values, record alignments, and finally the text
 %conditioned on the given entities and types.
@@ -327,9 +282,9 @@ the values $\bv$ of the records given the entities $\be$, types $\bt$, and the t
     \begin{scope}[on background layer]
 
     \draw[line width=0.5mm] ($(kb-1-1) + (0.1, 0)$) -- node[left] {$a_1$} ($(txt-1-2) + (0.1, 0)$);
-    \draw[line width=0.5mm] ($(kb-1-2) + (0.1, 0)$) -- node[left] {$a_2$} ($(txt-1-4) + (0.1, 0)$);
-    \draw[line width=0.5mm] ($(kb-1-4) + (0.1, 0)$) -- node[left] {$a_3$} ($(txt-1-7) + (0.1, 0)$);
-    \draw[line width=0.5mm] ($(kb-1-3) + (0.1, 0)$) -- node[right] {$a_4$} ($(txt-1-11) + (0.1, 0)$);
+    \draw[line width=0.5mm] ($(kb-1-2) + (0.1, 0)$) -- node[left,xshift=-1mm] {$a_2$} ($(txt-1-4) + (0.1, 0)$);
+    \draw[line width=0.5mm] ($(kb-1-4) + (0.1, 0)$) -- node[left,xshift=-5mm] {$a_3$}  ($(txt-1-7) + (0.1, 0)$);
+    \draw[line width=0.5mm] ($(kb-1-3) + (0.1, 0)$) -- node[right,xshift=3mm] {$a_4$} ($(txt-1-11) + (0.1, 0)$);
 
     \draw[rounded corners,fill=white] ($(kb-1-1.north west) +(-0.1,0.1)$) rectangle 
     node[yshift=-1cm]{} ($(kb-1-4.south east) +(0.1,-0.1)$);
@@ -352,17 +307,17 @@ the values $\bv$ of the records given the entities $\be$, types $\bt$, and the t
     \end{scope}
 \end{tikzpicture}}
 \end{figure}
-My proposed model is a conditional LVM that specifies the relationship between data, specifically how the entities and types generate the text. Assume that the entities and relation types $\set{\be,\bt}$ of the knowledge graph are known. The model requires a generative process for
+My proposed model is a conditional LVM that specifies the relationship between the different components of the data, specifically how the entities and types generate the text. Assume that the entities and relation types $\set{\be,\bt}$ of the knowledge graph are known. The model requires a generative process for
 $\set{\by,\ba,\bv}$, i.e. the values, the text, and the alignment between the text and the facts. This requires specifying: 
 \[ p(\by, \ba, \bv \mid \be, \bt) = p(\bv \mid \be, \bt) \times p( \ba \mid \bv, \be, \bt) \times p(\by \mid \ba, \bv, \be, \bt).\]
-The full generative process is the following
+The full generative process is the following:
 \begin{enumerate}
 \item Generate Prior Values: $p(\bv\mid\be,\bt)$.
 For each entity and type pair in our datum of records, predict a prior value.
 For example, given `michael jordan' and POINTS we predict 19.
 Each value is predicted independently using a neural network over the entity $e$ and type $t$. 
 \item Generate Record Alignments: $p(\ba \mid\bv,\be,\bt)$.
-Conditioned on the knowledge graph, choose a ordered subset of records $\ba =a_1,\ldots,a_T$ for the text to describe. 
+Conditioned on the knowledge graph, choose an ordered subset of records $\ba =a_1,\ldots,a_T$ for the text to describe. 
 This sequence is predicted using a Markov chain parameterized with a neural network transition function that also takes into account a global encoding of the knowledge graph. 
 \item Generate the Document: $p(\by\mid\ba,\bv,\be,\bt)$.
 For each record selected as $a_i$, choose a sequence of words $\by_i = \set{y_{i1},\ldots,y_{iJ}}$ to describe the record
@@ -370,7 +325,7 @@ indicated by the alignment. This sequence is predicted using
 a recurrent neural network (RNN) that also takes into account 
 an embedding of the current selected record. 
 \end{enumerate}
-This model is an instance of a hidden semi-Markov model (HSMM), a classical LVM that has been used for generation and extraction tasks. Our version extends the approach to incorporate methods from deep learning that have been shown to perform well on supervised extraction tasks.
+This model is an instance of a hidden semi-Markov model (HSMM), a classical LVM that has been used for generation and extraction tasks. Our version extends the HSMM to incorporate methods from deep learning that have been shown to perform well on supervised extraction tasks.
 
 To use this model for semi-supervised information extraction system we invert this generative process
 to obtain the posterior distribution over alignments and values:
@@ -389,12 +344,12 @@ is learned with a separate model.
 The LVM and the approximate posterior are trained jointly 
 by maximizing a lower bound on the log marginal likelihood of $\by$ with gradient-based methods.
 The resulting approximate posterior  can be used independently of the 
-generative model as an information extraction system that gives a distribution over
+original model as an information extraction system that gives a distribution over
 values in a table of records and alignments from text to records.
 
 \subsection*{Plan}
 
-I plan to develop a system based on these ideas for information extraction with distant supervision. I will evaluate the approach on reduced annotation versions of standard information extraction benchmarks including, TAC KBP 2015 slot filling and  TACRED \citep{zhang2017slotfilling}.
+I plan to develop a system based on these ideas for information extraction with distant supervision. I will evaluate the approach on reduced annotation versions of standard information extraction benchmarks including the TAC KBP 2015 slot filling task and the TACRED dataset \citep{zhang2017slotfilling}.
 The goal will be to demonstrate competitive performance on
 extraction metrics such as precision, recall, and F1, while using as little supervision
 as possible by ignoring subsets of the given data.
