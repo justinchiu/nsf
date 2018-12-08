@@ -169,26 +169,27 @@ Information extraction is the task of producing structured representations given
 In the context of knowledge graphs,
 information extraction is used to populate the nodes of
 a knowledge graph conditioned on text.
-%Figure~\ref{fig:d2t} is an example of a datum and text pair which may be used to
-%train an information extraction system, inspired by the Rotowire dataset \citep{wiseman2017d2t}.
 A typical approach to an information extraction system is the following pipeline:
-(i) segment the text into mentions and values, (ii) align the mentions to an entity, a node in a knowledge graph, (iii) identify the relationships between segments.
-The relationships between these segments entail facts. Given the large cost of obtaining annotations to train an extraction system,
+(i) segment the text into mentions and values,
+(ii) align the mentions to an entity, a node in a knowledge graph,
+(iii) identify the relationships between segments.
+The relationships between these segments entail facts.
+Given the large cost of obtaining annotations to train an extraction system,
 a model that can perform well with fewer annotations is appealing.
-%For example, consider the case where Figure~\ref{fig:boxscore} is missing all values %except for 
-%Michael Jordan's name.
-My proposal focuses on scenarios where there is a surplus of text but a lack of annotations,
+My proposal focuses on the scenario where there is a surplus of text but a lack of annotations,
 making it difficult to train an extraction system.
 
 \subsection*{Proposal}
-In order to circumvent the cost of obtaining annotations, I propose to explore the use of text, rather than the facts, as the main source of learning signal for information extraction. This can be accomplished through the use of \textit{latent variable models} (LVMs), which are defined
+In order to circumvent the cost of obtaining annotations, I propose to explore the use of text,
+rather than the facts, as the main source of learning signal for information extraction.
+This can be accomplished through the use of \textit{latent variable models} (LVMs), which are defined
 by a generative process or recipe for how a dataset is generated.
-%The benefit of using an LVM is two-fold:
-%i) An LVM can learn in the semi-supervised or unsupervised setting,
-%where only a few labels or no labels are provided respectively.
-%This implies a model can be trained with missing facts.
-%ii) LVMs provide a principled approach for propagating uncertainty %throughout the model.
-An LVM for information extraction specifies the probabilistic relationship between a knowledge graph and the text. Such a model permits probabilistic queries such as (i) how likely a sentence is given a set of facts, as well as (ii) what the distribution over facts is given a text. Training an LVM relies on queries of type (i), while using the LVM for information extraction requires queries of type (ii). \textbf{My proposal is to develop a latent variable model that describes the process of generating text, where there is an abundance of data, based on information from a knowledge graph.} 
+An LVM for information extraction specifies the probabilistic relationship between a knowledge graph and the text.
+I am interested in LVMs that permit probabilistic queries such as (i) how likely a sentence is given a set of facts,
+as well as (ii) what the distribution over facts is given a text.
+Training such an LVM relies on queries of type (i), while using the LVM for information extraction requires queries of type (ii).
+\textbf{My proposal is to develop a latent variable model that describes the process of generating text,
+where there is an abundance of data, based on information from a knowledge graph.} 
 
 I will apply this model in the
 semi-supervised information extraction setting
@@ -196,50 +197,17 @@ with the following goals:
 \begin{enumerate}
 \item Demonstrate that a conditional model of text can provide signal for training an information extraction model.
 \item Show that we can achieve competitive performance on knowledge graph extraction with fewer annotations. 
-\item Incorporate more linguistic signals and latent structure into the LVM to improve modeling performance.
+\item Incorporate more linguistic signals and latent structure into the LVM to improve performance.
 \end{enumerate}
 The model will perform sequence-wise generation of text using facts from the nodes of a knowledge graph.
 This approach is inspired by the work of \citet{liang2009semalign}, who learn to align facts to text without supervision.
-Their work relies on the insight that a model of text
-provides signal for learning the alignments:
+Their work relies on the insight that a model of text provides signal for learning the alignments:
 if the likelihood of a segment of text improves when moving from one alignment choice to a another,
-then the new alignment is more likely to be correct given a suitably strong likelihood model. In my proposed LVM, I will extend this approach to a deep learning based model that incorporates state-of-the-art extraction and generation techniques.
-
-%which aims to model not just the alignments from segments of text to nodes in a knowledge graph
-%but also the values in the nodes themselves.
-%I build on the formulation in \citet{liang2009semalign} by parameterizing our LVM
-%with neural networks, drastically increasing the generative model's capacity.
-
-%where the model learns to generate the values, record alignments, and finally the text
-%conditioned on the given entities and types.
-
-
-%Specifically, I propose the use of hidden semi-Markov models (HSMMs),
-%used in \citet{liang2009semalign} as a conditional generative model for the
-%task of aligning segments of text to nodes in a knowledge graph without supervision.
-%\citet{liang2009semalign} rely on the insight that a conditional generative model of text
-%provides signal for learning the alignments:
-%if the likelihood of a segment of text improves when moving from
-%one alignment choice to a another,
-%then the new alignment is more likely to be correct given a suitably strong likelihood model.
-
-
-%We present one instance of an LVM, outline how it can be used to obtain
-%an information extraction model without direct supervision,
-%and argue that the same approach can be applied in even more %ambitious settings.
-%Our proposed LVM is a conditional generative model that specifies
-%the relationship between data, specifically the entities and types, and text.
-%We denote this model \texttt{Values}.
-%Let $\by$ be the text, $\ba$ be a latent variable that represents the
-%alignments from words to records,
-%$\bv$ all the values in a datum of records,
-%and $\be,\bt$ the entities and types respectively.
-
-
+then the new alignment is more likely to be correct given a suitably strong likelihood model.
+In my proposed LVM, I will extend this approach to a deep learning based model that incorporates
+state-of-the-art extraction and generation techniques.
 
 \subsection*{Detailed Approach}
-
-
 \paragraph{Problem Setup}
 To model the problem of information extraction,  
 consider a dataset consisting of data and text pairs
@@ -249,7 +217,7 @@ is a tuple containing an entity, type, and value.
 We denote the aggregated collection of any elements as a bold variable.
 The datum $\br$ is a simple knowledge graph or information network. 
 Each text $\by = y_1,y_2,\ldots$ is a sequence of tokens each from a vocabulary $V$. As an example consider a dataset consisting of summaries of basketball games $\by$ aligned with the respective statistics $\br$ of those games in Figure~\ref{fig:d2t}. 
-Here there are three records and the statement $\by = $ ``michael jordan had 22 points and 12 rebounds as well as four blocks''. For this example, the process of information extraction is to infer 
+Here there are four records and the statement $\by = $ ``michael jordan had 22 points and 12 rebounds as well as four blocks''. For this example, the process of information extraction is to infer 
 the values $\bv$ of the records given the entities $\be$, types $\bt$, and the text $\by$.
 
 \paragraph{Method}
@@ -276,8 +244,8 @@ the values $\bv$ of the records given the entities $\be$, types $\bt$, and the t
     minimum width=0.5em, minimum height=1em, font=\small,ampersand replacement=\&] {
       $\subalign{e_1:& \textrm{ michael jordan}\\ t_1:& \textrm{ NAME}\\ v_1:& \textrm{ michael jordan}}$\&
       $\subalign{e_2:& \textrm{ michael jordan}\\ t_2:& \textrm{ POINTS}\\ v_2:& \set{22}}$\&
-      $\subalign{e_3:& \textrm{ michael jordan}\\ t_2:& \textrm{ BLOCKS}\\ v_2:& \set{4}}$\&
-      $\subalign{e_4:& \textrm{ michael jordan}\\ t_3:& \textrm{ REBOUNDS}\\ v_3:& \set{12}}$\\
+      $\subalign{e_3:& \textrm{ michael jordan}\\ t_3:& \textrm{ BLOCKS}\\ v_3:& \set{4}}$\&
+      $\subalign{e_4:& \textrm{ michael jordan}\\ t_4:& \textrm{ REBOUNDS}\\ v_4:& \set{12}}$\\
     };
     \begin{scope}[on background layer]
 
@@ -352,7 +320,9 @@ values in a table of records and alignments from text to records.
 
 \subsection*{Plan}
 
-I plan to develop a system based on these ideas for information extraction with distant supervision. I will evaluate the approach on reduced annotation versions of standard information extraction benchmarks including the TAC KBP 2015 slot filling task and the TACRED dataset \citep{zhang2017slotfilling}.
+I plan to develop a system based on these ideas for information extraction with distant supervision.
+I will evaluate the approach on standard information extraction benchmarks
+including the TAC KBP 2015 slot filling task and the TACRED dataset \citep{zhang2017slotfilling}.
 The goal will be to demonstrate competitive performance on
 extraction metrics such as precision, recall, and F1, while using as little supervision
 as possible by ignoring subsets of the given data.
